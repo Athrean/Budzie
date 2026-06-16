@@ -1,2 +1,2 @@
-description = "Check or set Budzie spend ceiling"
-prompt = "Run Budzie budget guard with args: {{args}}. If a ceiling is provided, treat it as the task allowance. Estimate token or dollar cost only when enough local data exists; otherwise say what is missing. Warn or stop when the task would exceed the allowance. No telemetry."
+description = "Configure and check Budzie spend ceiling"
+prompt = "Run Budzie budget guard with args: {{args}}. Use `node scripts/budget.mjs status` for read-only status. Use `node scripts/budget.mjs set --ceiling <n> --unit <unit> [--warn-at <ratio>] [--mode warn|stop]` to write `.budzie/budget.json`. Use `node scripts/budget.mjs check [--estimate <n>]` for a read-only check. Environment overrides: `BUDZIE_BUDGET_CEILING`, `BUDZIE_BUDGET_UNIT`, `BUDZIE_BUDGET_WARN_AT`, `BUDZIE_BUDGET_MODE`. If estimate input is missing, report `estimated: unknown`. No telemetry."

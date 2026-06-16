@@ -188,3 +188,16 @@ test("check supports ok, warn, and stop outcomes", async () => {
     assert.equal(stopped.stderr, "");
   });
 });
+
+test("budget skill and command drive the guard CLI", () => {
+  const skill = readFileSync("skills/budzie-budget/SKILL.md", "utf8");
+  const command = readFileSync("commands/budzie-budget.toml", "utf8");
+
+  for (const text of [skill, command]) {
+    assert.match(text, /node scripts\/budget\.mjs status/);
+    assert.match(text, /node scripts\/budget\.mjs set/);
+    assert.match(text, /node scripts\/budget\.mjs check/);
+    assert.match(text, /\.budzie\/budget\.json/);
+    assert.match(text, /BUDZIE_BUDGET_CEILING/);
+  }
+});
