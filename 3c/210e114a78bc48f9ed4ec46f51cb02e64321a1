@@ -1,0 +1,21 @@
+tests/ci-workflow.test.js
+  s_19c0a91942b140::t_9dadab999fdacb 18
+.github/workflows/ci.yml
+  s_19c0a91942b140::t_725469d24c774b 31-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "3c210e114a78bc48f9ed4ec46f51cb02e64321a1",
+  "prompts": {},
+  "sessions": {
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
