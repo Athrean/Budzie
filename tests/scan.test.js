@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { walk } from "../scripts/lib/scan.mjs";
+import { walk, classifyMarker } from "../scripts/lib/scan.mjs";
 
 /**
  * Create a throwaway directory tree and clean it up after `fn` runs.
@@ -86,4 +86,57 @@ test("walk survives an unreadable / binary file", async () => {
     assert.ok(rows.some((r) => path.basename(r.file) === "text.txt"));
     assert.ok(rows.every((r) => path.basename(r.file) !== "binary.bin"));
   });
+});
+
+test("classifyMarker recognises a budzie marker with an upgrade trigger", () => {
+  const m = classifyMarker("// budzie: delete this when we add a real parser");
+  assert.equal(m.isBudzie, true);
+  assert.equal(m.hasUpgradeTrigger, true);
+  assert.equal(m.cutTag, "delete");
+  assert.equal(m.tier, "auto");
+});
+
+test("classifyMarker flags a budzie marker without a trigger", () => {
+  const m = classifyMarker("# budzie: shrink the config surface");
+  assert.equal(m.isBudzie, true);
+  assert.equal(m.hasUpgradeTrigger, false);
+  assert.equal(m.cutTag, "shrink");
+  assert.equal(m.tier, "suggest");
+});
+
+test("classifyMarker detects native/stdlib dep-avoided markers", () => {
+  const native = classifyMarker("<!-- budzie: native fetch, no axios -->");
+  assert.equal(native.depAvoided, true);
+  assert.equal(native.cutTag, "native");
+  assert.equal(native.tier, "aggressive");
+
+  const stdlib = classifyMarker("// BUDZIE: stdlib path module instead of a dep");
+  assert.equal(stdlib.depAvoided, true);
+  assert.equal(stdlib.cutTag, "stdlib");
+  assert.equal(stdlib.tier, "auto");
+});
+
+test("classifyMarker maps each cut tag to its tier", () => {
+  /** @type {Array<[string, string, string]>} */
+  const cases = [
+    ["// budzie: delete", "delete", "auto"],
+    ["// budzie: stdlib", "stdlib", "auto"],
+    ["// budzie: native", "native", "aggressive"],
+    ["// budzie: yagni", "yagni", "aggressive"],
+    ["// budzie: shrink", "shrink", "suggest"],
+  ];
+  for (const [text, cutTag, tier] of cases) {
+    const m = classifyMarker(text);
+    assert.equal(m.cutTag, cutTag, `cutTag for ${text}`);
+    assert.equal(m.tier, tier, `tier for ${text}`);
+  }
+});
+
+test("classifyMarker ignores a non-marker line", () => {
+  const m = classifyMarker("const x = 1; // just a normal comment");
+  assert.equal(m.isBudzie, false);
+  assert.equal(m.hasUpgradeTrigger, false);
+  assert.equal(m.depAvoided, false);
+  assert.equal(m.cutTag, null);
+  assert.equal(m.tier, null);
 });
