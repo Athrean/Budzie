@@ -1,0 +1,19 @@
+CLAUDE.md
+  s_079e070bfdad17::t_83c7864aa02f67 53-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "be3d227e4bede5af7cd5c11554fadd56428fb708",
+  "prompts": {},
+  "sessions": {
+    "s_079e070bfdad17": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b6ff67-ce8c-4e17-928d-fc150e97f61c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
