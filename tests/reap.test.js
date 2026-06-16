@@ -99,6 +99,24 @@ test("plan ranks auto first, then aggressive, then suggest", async () => {
   });
 });
 
+test("plan command prints the default cut plan as json", async () => {
+  await withTree(async (root) => {
+    writeFixture(root);
+
+    const out = execFileSync("node", [CLI, "plan"], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    /** @type {Array<{ tag: string }>} */
+    const results = JSON.parse(out);
+
+    assert.deepEqual(
+      results.map((r) => r.tag),
+      ["stdlib", "shrink"]
+    );
+  });
+});
+
 test("receipt formatter renders removed lines, deps, kept, and discarded", () => {
   const receipt = formatReceipt({
     kept: [{ file: "a.js" }, { file: "b.js" }],
