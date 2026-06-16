@@ -1,0 +1,22 @@
+tests/reap.test.js
+  s_079e070bfdad17::t_a88a66e0cd24d3 1-6,8-95
+  s_079e070bfdad17::t_979771321c7beb 7
+scripts/reap.mjs
+  s_079e070bfdad17::t_2f9ea90aba5852 1-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "6222df7780ee4a0137fbaa929de7b08f7780d5c3",
+  "prompts": {},
+  "sessions": {
+    "s_079e070bfdad17": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b6ff67-ce8c-4e17-928d-fc150e97f61c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
