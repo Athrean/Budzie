@@ -1,0 +1,37 @@
+skills/budzie-receipts/SKILL.md
+  s_079e070bfdad17::t_e3c2eda437d27e 28-39
+tests/receipts.test.js
+  s_19c0a91942b140::t_4bf14aab4159a0 101,104-106
+tests/metadata.test.js
+  s_19c0a91942b140::t_9168f24ae25d3f 15-20
+scripts/receipts.mjs
+  s_19c0a91942b140::t_7481b1a314e8dd 56-59
+package.json
+  s_19c0a91942b140::t_452f4f84fd0ca8 8
+commands/budzie-receipts.toml
+  s_079e070bfdad17::t_19f8cba58b8572 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "370a051fb7064d43d5f02dc60379afec3ae591f8",
+  "prompts": {},
+  "sessions": {
+    "s_079e070bfdad17": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b6ff67-ce8c-4e17-928d-fc150e97f61c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    },
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
