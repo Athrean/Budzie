@@ -3,7 +3,7 @@ name: budzie-receipts
 description: >
   Report local Budzie savings from `budzie:` markers, dependency avoidance, and
   optional labelled estimates. Use for /budzie-receipts, receipts, savings report,
-  saved tokens, saved dollars, or README badge.
+  marker ledger, saved tokens, saved dollars, or README badge.
 ---
 
 # Budzie Receipts
@@ -33,6 +33,7 @@ After the scan, get the real counts from the shared scanner:
 node scripts/receipts.mjs           # terminal card with the three counts
 node scripts/receipts.mjs --badge   # shields.io badge string for a README
 node scripts/receipts.mjs --json    # { markers, noUpgradeTrigger, depsAvoided }
+node scripts/receipts.mjs --ledger  # rows: file, line, marker, cut tag, tier, dep flag, trigger flag
 ```
 
 Real local counts only — no baseline, no estimate.
@@ -41,6 +42,9 @@ Real local counts only — no baseline, no estimate.
 
 Show real local counts first. If estimating lines, tokens, or dollars, prefix the
 line with `ESTIMATE` and name the source.
+
+Use `--ledger` when reviewing marker hygiene. It prints `MISSING` for rows
+without an upgrade trigger.
 
 End with a badge string:
 

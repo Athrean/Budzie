@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -230,4 +230,14 @@ test("default invocation prints the card with the counts", async () => {
     assert.match(out, /3/);
     assert.match(out, /2/);
   });
+});
+
+test("receipt skill and command document ledger mode", () => {
+  const skill = readFileSync("skills/budzie-receipts/SKILL.md", "utf8");
+  const command = readFileSync("commands/budzie-receipts.toml", "utf8");
+
+  for (const text of [skill, command]) {
+    assert.match(text, /--ledger/);
+    assert.match(text, /MISSING/);
+  }
 });
