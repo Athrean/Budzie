@@ -1,0 +1,20 @@
+tests/reap.test.js
+  s_19c0a91942b140::t_34605cdee9e587 102-109,111-119
+  s_19c0a91942b140::t_ac96941315fd8b 110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "70e46c99cd4b57aa0ad35a1ea31fa8cf364be7e5",
+  "prompts": {},
+  "sessions": {
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
