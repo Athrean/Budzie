@@ -1,0 +1,24 @@
+scripts/lib/scan.mjs
+  s_079e070bfdad17::t_8368f86f745c01 133-166
+  s_079e070bfdad17::t_e892884782f6cd 19-33
+  s_079e070bfdad17::t_3e24f7248a2795 47-61
+tests/scan.test.js
+  s_079e070bfdad17::t_942ce5877d262d 7
+  s_079e070bfdad17::t_5cc3b0fcd03808 90-142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "f23fbea68d4ad9be158bd11ec1cdd2f2f8c8aa2a",
+  "prompts": {},
+  "sessions": {
+    "s_079e070bfdad17": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b6ff67-ce8c-4e17-928d-fc150e97f61c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
