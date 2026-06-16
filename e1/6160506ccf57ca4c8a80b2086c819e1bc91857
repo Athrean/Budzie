@@ -1,0 +1,22 @@
+tests/receipts.test.js
+  s_079e070bfdad17::t_7cb0789cdaa089 42
+  s_079e070bfdad17::t_02f3f52b5614fa 1-41,43-86
+scripts/receipts.mjs
+  s_079e070bfdad17::t_f10655d8acfcb6 1-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "e16160506ccf57ca4c8a80b2086c819e1bc91857",
+  "prompts": {},
+  "sessions": {
+    "s_079e070bfdad17": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b6ff67-ce8c-4e17-928d-fc150e97f61c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
