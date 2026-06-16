@@ -50,6 +50,9 @@ Rules:
   upgrade trigger.
 - Never simplify away security, trust-boundary validation, data-loss handling,
   accessibility basics, or explicit user requirements.
+- Runtime code is JavaScript annotated with JSDoc and a `// @ts-check` header.
+  Type-checking runs as `tsc --noEmit` from dev-only dependencies. No build step,
+  no `dist/`, no shipped TypeScript.
 
 ## Git Workflow
 
