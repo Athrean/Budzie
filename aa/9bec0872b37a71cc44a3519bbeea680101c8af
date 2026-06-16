@@ -1,0 +1,23 @@
+skills/budzie-budget/SKILL.md
+  s_19c0a91942b140::t_4ee567c8230c8d 4-6,11-39,43-46
+commands/budzie-budget.toml
+  s_19c0a91942b140::t_7391e15ddfb485 1-2
+tests/budget.test.js
+  s_19c0a91942b140::t_4f10dce764b797 191-203
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "aa9bec0872b37a71cc44a3519bbeea680101c8af",
+  "prompts": {},
+  "sessions": {
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
