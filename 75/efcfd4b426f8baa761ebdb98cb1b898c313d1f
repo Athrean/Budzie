@@ -1,0 +1,23 @@
+tests/reap-contracts.test.js
+  s_19c0a91942b140::t_038270a8e4fabb 1-13
+skills/budzie-reap/SKILL.md
+  s_19c0a91942b140::t_96885cf9dedf7a 13-15
+skills/budzie-reap/references/operator-contracts.md
+  s_19c0a91942b140::t_96885cf9dedf7a 1-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "75efcfd4b426f8baa761ebdb98cb1b898c313d1f",
+  "prompts": {},
+  "sessions": {
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
