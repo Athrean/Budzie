@@ -1,0 +1,21 @@
+scripts/tool-reducer.mjs
+  s_c432f6c8d8babf::t_9bd1139298b409 1-155,159-162,164-232,236,240-260,262-333
+  s_c432f6c8d8babf::t_883f43affa18a3 233-235,237-239,261
+  s_c432f6c8d8babf::t_898e9b18d18b06 156-158,163
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "a67bf1edc165abe8a138569ab8bfd5d96336a6e8",
+  "prompts": {},
+  "sessions": {
+    "s_c432f6c8d8babf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e062cc28-44b1-49bf-b426-b7e0d4509f72",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
