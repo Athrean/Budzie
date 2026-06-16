@@ -1,0 +1,21 @@
+skills/budzie-help/SKILL.md
+  s_c432f6c8d8babf::t_acaefb9b0c8c3f 14
+commands/budzie-help.toml
+  s_c432f6c8d8babf::t_6400d65fade29a 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "4c2d761299ce028f171e19a948a7595f79531118",
+  "prompts": {},
+  "sessions": {
+    "s_c432f6c8d8babf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e062cc28-44b1-49bf-b426-b7e0d4509f72",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
