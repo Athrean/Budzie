@@ -10,6 +10,15 @@ description: >
 
 Advisor to operator.
 
+## Operator Contracts
+
+Before locating, cutting, or reviewing a cut, read
+`skills/budzie-reap/references/operator-contracts.md`.
+
+- Locate is read-only and returns file/line evidence.
+- Cut applies one cut per worktree and refuses broad or destructive edits.
+- Review reports findings only and does not apply fixes.
+
 ## Loop
 
 1. Build the ranked plan: `node scripts/reap.mjs plan`.
