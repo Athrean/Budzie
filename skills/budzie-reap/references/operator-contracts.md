@@ -6,8 +6,8 @@ operator framework around them.
 
 ## Shared Contract
 
-Reaper work has three roles: locate, cut, and review. Each role has a narrow
-output and hands off to the next role through written evidence.
+Reaper work has three roles: locate, cut, review. Each role has a narrow output
+and hands off to the next role through written evidence.
 
 - Work in an isolated worktree and branch for every cut.
 - Keep one cut per worktree. If a candidate needs unrelated edits, split it.
@@ -24,7 +24,8 @@ evidence that another operator can verify without redoing the search.
 
 Locator must:
 
-- Read files, test output, package metadata, and local command output only.
+- Use read-only local inputs: files, package metadata, test output, command
+  output.
 - Leave the working tree unchanged.
 - Return candidates ranked by expected savings and risk.
 - Include file and line evidence for each candidate: `path:line` plus the
@@ -64,7 +65,7 @@ Cutter must:
 - Preserve public behavior unless the candidate explicitly removes dead surface.
 - Keep the diff focused on the cited evidence and the smallest supporting edits.
 - Run the named verification command after the cut.
-- Report kept cuts with measured savings, changed files, and verification output.
+- Report kept cuts with measured savings, changed files, verification output.
 - Report failed cuts with the failing command and the reason to discard.
 
 Cutter must refuse broad or destructive edits, including:
