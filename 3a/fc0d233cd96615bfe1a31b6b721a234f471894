@@ -1,0 +1,19 @@
+skills/budzie-reap/references/operator-contracts.md
+  s_19c0a91942b140::t_5edf15e3fbcf56 3-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "3afc0d233cd96615bfe1a31b6b721a234f471894",
+  "prompts": {},
+  "sessions": {
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
