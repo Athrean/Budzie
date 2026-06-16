@@ -50,11 +50,18 @@ Rules:
   upgrade trigger.
 - Never simplify away security, trust-boundary validation, data-loss handling,
   accessibility basics, or explicit user requirements.
+- Runtime code is JavaScript annotated with JSDoc and a `// @ts-check` header.
+  Type-checking runs as `tsc --noEmit` from dev-only dependencies. No build step,
+  no `dist/`, no shipped TypeScript.
 
 ## Git Workflow
 
 - Do not work on `main` directly after first repo bootstrap.
 - Use small branches, small commits, and PRs.
+- Open an issue once scope is known and the refs exist; one issue per unit of work.
+- Every PR has a clear description and tags `Closes #<issue>` so the issue closes
+  automatically on merge.
+- Every PR contains at least 3–5 atomic commits.
 - Never bypass hooks with `--no-verify`.
 - Never force push, hard reset, clean, or delete branches unless the user
   explicitly asks and confirms.
