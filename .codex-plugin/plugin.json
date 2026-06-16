@@ -1,0 +1,29 @@
+{
+  "name": "budzie",
+  "version": "0.1.0",
+  "description": "Budget-first agent plugin. Code less, spend less, watch the meter.",
+  "author": {
+    "name": "Athrean",
+    "url": "https://github.com/Athrean"
+  },
+  "homepage": "https://github.com/Athrean/Budzie",
+  "repository": "https://github.com/Athrean/Budzie",
+  "license": "MIT",
+  "keywords": ["budget", "yagni", "code-review", "agent-skills"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Budzie",
+    "shortDescription": "Budget-first coding agent mode",
+    "longDescription": "Prefer less code, local savings receipts, test-gated deletion, and spend ceilings for budget-constrained developers.",
+    "developerName": "Athrean",
+    "category": "Productivity",
+    "capabilities": ["Instructions"],
+    "websiteURL": "https://github.com/Athrean/Budzie",
+    "defaultPrompt": [
+      "Use Budzie mode for this task.",
+      "Show receipts for this repo.",
+      "Reap safe bloat and verify tests."
+    ],
+    "brandColor": "#111111"
+  }
+}

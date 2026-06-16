@@ -1,0 +1,23 @@
+# Local agent/editor state
+.claude/settings.local.json
+.DS_Store
+
+# Dependencies/build output
+node_modules/
+dist/
+build/
+coverage/
+
+# Env/secrets
+.env
+.env.*
+!.env.example
+
+# Logs/temp
+*.log
+.tmp/
+tmp/
+
+# Graph/cache output
+graphify-out/
+.budzie/

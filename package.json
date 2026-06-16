@@ -1,0 +1,12 @@
+{
+  "name": "budzie",
+  "version": "0.1.0",
+  "description": "Budget-first agent plugin: code less, spend less, watch the meter.",
+  "keywords": ["budzie", "skills", "ai-agents", "budget", "productivity"],
+  "license": "MIT",
+  "type": "module",
+  "files": ["README.md", "LICENSE", "commands/", "skills/", ".codex-plugin/"],
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  }
+}

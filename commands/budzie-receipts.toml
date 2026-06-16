@@ -1,0 +1,2 @@
+description = "Report local Budzie savings"
+prompt = "Run Budzie Receipts. Scan for `budzie:` comments, skipping node_modules/.git/build output. Report real local counts first: marker count, markers without upgrade triggers, native/stdlib deps avoided when named. If estimating lines/tokens/dollars, label every estimate as ESTIMATE and name the source. End with a README badge string. Read-only."

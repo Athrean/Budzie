@@ -1,0 +1,2 @@
+description = "Switch on Budzie budget-first coding mode"
+prompt = "Use Budzie mode. Before coding: can this be skipped, solved by stdlib/native platform, or reduced to one line? Prefer no new deps. Track intentional shortcuts with `budzie:` comments naming ceiling and upgrade trigger. Keep savings measurable."

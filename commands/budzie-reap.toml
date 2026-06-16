@@ -1,0 +1,2 @@
+description = "Audit, cut, verify, and report deleted bloat"
+prompt = "Run Budzie Reaper. Audit repo for delete/stdlib/native/yagni/shrink cuts. Default auto-apply only high-confidence delete and stdlib cuts. Plan exact file, line range, replacement, and verification command. Apply one cut per worktree, run tests, keep green cuts, discard red cuts, and report lines/deps removed plus discarded cuts. Never auto-merge."

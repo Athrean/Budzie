@@ -1,0 +1,2 @@
+description = "Check or set Budzie spend ceiling"
+prompt = "Run Budzie budget guard with args: {{args}}. If a ceiling is provided, treat it as the task allowance. Estimate token or dollar cost only when enough local data exists; otherwise say what is missing. Warn or stop when the task would exceed the allowance. No telemetry."
