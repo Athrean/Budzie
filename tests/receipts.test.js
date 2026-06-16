@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-import { tally, renderCard, renderBadge } from "../scripts/receipts.mjs";
+import { ledger, tally, renderCard, renderBadge, renderLedger } from "../scripts/receipts.mjs";
 
 /** Absolute path to the CLI under test. */
 const CLI = fileURLToPath(new URL("../scripts/receipts.mjs", import.meta.url));
@@ -90,6 +90,88 @@ test("tally yields zero counts for a repo with no markers", async () => {
   });
 });
 
+test("ledger returns detailed marker rows with relative files", async () => {
+  await withTree(async (root) => {
+    writeFixture(root);
+    const rows = await ledger(root);
+    assert.deepEqual(rows, [
+      {
+        file: "README.md",
+        line: 1,
+        marker: "<!-- budzie: delete this stub list -->",
+        cutTag: "delete",
+        tier: "auto",
+        depAvoided: false,
+        hasUpgradeTrigger: false,
+      },
+      {
+        file: "README.md",
+        line: 2,
+        marker: "<!-- budzie: yagni pagination, add upgrade trigger if needed -->",
+        cutTag: "yagni",
+        tier: "aggressive",
+        depAvoided: false,
+        hasUpgradeTrigger: true,
+      },
+      {
+        file: path.join("src", "a.js"),
+        line: 1,
+        marker: "// budzie: stdlib path parse, upgrade to URL API once it lands",
+        cutTag: "stdlib",
+        tier: "auto",
+        depAvoided: true,
+        hasUpgradeTrigger: true,
+      },
+      {
+        file: path.join("src", "a.js"),
+        line: 2,
+        marker: "// budzie: shrink the config surface upgrade later",
+        cutTag: "shrink",
+        tier: "suggest",
+        depAvoided: false,
+        hasUpgradeTrigger: true,
+      },
+      {
+        file: path.join("src", "b.py"),
+        line: 1,
+        marker: "# budzie: native http client, no requests",
+        cutTag: "native",
+        tier: "aggressive",
+        depAvoided: true,
+        hasUpgradeTrigger: false,
+      },
+      {
+        file: path.join("src", "b.py"),
+        line: 2,
+        marker: "# budzie: skip retry layer for now",
+        cutTag: null,
+        tier: null,
+        depAvoided: false,
+        hasUpgradeTrigger: false,
+      },
+    ]);
+  });
+});
+
+test("renderLedger flags missing upgrade triggers", async () => {
+  await withTree(async (root) => {
+    writeFixture(root);
+    const out = renderLedger(await ledger(root));
+    const lines = out.split("\n");
+    assert.equal(lines[0], "Budzie marker ledger");
+    assert.equal(lines[1], "file\tline\tmarker\tcut tag\ttier\tdep avoided\tupgrade trigger");
+    assert.match(
+      out,
+      /src[/\\]b\.py\t1\t# budzie: native http client, no requests\tnative\taggressive\tyes\tMISSING/
+    );
+    assert.match(
+      out,
+      /README\.md\t2\t<!-- budzie: yagni pagination, add upgrade trigger if needed -->\tyagni\taggressive\tno\tyes/
+    );
+    assert.match(out, /MISSING means no upgrade trigger/);
+  });
+});
+
 test("renderCard shows all three real counts", () => {
   const card = renderCard({ markers: 6, noUpgradeTrigger: 3, depsAvoided: 2 });
   assert.match(card, /6/);
@@ -130,6 +212,16 @@ test("--badge prints a badge string containing the counts", async () => {
   });
 });
 
+test("--ledger prints the marker ledger", async () => {
+  await withTree(async (root) => {
+    writeFixture(root);
+    const out = execFileSync("node", [CLI, "--ledger", root], {
+      encoding: "utf8",
+    });
+    assert.equal(out, renderLedger(await ledger(root)) + "\n");
+  });
+});
+
 test("default invocation prints the card with the counts", async () => {
   await withTree(async (root) => {
     writeFixture(root);
@@ -138,4 +230,14 @@ test("default invocation prints the card with the counts", async () => {
     assert.match(out, /3/);
     assert.match(out, /2/);
   });
+});
+
+test("receipt skill and command document ledger mode", () => {
+  const skill = readFileSync("skills/budzie-receipts/SKILL.md", "utf8");
+  const command = readFileSync("commands/budzie-receipts.toml", "utf8");
+
+  for (const text of [skill, command]) {
+    assert.match(text, /--ledger/);
+    assert.match(text, /MISSING/);
+  }
 });
