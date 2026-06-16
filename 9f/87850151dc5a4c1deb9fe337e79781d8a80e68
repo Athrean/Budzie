@@ -1,0 +1,33 @@
+tests/reap.test.js
+  s_19c0a91942b140::t_4a423b830e4ac1 2-3,6,9-12,101-134
+commands/budzie-reap.toml
+  s_19c0a91942b140::t_236ae7b187239e 2
+scripts/reap.mjs
+  s_079e070bfdad17::t_fc5bae94862659 65-137
+skills/budzie-reap/SKILL.md
+  s_19c0a91942b140::t_81a93aa90fae5b 15-17,21-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "9f87850151dc5a4c1deb9fe337e79781d8a80e68",
+  "prompts": {},
+  "sessions": {
+    "s_079e070bfdad17": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b6ff67-ce8c-4e17-928d-fc150e97f61c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    },
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
