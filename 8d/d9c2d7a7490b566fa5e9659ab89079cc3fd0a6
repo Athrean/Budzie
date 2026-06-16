@@ -1,0 +1,19 @@
+scripts/context-receipts.mjs
+  s_c432f6c8d8babf::t_cb50deb3b1d85a 1-440
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "8dd9c2d7a7490b566fa5e9659ab89079cc3fd0a6",
+  "prompts": {},
+  "sessions": {
+    "s_c432f6c8d8babf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e062cc28-44b1-49bf-b426-b7e0d4509f72",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
