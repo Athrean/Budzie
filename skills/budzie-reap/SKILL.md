@@ -10,6 +10,9 @@ description: >
 
 Advisor to operator.
 
+Before locating, cutting, or reviewing a cut, read
+`skills/budzie-reap/references/operator-contracts.md`.
+
 ## Loop
 
 1. Build the ranked plan: `node scripts/reap.mjs plan`.
