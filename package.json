@@ -5,7 +5,10 @@
   "keywords": ["budzie", "skills", "ai-agents", "budget", "productivity"],
   "license": "MIT",
   "type": "module",
-  "files": ["README.md", "LICENSE", "commands/", "skills/", "scripts/", ".codex-plugin/"],
+  "files": ["README.md", "LICENSE", "bin/", "commands/", "skills/", "scripts/", ".codex-plugin/"],
+  "bin": {
+    "budzie-install": "./bin/budzie-install.mjs"
+  },
   "scripts": {
     "test": "node --test tests/*.test.js",
     "typecheck": "tsc -p jsconfig.json"
