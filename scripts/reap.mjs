@@ -62,3 +62,76 @@ export async function plan(root, opts = {}) {
   cuts.sort((a, b) => TIER_RANK[a.tier] - TIER_RANK[b.tier]);
   return cuts;
 }
+
+/**
+ * Outcome of an apply/verify pass, ready to render as a receipt.
+ * @typedef {object} Results
+ * @property {Array<unknown>} kept - Cuts whose tests stayed green.
+ * @property {Array<unknown>} discarded - Cuts whose tests went red.
+ * @property {number} linesRemoved - Total source lines removed.
+ * @property {number} depsRemoved - Total dependencies removed.
+ */
+
+/**
+ * Render the one-line PR-body receipt for a results object.
+ * @param {Results} results
+ * @returns {string}
+ */
+export function formatReceipt(results) {
+  const { kept, discarded, linesRemoved, depsRemoved } = results;
+  return `-${linesRemoved} lines, -${depsRemoved} deps, ${kept.length} cuts kept, ${discarded.length} discarded`;
+}
+
+/**
+ * Read all of stdin as a UTF-8 string.
+ * @returns {Promise<string>}
+ */
+async function readStdin() {
+  /** @type {Buffer[]} */
+  const chunks = [];
+  for await (const chunk of process.stdin) chunks.push(Buffer.from(chunk));
+  return Buffer.concat(chunks).toString("utf8");
+}
+
+/**
+ * CLI entry point.
+ *
+ *   reap.mjs plan [--aggressive]   prints a ranked cut plan as JSON
+ *   reap.mjs receipt               reads a results JSON on stdin, prints receipt
+ *
+ * @param {string[]} argv - Arguments after `node reap.mjs`.
+ * @returns {Promise<number>} Process exit code.
+ */
+export async function main(argv) {
+  const [command, ...rest] = argv;
+
+  if (command === "plan") {
+    const aggressive = rest.includes("--aggressive");
+    const results = await plan(process.cwd(), { aggressive });
+    process.stdout.write(JSON.stringify(results, null, 2) + "\n");
+    return 0;
+  }
+
+  if (command === "receipt") {
+    const raw = await readStdin();
+    /** @type {Results} */
+    const results = JSON.parse(raw);
+    process.stdout.write(formatReceipt(results) + "\n");
+    return 0;
+  }
+
+  process.stderr.write("usage: reap.mjs plan [--aggressive] | reap.mjs receipt\n");
+  return 1;
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main(process.argv.slice(2)).then(
+    (code) => {
+      process.exitCode = code;
+    },
+    (err) => {
+      process.stderr.write(`${err instanceof Error ? err.message : String(err)}\n`);
+      process.exitCode = 1;
+    }
+  );
+}

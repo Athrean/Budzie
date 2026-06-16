@@ -12,12 +12,14 @@ Advisor to operator.
 
 ## Loop
 
-1. Audit for cuts: `delete`, `stdlib`, `native`, `yagni`, `shrink`.
-2. Plan exact path, line range, replacement, and verification command.
+1. Build the ranked plan: `node scripts/reap.mjs plan`.
+2. Use `node scripts/reap.mjs plan --aggressive` only when the user asks for
+   `native` or `yagni` cuts.
 3. Apply one cut per worktree.
 4. Run detected tests.
 5. Keep green cuts, discard red cuts.
-6. Report receipt: lines removed, deps removed, cuts kept, cuts discarded.
+6. Render the PR receipt with `node scripts/reap.mjs receipt`, reading results
+   JSON on stdin: `{ kept, discarded, linesRemoved, depsRemoved }`.
 
 ## Defaults
 

@@ -1,10 +1,15 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-import { plan } from "../scripts/reap.mjs";
+import { plan, formatReceipt } from "../scripts/reap.mjs";
+
+/** Absolute path to the CLI under test. */
+const CLI = fileURLToPath(new URL("../scripts/reap.mjs", import.meta.url));
 
 /**
  * Create a throwaway directory tree and clean it up after `fn` runs.
@@ -92,4 +97,39 @@ test("plan ranks auto first, then aggressive, then suggest", async () => {
       );
     }
   });
+});
+
+test("receipt formatter renders removed lines, deps, kept, and discarded", () => {
+  const receipt = formatReceipt({
+    kept: [{ file: "a.js" }, { file: "b.js" }],
+    discarded: [{ file: "c.js" }],
+    linesRemoved: 12,
+    depsRemoved: 1,
+  });
+
+  assert.equal(receipt, "-12 lines, -1 deps, 2 cuts kept, 1 discarded");
+});
+
+test("receipt command reads results json from stdin", () => {
+  const out = execFileSync("node", [CLI, "receipt"], {
+    encoding: "utf8",
+    input: JSON.stringify({
+      kept: [{ file: "a.js" }],
+      discarded: [],
+      linesRemoved: 7,
+      depsRemoved: 0,
+    }),
+  }).trim();
+
+  assert.equal(out, "-7 lines, -0 deps, 1 cuts kept, 0 discarded");
+});
+
+test("reaper skill and command drive the loop through reap.mjs", () => {
+  const skill = readFileSync("skills/budzie-reap/SKILL.md", "utf8");
+  const command = readFileSync("commands/budzie-reap.toml", "utf8");
+
+  for (const text of [skill, command]) {
+    assert.match(text, /node scripts\/reap\.mjs plan/);
+    assert.match(text, /node scripts\/reap\.mjs receipt/);
+  }
 });
