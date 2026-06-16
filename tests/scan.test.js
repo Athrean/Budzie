@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { walk, classifyMarker } from "../scripts/lib/scan.mjs";
+import { walk, classifyMarker, detectTestCommand } from "../scripts/lib/scan.mjs";
 
 /**
  * Create a throwaway directory tree and clean it up after `fn` runs.
@@ -139,4 +139,27 @@ test("classifyMarker ignores a non-marker line", () => {
   assert.equal(m.depAvoided, false);
   assert.equal(m.cutTag, null);
   assert.equal(m.tier, null);
+});
+
+test("detectTestCommand maps each manifest to its runner", async () => {
+  /** @type {Array<[string, string]>} */
+  const cases = [
+    ["package.json", "npm test"],
+    ["pyproject.toml", "pytest"],
+    ["setup.cfg", "pytest"],
+    ["Cargo.toml", "cargo test"],
+    ["go.mod", "go test ./..."],
+  ];
+  for (const [manifest, command] of cases) {
+    await withTree((root) => {
+      writeFileSync(path.join(root, manifest), "\n");
+      assert.equal(detectTestCommand(root), command, `runner for ${manifest}`);
+    });
+  }
+});
+
+test("detectTestCommand returns null when no manifest is present", async () => {
+  await withTree((root) => {
+    assert.equal(detectTestCommand(root), null);
+  });
 });

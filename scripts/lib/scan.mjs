@@ -164,3 +164,29 @@ export function classifyMarker(text) {
 
   return { isBudzie, hasUpgradeTrigger, depAvoided, cutTag, tier };
 }
+
+/** Manifest filename → test command. First present manifest wins. */
+const TEST_COMMAND_BY_MANIFEST = /** @type {const} */ ([
+  ["package.json", "npm test"],
+  ["pyproject.toml", "pytest"],
+  ["setup.cfg", "pytest"],
+  ["Cargo.toml", "cargo test"],
+  ["go.mod", "go test ./..."],
+]);
+
+/**
+ * Detect the project's test command from its manifest files.
+ * Returns null when no known manifest is present — never guesses.
+ * @param {string} root - Project root directory.
+ * @returns {string | null}
+ */
+export function detectTestCommand(root) {
+  for (const [manifest, command] of TEST_COMMAND_BY_MANIFEST) {
+    try {
+      if (statSync(path.join(root, manifest)).isFile()) return command;
+    } catch {
+      // manifest absent: try the next one
+    }
+  }
+  return null;
+}
