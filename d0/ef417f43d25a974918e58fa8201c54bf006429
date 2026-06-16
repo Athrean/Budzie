@@ -1,0 +1,23 @@
+tests/receipts.test.js
+  s_19c0a91942b140::t_816e95a9e6d095 9,153-171
+  s_19c0a91942b140::t_dc51a8125519f8 93-152
+scripts/receipts.mjs
+  s_19c0a91942b140::t_33567b308fbe39 3,15-26,48-71
+  s_19c0a91942b140::t_c1a77101318912 102-131
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "d0ef417f43d25a974918e58fa8201c54bf006429",
+  "prompts": {},
+  "sessions": {
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
