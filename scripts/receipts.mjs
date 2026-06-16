@@ -131,23 +131,30 @@ export function renderLedger(rows) {
 
 /**
  * CLI entry point. Default prints the card; `--badge` the badge; `--json` the
- * raw counts. An optional positional arg sets the scan root (default cwd).
+ * raw counts; `--ledger` the marker ledger. An optional positional arg sets
+ * the scan root (default cwd).
  * @param {string[]} argv - Arguments after `node script.mjs`.
  * @returns {Promise<void>}
  */
 export async function main(argv) {
   const flags = new Set(argv.filter((a) => a.startsWith("--")));
   const root = argv.find((a) => !a.startsWith("--")) ?? process.cwd();
-  const counts = await tally(root);
 
   if (flags.has("--json")) {
+    const counts = await tally(root);
     process.stdout.write(JSON.stringify(counts) + "\n");
     return;
   }
   if (flags.has("--badge")) {
+    const counts = await tally(root);
     process.stdout.write(renderBadge(counts) + "\n");
     return;
   }
+  if (flags.has("--ledger")) {
+    process.stdout.write(renderLedger(await ledger(root)) + "\n");
+    return;
+  }
+  const counts = await tally(root);
   process.stdout.write(renderCard(counts) + "\n");
 }
 

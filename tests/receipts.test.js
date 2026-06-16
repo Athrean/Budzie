@@ -212,6 +212,16 @@ test("--badge prints a badge string containing the counts", async () => {
   });
 });
 
+test("--ledger prints the marker ledger", async () => {
+  await withTree(async (root) => {
+    writeFixture(root);
+    const out = execFileSync("node", [CLI, "--ledger", root], {
+      encoding: "utf8",
+    });
+    assert.equal(out, renderLedger(await ledger(root)) + "\n");
+  });
+});
+
 test("default invocation prints the card with the counts", async () => {
   await withTree(async (root) => {
     writeFixture(root);
