@@ -15,6 +15,7 @@ test("CI workflow runs verification on pull requests and main pushes", async () 
   assert.match(workflow, /\n\s+- name: Install dependencies\n\s+run: npm ci\n/);
   assert.match(workflow, /\n\s+- name: Test\n\s+run: npm test\n/);
   assert.match(workflow, /\n\s+- name: Typecheck\n\s+run: npm run typecheck\n/);
+  assert.match(workflow, /\n\s+- name: Check package\n\s+run: npm pack --dry-run\n/);
 });
 
 test("CI workflow uses minimal repository access without secrets", async () => {

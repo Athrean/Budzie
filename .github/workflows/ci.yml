@@ -28,3 +28,6 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Check package
+        run: npm pack --dry-run
