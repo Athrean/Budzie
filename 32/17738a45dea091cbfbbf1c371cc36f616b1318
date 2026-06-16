@@ -1,0 +1,24 @@
+tests/budget.test.js
+  s_19c0a91942b140::t_d7096140d9f9f3 3,88-92,104-114,116-119
+  s_19c0a91942b140::t_5c62b4327e4598 58-78,151-177,182-188
+  s_19c0a91942b140::t_da7a0eb0c34f85 178-181
+  s_19c0a91942b140::t_ba042addd3dbab 138-150,189-190
+  s_19c0a91942b140::t_7471904a29e6f5 1-2,4-10,18-31,79-80,82-87,136-137
+  s_19c0a91942b140::t_327c2525657490 11-17,32-57,81,93-103,115,120-135
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "3217738a45dea091cbfbbf1c371cc36f616b1318",
+  "prompts": {},
+  "sessions": {
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
