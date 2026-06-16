@@ -4,6 +4,8 @@ Code less. Spend less. Watch the meter.
 
 ![Budzie demo](https://raw.githubusercontent.com/Athrean/Budzie/main/assets/demo.gif)
 
+*Budzie in action.*
+
 Budzie is a budget-first agent plugin. It makes agent savings measurable on your
 repo, then uses that signal to guard spend and remove existing bloat.
 
