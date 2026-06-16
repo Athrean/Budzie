@@ -1,0 +1,21 @@
+tests/receipts.test.js
+  s_19c0a91942b140::t_aea559d37fce0a 215-224
+scripts/receipts.mjs
+  s_19c0a91942b140::t_6a2f1e65dc3c31 134-135,144,149,153-157
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "48a2b2ee09299ca87cd3c630b5d89f670bdf4735",
+  "prompts": {},
+  "sessions": {
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
