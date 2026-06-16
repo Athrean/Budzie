@@ -1,10 +1,15 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-import { tally } from "../scripts/receipts.mjs";
+import { tally, renderCard, renderBadge } from "../scripts/receipts.mjs";
+
+/** Absolute path to the CLI under test. */
+const CLI = fileURLToPath(new URL("../scripts/receipts.mjs", import.meta.url));
 
 /**
  * Create a throwaway directory tree and clean it up after `fn` runs.
@@ -82,5 +87,53 @@ test("tally yields zero counts for a repo with no markers", async () => {
       noUpgradeTrigger: 0,
       depsAvoided: 0,
     });
+  });
+});
+
+test("renderCard shows all three real counts", () => {
+  const card = renderCard({ markers: 6, noUpgradeTrigger: 3, depsAvoided: 2 });
+  assert.match(card, /6/);
+  assert.match(card, /3/);
+  assert.match(card, /2/);
+  assert.ok(card.includes("\n"), "card should be multi-line");
+});
+
+test("renderBadge embeds the marker count in a shields.io url", () => {
+  const badge = renderBadge({ markers: 6, noUpgradeTrigger: 3, depsAvoided: 2 });
+  assert.match(badge, /^https:\/\/img\.shields\.io\/badge\/budzie-/);
+  assert.match(badge, /6_shortcuts/);
+});
+
+test("--json prints the documented Counts shape", async () => {
+  await withTree(async (root) => {
+    writeFixture(root);
+    const out = execFileSync("node", [CLI, "--json", root], {
+      encoding: "utf8",
+    });
+    assert.deepEqual(JSON.parse(out), {
+      markers: 6,
+      noUpgradeTrigger: 3,
+      depsAvoided: 2,
+    });
+  });
+});
+
+test("--badge prints a badge string containing the counts", async () => {
+  await withTree(async (root) => {
+    writeFixture(root);
+    const out = execFileSync("node", [CLI, "--badge", root], {
+      encoding: "utf8",
+    }).trim();
+    assert.equal(out, renderBadge({ markers: 6, noUpgradeTrigger: 3, depsAvoided: 2 }));
+  });
+});
+
+test("default invocation prints the card with the counts", async () => {
+  await withTree(async (root) => {
+    writeFixture(root);
+    const out = execFileSync("node", [CLI, root], { encoding: "utf8" });
+    assert.match(out, /6/);
+    assert.match(out, /3/);
+    assert.match(out, /2/);
   });
 });
