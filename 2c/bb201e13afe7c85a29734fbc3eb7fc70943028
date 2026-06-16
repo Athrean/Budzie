@@ -1,0 +1,23 @@
+commands/budzie-receipts.toml
+  s_19c0a91942b140::t_fc3d64a1619cec 2
+tests/receipts.test.js
+  s_19c0a91942b140::t_0b12bd434d7165 3,234-242
+skills/budzie-receipts/SKILL.md
+  s_19c0a91942b140::t_fc3d64a1619cec 6,36,46-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "2cbb201e13afe7c85a29734fbc3eb7fc70943028",
+  "prompts": {},
+  "sessions": {
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
