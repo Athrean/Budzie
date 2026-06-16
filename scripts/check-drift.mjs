@@ -1,5 +1,5 @@
 // @ts-check
-import { readFile } from "node:fs/promises";
+import { readFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 
 export const BUDZIE_INVARIANTS = Object.freeze({
@@ -20,11 +20,115 @@ async function readJson(root, file) {
 }
 
 /**
+ * @param {string} root
+ * @param {string} dir
+ * @returns {Promise<string[]>}
+ */
+async function listFiles(root, dir) {
+  try {
+    const entries = await readdir(path.join(root, dir), { withFileTypes: true });
+    return entries
+      .filter((entry) => entry.isFile())
+      .map((entry) => entry.name)
+      .sort();
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * @param {string} root
+ * @param {string} dir
+ * @returns {Promise<string[]>}
+ */
+async function listDirectories(root, dir) {
+  try {
+    const entries = await readdir(path.join(root, dir), { withFileTypes: true });
+    return entries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort();
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * @param {string} root
+ * @param {string} file
+ * @returns {Promise<boolean>}
+ */
+async function fileExists(root, file) {
+  try {
+    return (await stat(path.join(root, file))).isFile();
+  } catch {
+    return false;
+  }
+}
+
+/**
  * @param {unknown} value
  * @returns {value is Record<string, unknown>}
  */
 function isRecord(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/**
+ * @param {string} text
+ * @returns {string[]}
+ */
+function runtimeScriptRefs(text) {
+  const refs = new Set();
+  const re = /node\s+(scripts\/[A-Za-z0-9._/-]+\.mjs)\b/g;
+  for (const match of text.matchAll(re)) refs.add(match[1]);
+  return [...refs].sort();
+}
+
+/**
+ * @param {string} root
+ * @param {string[]} drift
+ * @returns {Promise<void>}
+ */
+async function checkCommandFiles(root, drift) {
+  const commands = (await listFiles(root, "commands")).filter((file) =>
+    file.endsWith(".toml")
+  );
+
+  for (const commandFile of commands) {
+    const commandPath = `commands/${commandFile}`;
+    const commandName = commandFile.slice(0, -".toml".length);
+    const skillPath = `skills/${commandName}/SKILL.md`;
+    if (!(await fileExists(root, skillPath))) {
+      drift.push(`${commandPath} is missing ${skillPath}`);
+    }
+
+    const text = await readFile(path.join(root, commandPath), "utf8");
+    for (const scriptPath of runtimeScriptRefs(text)) {
+      if (!(await fileExists(root, scriptPath))) {
+        drift.push(`${commandPath} references missing ${scriptPath}`);
+      }
+    }
+  }
+}
+
+/**
+ * @param {string} root
+ * @param {string[]} drift
+ * @returns {Promise<void>}
+ */
+async function checkSkillFiles(root, drift) {
+  for (const skillDir of await listDirectories(root, "skills")) {
+    const skillPath = `skills/${skillDir}/SKILL.md`;
+    if (!(await fileExists(root, skillPath))) continue;
+
+    const text = await readFile(path.join(root, skillPath), "utf8");
+    for (const scriptPath of runtimeScriptRefs(text)) {
+      if (!(await fileExists(root, scriptPath))) {
+        drift.push(`${skillPath} references missing ${scriptPath}`);
+      }
+    }
+  }
 }
 
 /**
@@ -54,6 +158,9 @@ export async function checkDrift(root = process.cwd()) {
   ) {
     drift.push("plugin display name must be Budzie");
   }
+
+  await checkCommandFiles(root, drift);
+  await checkSkillFiles(root, drift);
 
   return drift;
 }
