@@ -1,0 +1,29 @@
+skills/budzie/SKILL.md
+  s_10cbb9557dab80::t_58de263edb8d66 11
+package.json
+  s_10cbb9557dab80::t_18e237a655a5fd 8
+CLAUDE.md
+  s_10cbb9557dab80::t_58de263edb8d66 11-66
+LICENSE
+  s_10cbb9557dab80::t_f8b8e317208426 1-21
+AGENTS.md
+  s_10cbb9557dab80::t_58de263edb8d66 8-11
+README.md
+  s_10cbb9557dab80::t_58de263edb8d66 5-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "65433c7a470ac867ec8dfde0acf933e419428866",
+  "prompts": {},
+  "sessions": {
+    "s_10cbb9557dab80": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecf3c-c39d-7062-903c-c49d18bc01b9",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
