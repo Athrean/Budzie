@@ -25,6 +25,18 @@ Count:
 - markers without an upgrade trigger
 - markers naming `stdlib`, `native`, or a replaced dependency
 
+## Score
+
+After the scan, get the real counts from the shared scanner:
+
+```bash
+node scripts/receipts.mjs           # terminal card with the three counts
+node scripts/receipts.mjs --badge   # shields.io badge string for a README
+node scripts/receipts.mjs --json    # { markers, noUpgradeTrigger, depsAvoided }
+```
+
+Real local counts only — no baseline, no estimate.
+
 ## Output
 
 Show real local counts first. If estimating lines, tokens, or dollars, prefix the

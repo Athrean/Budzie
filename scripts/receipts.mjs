@@ -53,7 +53,10 @@ export function renderCard(counts) {
  * @returns {string}
  */
 export function renderBadge(counts) {
-  return `https://img.shields.io/badge/budzie-${counts.markers}_shortcuts-111111`;
+  const message = encodeURIComponent(
+    `${counts.markers} markers | ${counts.noUpgradeTrigger} no upgrade | ${counts.depsAvoided} deps`
+  );
+  return `https://img.shields.io/badge/budzie-${message}-111111`;
 }
 
 /**

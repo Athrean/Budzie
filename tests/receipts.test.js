@@ -98,10 +98,12 @@ test("renderCard shows all three real counts", () => {
   assert.ok(card.includes("\n"), "card should be multi-line");
 });
 
-test("renderBadge embeds the marker count in a shields.io url", () => {
+test("renderBadge embeds all three counts in a shields.io url", () => {
   const badge = renderBadge({ markers: 6, noUpgradeTrigger: 3, depsAvoided: 2 });
   assert.match(badge, /^https:\/\/img\.shields\.io\/badge\/budzie-/);
-  assert.match(badge, /6_shortcuts/);
+  assert.match(badge, /6%20markers/);
+  assert.match(badge, /3%20no%20upgrade/);
+  assert.match(badge, /2%20deps/);
 });
 
 test("--json prints the documented Counts shape", async () => {
