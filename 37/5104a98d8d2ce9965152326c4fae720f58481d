@@ -1,0 +1,29 @@
+scripts/check-drift.mjs
+  s_19c0a91942b140::t_dfdc1f6402bb31 4,251-283
+  s_19c0a91942b140::t_a199a9fc4c242f 171-173,175-178,183-190,194,196,198-202,210-214,220-223,230-233,239-241
+  s_19c0a91942b140::t_d5077ab79d66c1 192-193,195,197,203-209,215-219,224-226
+  s_19c0a91942b140::t_c440cba2c44ce1 11,98-104,182,191,227
+  s_19c0a91942b140::t_9c3edff3d6febc 15,18-19,21-39
+tests/drift.test.js
+  s_19c0a91942b140::t_92817c110a9dcf 7,14-16,179-189
+  s_19c0a91942b140::t_3c9c78e59e49db 171-178,194-195
+  s_19c0a91942b140::t_311ed98d497034 123-139
+  s_19c0a91942b140::t_be7ff5c1b15961 140-170
+  s_19c0a91942b140::t_b5c39d39cf7c1e 2,190-193
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "375104a98d8d2ce9965152326c4fae720f58481d",
+  "prompts": {},
+  "sessions": {
+    "s_19c0a91942b140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ecfb9-cd00-78f2-b491-7b463421a4cd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
