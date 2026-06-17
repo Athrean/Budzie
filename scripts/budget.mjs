@@ -3,6 +3,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { readSession } from "./session.mjs";
+
 /**
  * @typedef {"warn" | "stop"} Mode
  *
@@ -295,6 +297,31 @@ function applyEnvOverrides(config, env) {
 }
 
 /**
+ * Resolve the estimate fed into the budget check. An explicit `--estimate`
+ * wins. Otherwise, when `--session <path>` is given, the local session log's
+ * total token usage is read and used (counted tokens preferred; `--estimate`
+ * here also lets the session reader fall back to a labelled char/token
+ * estimate). Missing usage yields `null` so the check reports honestly rather
+ * than inventing a number. Local file read only — no network.
+ * @param {Record<string, string | true>} flags
+ * @returns {number | null}
+ */
+function resolveEstimate(flags) {
+  const estimateRaw = stringFlag(flags, "estimate");
+  if (estimateRaw !== undefined) {
+    return parsePositiveNumber("estimate", estimateRaw);
+  }
+
+  const session = stringFlag(flags, "session");
+  if (session !== undefined) {
+    const usage = readSession(session, { estimate: flags.estimate === true });
+    return usage.totalTokens;
+  }
+
+  return null;
+}
+
+/**
  * CLI entry point.
  * @param {string[]} argv - Arguments after `node budget.mjs`.
  * @returns {Promise<number>} Process exit code.
@@ -340,15 +367,15 @@ export async function main(argv) {
 
   if (command === "check") {
     const config = readConfig(process.cwd(), flags, process.env);
-    const estimateRaw = stringFlag(flags, "estimate");
-    const estimate = estimateRaw === undefined ? null : parsePositiveNumber("estimate", estimateRaw);
+    const estimate = resolveEstimate(flags);
     const result = checkBudget(config, estimate);
     process.stdout.write(renderResult(result) + "\n");
     return result.status === "stop" ? 2 : 0;
   }
 
   process.stderr.write(
-    "usage: budget.mjs status | set --ceiling <n> --unit <unit> | check [--estimate <n>]\n"
+    "usage: budget.mjs status | set --ceiling <n> --unit <unit> | " +
+      "check [--estimate <n>] [--session <path>]\n"
   );
   return 1;
 }
