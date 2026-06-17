@@ -21,20 +21,19 @@ test("RATES has an entry for every default model", () => {
 });
 
 test("costUsd computes from exact tokens and the committed rate", () => {
-  // 1M input @ $5 + 1M output @ $25 = $30 for opus.
-  assert.equal(costUsd("claude-opus-4-8", 1_000_000, 1_000_000), 30);
-  // 1000 input @ $1/Mtok = $0.001 for haiku, no output.
-  assert.equal(costUsd("claude-haiku-4-5", 1000, 0), 0.001);
+  // openai/gpt-4: 30 input, 60 output
+  const cost = costUsd("openai/gpt-4", 1_500_000, 500_000);
+  assert.equal(cost, 1.5 * 30 + 0.5 * 60);
 });
 
-test("costUsd throws for a model with no rate entry", () => {
-  assert.throws(() => costUsd("not-a-model", 1, 1), /no RATES entry/);
+test("costUsd throws for an unknown model", () => {
+  assert.throws(() => costUsd("gpt-3", 1, 1), /no RATES entry/);
 });
 
 test("default models have at least the required three", () => {
-  for (const m of ["claude-haiku-4-5", "claude-sonnet-4-6", "claude-opus-4-8"]) {
-    assert.ok(DEFAULT_MODELS.includes(m), `expected ${m} in defaults`);
-  }
+  assert.ok(DEFAULT_MODELS.length >= 2, "expected at least 2 defaults");
+  assert.ok(DEFAULT_MODELS.includes("openai/gpt-3.5-turbo"), "expected openai/gpt-3.5-turbo in defaults");
+  assert.ok(DEFAULT_MODELS.includes("openai/gpt-4"), "expected openai/gpt-4 in defaults");
 });
 
 test("task set includes the six required JS tasks", () => {

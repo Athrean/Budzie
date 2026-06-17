@@ -15,6 +15,8 @@
 
 /** @type {Readonly<Record<string, Rate>>} */
 export const RATES = Object.freeze({
+  "openai/gpt-3.5-turbo": Object.freeze({ inputPerMtok: 0.5, outputPerMtok: 1.5 }),
+  "openai/gpt-4": Object.freeze({ inputPerMtok: 30.0, outputPerMtok: 60.0 }),
   "claude-haiku-4-5": Object.freeze({ inputPerMtok: 1.0, outputPerMtok: 5.0 }),
   "claude-sonnet-4-6": Object.freeze({ inputPerMtok: 3.0, outputPerMtok: 15.0 }),
   "claude-opus-4-8": Object.freeze({ inputPerMtok: 5.0, outputPerMtok: 25.0 }),
@@ -26,9 +28,8 @@ export const RATES = Object.freeze({
  * @type {readonly string[]}
  */
 export const DEFAULT_MODELS = Object.freeze([
-  "claude-haiku-4-5",
-  "claude-sonnet-4-6",
-  "claude-opus-4-8",
+  "openai/gpt-3.5-turbo",
+  "openai/gpt-4",
 ]);
 
 /**

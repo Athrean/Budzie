@@ -43,28 +43,34 @@ function armPrompts() {
  * @returns {Promise<{text: string, inputTokens: number, outputTokens: number, latencyMs: number}>}
  */
 async function callModel({ model, system, prompt }) {
-  // @ts-ignore - optional live-only dependency, resolved lazily; not installed
-  // for the no-network path or typecheck. Install @anthropic-ai/sdk to run live.
-  const { default: Anthropic } = await import("@anthropic-ai/sdk");
-  const client = new Anthropic();
   const start = Date.now();
-  /** @type {Record<string, unknown>} */
-  const req = {
-    model,
-    max_tokens: 4096,
-    messages: [{ role: "user", content: prompt }],
-  };
-  if (system) req.system = system;
-  const resp = await client.messages.create(req);
-  const latencyMs = Date.now() - start;
-  let text = "";
-  for (const block of resp.content) {
-    if (block.type === "text") text += block.text;
+  const messages = [];
+  if (system) messages.push({ role: "system", content: system });
+  messages.push({ role: "user", content: prompt });
+
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      max_tokens: 4096
+    })
+  });
+
+  if (!res.ok) {
+    throw new Error(`OpenRouter error: ${res.status} ${await res.text()}`);
   }
+  const data = await res.json();
+  const latencyMs = Date.now() - start;
+
   return {
-    text,
-    inputTokens: resp.usage.input_tokens,
-    outputTokens: resp.usage.output_tokens,
+    text: data.choices[0].message.content,
+    inputTokens: data.usage.prompt_tokens,
+    outputTokens: data.usage.completion_tokens,
     latencyMs,
   };
 }
@@ -128,20 +134,8 @@ export async function runLive({ models, runs, liveOnly }) {
   };
 }
 
-/**
- * Read the installed Anthropic SDK version, lazily and best-effort.
- * @returns {Promise<string>}
- */
 async function sdkVersion() {
-  try {
-    const url = new URL(
-      "../node_modules/@anthropic-ai/sdk/package.json",
-      import.meta.url
-    );
-    return JSON.parse(readFileSync(url, "utf8")).version ?? "unknown";
-  } catch {
-    return "unknown";
-  }
+  return "openrouter-fetch";
 }
 
 /**
@@ -155,9 +149,9 @@ export async function main(argv) {
     process.stderr.write("Refusing to run the live benchmark in CI.\n");
     return 1;
   }
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.OPENROUTER_API_KEY) {
     process.stderr.write(
-      "Live benchmark needs ANTHROPIC_API_KEY. This path is opt-in and makes " +
+      "Live benchmark needs OPENROUTER_API_KEY. This path is opt-in and makes " +
         "real API calls. Use `node benchmarks/measure.mjs` for the no-network path.\n"
     );
     return 1;
