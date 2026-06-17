@@ -11,6 +11,7 @@ Commands:
 - `/budzie-receipts`: local savings report.
 - `/budzie-reap`: audit, cut, verify, report.
 - `/budzie-budget`: check or set allowance.
+- `/budzie-shrink`: shrink prose-heavy tool descriptions, preserve behavior.
 - `/budzie-help`: this card.
 
 Marker:
