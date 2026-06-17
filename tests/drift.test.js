@@ -52,13 +52,31 @@ function writeBaseline(root) {
   writeJson(root, ".codex-plugin/plugin.json", {
     name: "budzie",
     version: "0.1.0",
+    skills: "./skills/",
+    hooks: "./hooks/hooks.json",
     interface: {
       displayName: "Budzie",
     },
   });
-  for (const dir of ["commands", "skills", "scripts"]) {
+  writeJson(root, ".claude-plugin/plugin.json", {
+    name: "budzie",
+    version: "0.1.0",
+    commands: "./commands/",
+    skills: "./skills/",
+    hooks: "./hooks/hooks.json",
+  });
+  writeJson(root, ".agents-plugin/plugin.json", {
+    name: "budzie",
+    version: "0.1.0",
+    commands: "./commands/",
+    skills: "./skills/",
+    scripts: "./scripts/",
+    hooks: "./hooks/hooks.json",
+  });
+  for (const dir of ["commands", "skills", "scripts", "hooks"]) {
     mkdirSync(path.join(root, dir), { recursive: true });
   }
+  writeFixtureFile(root, "hooks/hooks.json", "{}\n");
 }
 
 /**
@@ -154,6 +172,8 @@ test("manifests report stale versions", async () => {
     writeJson(root, ".codex-plugin/plugin.json", {
       name: "budzie",
       version: "0.2.0",
+      skills: "./skills/",
+      hooks: "./hooks/hooks.json",
       interface: {
         displayName: "Budzie",
       },
@@ -164,7 +184,41 @@ test("manifests report stale versions", async () => {
     assert.deepEqual(drift, [
       "package-lock.json version must match package.json version 0.1.0",
       "package-lock.json root package version must match package.json version 0.1.0",
-      "plugin manifest version must match package.json version 0.1.0",
+      ".codex-plugin/plugin.json version must match package.json version 0.1.0",
+    ]);
+  });
+});
+
+test("adapters report references to missing runtime surfaces", async () => {
+  await withTree(async (root) => {
+    writeJson(root, ".claude-plugin/plugin.json", {
+      name: "budzie",
+      version: "0.1.0",
+      commands: "./commands/",
+      skills: "./skills/",
+      hooks: "./hooks/nope.json",
+    });
+
+    const drift = await checkDrift(root);
+
+    assert.deepEqual(drift, [
+      ".claude-plugin/plugin.json references missing ./hooks/nope.json",
+    ]);
+  });
+});
+
+test("adapters report stale versions per manifest", async () => {
+  await withTree(async (root) => {
+    writeJson(root, ".agents-plugin/plugin.json", {
+      name: "budzie",
+      version: "0.9.9",
+      skills: "./skills/",
+    });
+
+    const drift = await checkDrift(root);
+
+    assert.deepEqual(drift, [
+      ".agents-plugin/plugin.json version must match package.json version 0.1.0",
     ]);
   });
 });

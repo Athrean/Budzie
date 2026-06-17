@@ -74,10 +74,12 @@ test("every relative path an adapter references resolves to a real surface", asy
 
 test("every shipped adapter directory is in the package files allowlist", async () => {
   const pkg = await readJson("package.json");
+  const files = pkg.files;
+  assert.ok(Array.isArray(files), "package.json files must be an array");
   for (const manifest of BUDZIE_INVARIANTS.adapterManifests) {
     const dir = manifest.split("/")[0] + "/";
     assert.ok(
-      pkg.files.includes(dir),
+      files.includes(dir),
       `package.json files must include ${dir} so ${manifest} ships`
     );
   }
