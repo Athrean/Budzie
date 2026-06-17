@@ -1,0 +1,27 @@
+tests/drift.test.js
+  s_cb422a9b86155d::t_72dc9dde892197 39,56,67,75,79,145-160,172,236
+scripts/check-drift.mjs
+  s_cb422a9b86155d::t_c7858accdf460f 11,184-204,329
+tests/install.test.js
+  s_cb422a9b86155d::t_ec6dacd84866b8 34-35,45,166,212,311
+  s_cb422a9b86155d::t_1a6d1fd0c505e6 278
+bin/budzie-install.mjs
+  s_cb422a9b86155d::t_c7858accdf460f 21,28
+  s_cb422a9b86155d::t_1a6d1fd0c505e6 362
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "f7362bfc2e2353dcc82ba15d573b4f202ecb216e",
+  "prompts": {},
+  "sessions": {
+    "s_cb422a9b86155d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed3d8-bce4-75f0-8c9b-4a20c9a654f5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
