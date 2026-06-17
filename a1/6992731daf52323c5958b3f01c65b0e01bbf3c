@@ -1,0 +1,35 @@
+benchmarks/lib/stats.mjs
+  s_c432f6c8d8babf::t_7b194724cf18e8 1-28
+benchmarks/lib/extract.mjs
+  s_c432f6c8d8babf::t_c2c99f014bbd58 1-51
+benchmarks/rates.mjs
+  s_c432f6c8d8babf::t_825b3875f0cd67 1-50
+benchmarks/lib/gate.mjs
+  s_c432f6c8d8babf::t_dbe10d31b5e4d7 1,3-24,26-81,94-130
+  s_c432f6c8d8babf::t_a8bbe14514318a 25
+  s_c432f6c8d8babf::t_46705328d11a29 2
+  s_c432f6c8d8babf::t_019e6843ab6b08 82-93
+benchmarks/tasks.mjs
+  s_c432f6c8d8babf::t_879cb359a5814e 1-330
+jsconfig.json
+  s_c432f6c8d8babf::t_46360ae409afab 12
+benchmarks/run.mjs
+  s_c432f6c8d8babf::t_eb35581011022b 1-45,48-200
+  s_c432f6c8d8babf::t_454be4c9f33f45 46-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "a16992731daf52323c5958b3f01c65b0e01bbf3c",
+  "prompts": {},
+  "sessions": {
+    "s_c432f6c8d8babf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e062cc28-44b1-49bf-b426-b7e0d4509f72",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
