@@ -36,7 +36,7 @@ function writeBaseline(root) {
   writeJson(root, "package.json", {
     name: "budzie",
     version: "0.1.0",
-    files: ["commands/", "skills/", "scripts/"],
+    files: ["agents/", "commands/", "skills/", "scripts/"],
   });
   writeJson(root, "package-lock.json", {
     name: "budzie",
@@ -53,6 +53,7 @@ function writeBaseline(root) {
     name: "budzie",
     version: "0.1.0",
     skills: "./skills/",
+    agents: "./agents/",
     hooks: "./hooks/hooks.json",
     interface: {
       displayName: "Budzie",
@@ -63,6 +64,7 @@ function writeBaseline(root) {
     version: "0.1.0",
     commands: "./commands/",
     skills: "./skills/",
+    agents: "./agents/",
     hooks: "./hooks/hooks.json",
   });
   writeJson(root, ".agents-plugin/plugin.json", {
@@ -70,10 +72,11 @@ function writeBaseline(root) {
     version: "0.1.0",
     commands: "./commands/",
     skills: "./skills/",
+    agents: "./agents/",
     scripts: "./scripts/",
     hooks: "./hooks/hooks.json",
   });
-  for (const dir of ["commands", "skills", "scripts", "hooks"]) {
+  for (const dir of ["agents", "commands", "skills", "scripts", "hooks"]) {
     mkdirSync(path.join(root, dir), { recursive: true });
   }
   writeFixtureFile(root, "hooks/hooks.json", "{}\n");
@@ -139,6 +142,22 @@ test("skills report missing claimed runtime scripts", async () => {
   });
 });
 
+test("agents report missing claimed runtime scripts", async () => {
+  await withTree(async (root) => {
+    writeFixtureFile(
+      root,
+      "agents/budzie-reviewer.md",
+      "---\nname: budzie-reviewer\n---\nRun `node scripts/agents.mjs dispatch`.\n"
+    );
+
+    const drift = await checkDrift(root);
+
+    assert.deepEqual(drift, [
+      "agents/budzie-reviewer.md references missing scripts/agents.mjs",
+    ]);
+  });
+});
+
 test("package files report missing shipped runtime directories", async () => {
   await withTree(async (root) => {
     writeJson(root, "package.json", {
@@ -150,6 +169,7 @@ test("package files report missing shipped runtime directories", async () => {
     const drift = await checkDrift(root);
 
     assert.deepEqual(drift, [
+      "package.json files must include agents/",
       "package.json files must include skills/",
       "package.json files must include scripts/",
     ]);
@@ -213,6 +233,7 @@ test("adapters report stale versions per manifest", async () => {
       name: "budzie",
       version: "0.9.9",
       skills: "./skills/",
+      agents: "./agents/",
     });
 
     const drift = await checkDrift(root);

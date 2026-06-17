@@ -31,8 +31,8 @@ import {
 const CLI = fileURLToPath(new URL("../bin/budzie-install.mjs", import.meta.url));
 
 /**
- * Build a throwaway "package root" with sample commands/ and skills/ plus an
- * isolated config dir, then clean both up after `fn` runs.
+ * Build a throwaway "package root" with sample runtime dirs plus an isolated
+ * config dir, then clean both up after `fn` runs.
  * @param {(ctx: { pkgRoot: string, configDir: string }) => Promise<void> | void} fn
  */
 async function withFixture(fn) {
@@ -42,6 +42,7 @@ async function withFixture(fn) {
   try {
     writeFixtureFile(pkgRoot, "commands/budzie.toml", 'description = "main"\n');
     writeFixtureFile(pkgRoot, "commands/budzie-help.toml", 'description = "help"\n');
+    writeFixtureFile(pkgRoot, "agents/budzie-reviewer.md", "# Budzie reviewer\n");
     writeFixtureFile(pkgRoot, "skills/budzie/SKILL.md", "# Budzie\n");
     writeFixtureFile(
       pkgRoot,
@@ -162,6 +163,7 @@ test("fresh install creates expected Budzie entries and a manifest", async () =>
     for (const rel of [
       "commands/budzie.toml",
       "commands/budzie-help.toml",
+      "agents/budzie-reviewer.md",
       "skills/budzie/SKILL.md",
       "skills/budzie-reap/references/contracts.md",
     ]) {
@@ -207,6 +209,7 @@ test("uninstall removes only Budzie entries and preserves user files", async () 
 
     // Budzie entries gone.
     assert.equal(exists(path.join(configDir, "commands/budzie.toml")), false);
+    assert.equal(exists(path.join(configDir, "agents/budzie-reviewer.md")), false);
     assert.equal(exists(path.join(configDir, "skills/budzie")), false);
     assert.equal(
       exists(path.join(configDir, ".budzie-manifest.json")),
@@ -272,6 +275,7 @@ test("main --help prints usage and exits 0 without writing", async () => {
     });
     assert.equal(code, 0);
     assert.equal(out, HELP_TEXT);
+    assert.match(out, /agents, commands, and skills/);
     assert.equal(exists(configDir), false);
   });
 });
@@ -304,5 +308,6 @@ test("CLI subprocess installs into an isolated config dir", async () => {
     assert.ok(exists(path.join(configDir, ".budzie-manifest.json")));
     assert.ok(exists(path.join(configDir, "commands")));
     assert.ok(exists(path.join(configDir, "skills")));
+    assert.ok(exists(path.join(configDir, "agents")));
   });
 });

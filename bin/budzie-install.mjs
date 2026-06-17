@@ -18,14 +18,14 @@ import { fileURLToPath } from "node:url";
 /**
  * Budzie's local installer.
  *
- * Copies Budzie's `commands/` and `skills/` into a host agent config
+ * Copies Budzie's runtime dirs into a host agent config
  * directory, idempotently. A manifest records exactly which paths Budzie
  * installed so `--uninstall` removes only Budzie-managed entries and leaves
  * user-authored files untouched. Node stdlib only — zero dependencies.
  */
 
 /** Runtime directories Budzie ships into a host config dir. */
-const MANAGED_DIRS = Object.freeze(["commands", "skills"]);
+const MANAGED_DIRS = Object.freeze(["agents", "commands", "skills"]);
 
 /** Filename of the manifest that tracks Budzie-managed installs. */
 const MANIFEST_NAME = ".budzie-manifest.json";
@@ -359,7 +359,7 @@ export function formatPlan(options, actions) {
 }
 
 /** Usage text printed by `--help`. */
-export const HELP_TEXT = `Budzie installer — copy Budzie commands and skills into a host agent config dir.
+export const HELP_TEXT = `Budzie installer — copy Budzie agents, commands, and skills into a host agent config dir.
 
 Usage:
   budzie-install [options]

@@ -8,7 +8,7 @@ export const BUDZIE_INVARIANTS = Object.freeze({
   packageName: "budzie",
   pluginName: "budzie",
   pluginDisplayName: "Budzie",
-  requiredRuntimeDirs: Object.freeze(["commands/", "skills/", "scripts/"]),
+  requiredRuntimeDirs: Object.freeze(["agents/", "commands/", "skills/", "scripts/"]),
   // Thin host adapter manifests. Each references runtime surfaces by relative
   // path only and pins its version to the package version. No business logic.
   adapterManifests: Object.freeze([
@@ -182,6 +182,27 @@ async function checkSkillFiles(root, drift) {
 }
 
 /**
+ * @param {string} root
+ * @param {string[]} drift
+ * @returns {Promise<void>}
+ */
+async function checkAgentFiles(root, drift) {
+  const agents = (await listFiles(root, "agents")).filter((file) =>
+    file.endsWith(".md")
+  );
+
+  for (const agentFile of agents) {
+    const agentPath = `agents/${agentFile}`;
+    const text = await readFile(path.join(root, agentPath), "utf8");
+    for (const scriptPath of runtimeScriptRefs(text)) {
+      if (!(await fileExists(root, scriptPath))) {
+        drift.push(`${agentPath} references missing ${scriptPath}`);
+      }
+    }
+  }
+}
+
+/**
  * Validate every thin host adapter manifest: its version must equal the
  * package version, and every relative path it references must resolve to a real
  * runtime surface (command, skill, script, or hook). Data-driven over
@@ -305,6 +326,7 @@ export async function checkDrift(root = process.cwd()) {
 
   await checkCommandFiles(root, drift);
   await checkSkillFiles(root, drift);
+  await checkAgentFiles(root, drift);
 
   return drift;
 }

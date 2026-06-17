@@ -36,6 +36,13 @@ test("adapter manifest list is non-empty and includes every host", () => {
   assert.ok(BUDZIE_INVARIANTS.adapterManifests.includes(".agents-plugin/plugin.json"));
 });
 
+test("every adapter manifest exposes the shared agents surface", async () => {
+  for (const manifest of BUDZIE_INVARIANTS.adapterManifests) {
+    const data = await readJson(manifest);
+    assert.equal(data.agents, "./agents/", `${manifest} must wire up ./agents/`);
+  }
+});
+
 test("every adapter manifest exists, parses, and is named budzie", async () => {
   for (const manifest of BUDZIE_INVARIANTS.adapterManifests) {
     assert.ok(await pathExists(manifest), `${manifest} should exist`);
@@ -83,4 +90,11 @@ test("every shipped adapter directory is in the package files allowlist", async 
       `package.json files must include ${dir} so ${manifest} ships`
     );
   }
+});
+
+test("shared agents surface is in the package files allowlist", async () => {
+  const pkg = await readJson("package.json");
+  const files = pkg.files;
+  assert.ok(Array.isArray(files), "package.json files must be an array");
+  assert.ok(files.includes("agents/"), "package.json files must include agents/");
 });
