@@ -1,0 +1,27 @@
+tests/bench-snapshot.test.js
+  s_c432f6c8d8babf::t_ee74cd4c4fb9b4 1-77,79,81-116
+  s_c432f6c8d8babf::t_bc5aa002c2e978 78,80
+tests/bench-gate.test.js
+  s_c432f6c8d8babf::t_c6847f8ba20395 1-104
+tests/bench-measure.test.js
+  s_c432f6c8d8babf::t_b756d572ee22d1 1-35,44-117
+  s_c432f6c8d8babf::t_e0e6879d11be0b 36-43
+tests/bench-rates.test.js
+  s_c432f6c8d8babf::t_38250fc835bfd5 1-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "e876dfeaed7f85f5870537c089132f690f65e73d",
+  "prompts": {},
+  "sessions": {
+    "s_c432f6c8d8babf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e062cc28-44b1-49bf-b426-b7e0d4509f72",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
