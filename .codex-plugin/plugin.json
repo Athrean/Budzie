@@ -11,6 +11,7 @@
   "license": "MIT",
   "keywords": ["budget", "yagni", "code-review", "agent-skills"],
   "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Budzie",
     "shortDescription": "Budget-first coding agent mode",
