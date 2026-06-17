@@ -36,9 +36,9 @@ version or references a surface that does not exist.
 
 | Host | Adapter manifest | Wires up |
 | --- | --- | --- |
-| Codex / plugin host | `.codex-plugin/plugin.json` | `./skills/`, `./hooks/hooks.json` |
-| Claude Code | `.claude-plugin/plugin.json` | `./commands/`, `./skills/`, `./hooks/hooks.json` |
-| Generic agents host | `.agents-plugin/plugin.json` | `./commands/`, `./skills/`, `./scripts/`, `./hooks/hooks.json` |
+| Codex / plugin host | `.codex-plugin/plugin.json` | `./agents/`, `./skills/`, `./hooks/hooks.json` |
+| Claude Code | `.claude-plugin/plugin.json` | `./agents/`, `./commands/`, `./skills/`, `./hooks/hooks.json` |
+| Generic agents host | `.agents-plugin/plugin.json` | `./agents/`, `./commands/`, `./skills/`, `./scripts/`, `./hooks/hooks.json` |
 
 ## Marker
 
