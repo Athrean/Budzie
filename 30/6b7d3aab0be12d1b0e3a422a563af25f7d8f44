@@ -1,0 +1,25 @@
+commands/budzie-compress.toml
+  s_0fa170e13b6920::t_73d74ab40749b3 1-2
+skills/budzie-help/SKILL.md
+  s_0fa170e13b6920::t_73d74ab40749b3 15
+skills/budzie-compress/SKILL.md
+  s_0fa170e13b6920::t_73d74ab40749b3 1-39
+README.md
+  s_0fa170e13b6920::t_73d74ab40749b3 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "306b7d3aab0be12d1b0e3a422a563af25f7d8f44",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
