@@ -8,88 +8,63 @@ The honest delta isolates budget discipline from generic brevity. Negative = Bud
 
 | task | model | Δ code_lines | Δ output_tokens | Δ cost_usd | budzie pass | terse pass |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| csv-sum | claude-haiku-4-5 | -3.5 | -42.5 | +0.0003 | 0.90 | 1.00 |
-| csv-sum | claude-opus-4-8 | -2.5 | -59.0 | +0.0009 | 0.90 | 1.00 |
-| csv-sum | claude-sonnet-4-6 | -4.0 | -44.0 | +0.0008 | 1.00 | 1.00 |
-| debounce | claude-haiku-4-5 | -1.5 | -49.0 | +0.0002 | 1.00 | 1.00 |
-| debounce | claude-opus-4-8 | -1.5 | -51.0 | +0.0011 | 0.90 | 0.90 |
-| debounce | claude-sonnet-4-6 | -1.0 | -58.5 | +0.0005 | 1.00 | 0.90 |
-| email-validator | claude-haiku-4-5 | -2.0 | -48.5 | +0.0002 | 1.00 | 1.00 |
-| email-validator | claude-opus-4-8 | -1.0 | -49.5 | +0.0011 | 1.00 | 1.00 |
-| email-validator | claude-sonnet-4-6 | -2.5 | -32.5 | +0.0009 | 1.00 | 1.00 |
-| rate-limiter | claude-haiku-4-5 | -2.0 | -44.0 | +0.0003 | 1.00 | 1.00 |
-| rate-limiter | claude-opus-4-8 | -3.0 | -33.0 | +0.0016 | 0.90 | 1.00 |
-| rate-limiter | claude-sonnet-4-6 | -1.0 | -41.0 | +0.0008 | 1.00 | 0.90 |
-| retry-with-backoff | claude-haiku-4-5 | -4.0 | -70.0 | +0.0001 | 0.90 | 1.00 |
-| retry-with-backoff | claude-opus-4-8 | -2.5 | -40.5 | +0.0013 | 0.90 | 1.00 |
-| retry-with-backoff | claude-sonnet-4-6 | -3.5 | -49.0 | +0.0007 | 1.00 | 1.00 |
-| slugify | claude-haiku-4-5 | -2.5 | -37.0 | +0.0003 | 0.90 | 1.00 |
-| slugify | claude-opus-4-8 | -1.5 | -51.5 | +0.0010 | 1.00 | 1.00 |
-| slugify | claude-sonnet-4-6 | -1.0 | -73.0 | +0.0003 | 0.90 | 1.00 |
+| csv-sum | openai/gpt-3.5-turbo | +1.5 | +17.5 | +0.0002 | 0.40 | 0.20 |
+| csv-sum | openai/gpt-4 | +9.5 | +341.5 | +0.0280 | 0.90 | 0.00 |
+| debounce | openai/gpt-3.5-turbo | -0.5000 | -6.0 | +0.0001 | 0.00 | 0.10 |
+| debounce | openai/gpt-4 | +5.0 | +215.0 | +0.0204 | 0.70 | 0.10 |
+| email-validator | openai/gpt-3.5-turbo | 0.0000 | +7.5 | +0.0001 | 0.10 | 0.00 |
+| email-validator | openai/gpt-4 | +2.0 | +218.0 | +0.0205 | 0.20 | 0.50 |
+| rate-limiter | openai/gpt-3.5-turbo | +0.5000 | +9.0 | +0.0001 | 0.00 | 0.00 |
+| rate-limiter | openai/gpt-4 | +4.0 | +192.0 | +0.0190 | 0.30 | 0.20 |
+| retry-with-backoff | openai/gpt-3.5-turbo | 0.0000 | +83.5 | +0.0003 | 0.40 | 0.00 |
+| retry-with-backoff | openai/gpt-4 | +12.5 | +333.5 | +0.0275 | 0.60 | 0.90 |
+| slugify | openai/gpt-3.5-turbo | 0.0000 | 0.0000 | +0.0001 | 0.20 | 0.10 |
+| slugify | openai/gpt-4 | +4.0 | +166.0 | +0.0174 | 0.70 | 0.30 |
 
 ## Per-arm medians
 
 | task | model | arm | code_lines | output_tokens | cost_usd | latency_ms | pass | n |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| csv-sum | claude-haiku-4-5 | baseline | 16 | 324 | 0.0017 | 1428 | 0.90 | 10 |
-| csv-sum | claude-haiku-4-5 | terse | 13 | 244 | 0.0013 | 1821 | 1.00 | 10 |
-| csv-sum | claude-haiku-4-5 | budzie | 10 | 201 | 0.0015 | 1909 | 0.90 | 10 |
-| csv-sum | claude-opus-4-8 | baseline | 17 | 291 | 0.0075 | 1290 | 1.00 | 10 |
-| csv-sum | claude-opus-4-8 | terse | 12 | 237 | 0.0063 | 1744 | 1.00 | 10 |
-| csv-sum | claude-opus-4-8 | budzie | 10 | 178 | 0.0071 | 2027 | 0.90 | 10 |
-| csv-sum | claude-sonnet-4-6 | baseline | 16 | 350 | 0.0054 | 1381 | 0.80 | 10 |
-| csv-sum | claude-sonnet-4-6 | terse | 14 | 277 | 0.0044 | 1720 | 1.00 | 10 |
-| csv-sum | claude-sonnet-4-6 | budzie | 10 | 233 | 0.0051 | 1903 | 1.00 | 10 |
-| debounce | claude-haiku-4-5 | baseline | 11 | 316 | 0.0016 | 1361 | 1.00 | 10 |
-| debounce | claude-haiku-4-5 | terse | 8 | 242 | 0.0013 | 1694 | 1.00 | 10 |
-| debounce | claude-haiku-4-5 | budzie | 7 | 193 | 0.0015 | 1917 | 1.00 | 10 |
-| debounce | claude-opus-4-8 | baseline | 11 | 302 | 0.0078 | 1386 | 0.80 | 10 |
-| debounce | claude-opus-4-8 | terse | 9 | 241 | 0.0063 | 1690 | 0.90 | 10 |
-| debounce | claude-opus-4-8 | budzie | 7 | 190 | 0.0074 | 1947 | 0.90 | 10 |
-| debounce | claude-sonnet-4-6 | baseline | 11 | 342 | 0.0053 | 1382 | 0.90 | 10 |
-| debounce | claude-sonnet-4-6 | terse | 9 | 275 | 0.0043 | 1746 | 0.90 | 10 |
-| debounce | claude-sonnet-4-6 | budzie | 8 | 216 | 0.0048 | 1894 | 1.00 | 10 |
-| email-validator | claude-haiku-4-5 | baseline | 12 | 309 | 0.0016 | 1326 | 0.90 | 10 |
-| email-validator | claude-haiku-4-5 | terse | 9 | 248 | 0.0013 | 1681 | 1.00 | 10 |
-| email-validator | claude-haiku-4-5 | budzie | 7 | 200 | 0.0015 | 1876 | 1.00 | 10 |
-| email-validator | claude-opus-4-8 | baseline | 12 | 289 | 0.0075 | 1374 | 0.80 | 10 |
-| email-validator | claude-opus-4-8 | terse | 9 | 231 | 0.0061 | 1732 | 1.00 | 10 |
-| email-validator | claude-opus-4-8 | budzie | 8 | 181 | 0.0072 | 1958 | 1.00 | 10 |
-| email-validator | claude-sonnet-4-6 | baseline | 12 | 360 | 0.0056 | 1348 | 1.00 | 10 |
-| email-validator | claude-sonnet-4-6 | terse | 9 | 272 | 0.0043 | 1809 | 1.00 | 10 |
-| email-validator | claude-sonnet-4-6 | budzie | 7 | 240 | 0.0052 | 1893 | 1.00 | 10 |
-| rate-limiter | claude-haiku-4-5 | baseline | 11 | 329 | 0.0017 | 1398 | 1.00 | 10 |
-| rate-limiter | claude-haiku-4-5 | terse | 9 | 250 | 0.0013 | 1677 | 1.00 | 10 |
-| rate-limiter | claude-haiku-4-5 | budzie | 7 | 206 | 0.0016 | 1918 | 1.00 | 10 |
-| rate-limiter | claude-opus-4-8 | baseline | 11 | 297 | 0.0077 | 1346 | 1.00 | 10 |
-| rate-limiter | claude-opus-4-8 | terse | 10 | 219 | 0.0058 | 1791 | 1.00 | 10 |
-| rate-limiter | claude-opus-4-8 | budzie | 7 | 186 | 0.0074 | 1922 | 0.90 | 10 |
-| rate-limiter | claude-sonnet-4-6 | baseline | 11 | 363 | 0.0056 | 1451 | 0.90 | 10 |
-| rate-limiter | claude-sonnet-4-6 | terse | 9 | 278 | 0.0044 | 1770 | 0.90 | 10 |
-| rate-limiter | claude-sonnet-4-6 | budzie | 8 | 237 | 0.0052 | 1987 | 1.00 | 10 |
-| retry-with-backoff | claude-haiku-4-5 | baseline | 17 | 333 | 0.0017 | 1357 | 0.90 | 10 |
-| retry-with-backoff | claude-haiku-4-5 | terse | 15 | 261 | 0.0014 | 1663 | 1.00 | 10 |
-| retry-with-backoff | claude-haiku-4-5 | budzie | 11 | 191 | 0.0015 | 1909 | 0.90 | 10 |
-| retry-with-backoff | claude-opus-4-8 | baseline | 18 | 302 | 0.0078 | 1407 | 0.90 | 10 |
-| retry-with-backoff | claude-opus-4-8 | terse | 14 | 236 | 0.0063 | 1735 | 1.00 | 10 |
-| retry-with-backoff | claude-opus-4-8 | budzie | 11 | 195 | 0.0076 | 1963 | 0.90 | 10 |
-| retry-with-backoff | claude-sonnet-4-6 | baseline | 19 | 350 | 0.0054 | 1403 | 0.80 | 10 |
-| retry-with-backoff | claude-sonnet-4-6 | terse | 14 | 281 | 0.0044 | 1735 | 1.00 | 10 |
-| retry-with-backoff | claude-sonnet-4-6 | budzie | 11 | 232 | 0.0051 | 1864 | 1.00 | 10 |
-| slugify | claude-haiku-4-5 | baseline | 11 | 308 | 0.0016 | 1402 | 0.90 | 10 |
-| slugify | claude-haiku-4-5 | terse | 10 | 244 | 0.0013 | 1749 | 1.00 | 10 |
-| slugify | claude-haiku-4-5 | budzie | 7 | 207 | 0.0016 | 1867 | 0.90 | 10 |
-| slugify | claude-opus-4-8 | baseline | 12 | 300 | 0.0078 | 1379 | 1.00 | 10 |
-| slugify | claude-opus-4-8 | terse | 9 | 240 | 0.0063 | 1679 | 1.00 | 10 |
-| slugify | claude-opus-4-8 | budzie | 8 | 189 | 0.0074 | 1871 | 1.00 | 10 |
-| slugify | claude-sonnet-4-6 | baseline | 11 | 357 | 0.0055 | 1495 | 0.80 | 10 |
-| slugify | claude-sonnet-4-6 | terse | 9 | 295 | 0.0046 | 1749 | 1.00 | 10 |
-| slugify | claude-sonnet-4-6 | budzie | 8 | 222 | 0.0050 | 1861 | 0.90 | 10 |
+| csv-sum | openai/gpt-3.5-turbo | baseline | 23 | 247 | 0.0004 | 2300 | 0.00 | 10 |
+| csv-sum | openai/gpt-3.5-turbo | terse | 13 | 107 | 0.0002 | 1489 | 0.20 | 10 |
+| csv-sum | openai/gpt-3.5-turbo | budzie | 15 | 124 | 0.0003 | 1485 | 0.40 | 10 |
+| csv-sum | openai/gpt-4 | baseline | 32 | 479 | 0.0302 | 5046 | 0.30 | 10 |
+| csv-sum | openai/gpt-4 | terse | 14 | 116 | 0.0087 | 3420 | 0.00 | 10 |
+| csv-sum | openai/gpt-4 | budzie | 23 | 458 | 0.0366 | 4104 | 0.90 | 10 |
+| debounce | openai/gpt-3.5-turbo | baseline | 12 | 62 | 0.0001 | 1229 | 0.00 | 10 |
+| debounce | openai/gpt-3.5-turbo | terse | 11 | 59 | 0.0001 | 984 | 0.10 | 10 |
+| debounce | openai/gpt-3.5-turbo | budzie | 10 | 53 | 0.0002 | 1321 | 0.00 | 10 |
+| debounce | openai/gpt-4 | baseline | 14 | 258 | 0.0170 | 6950 | 0.10 | 10 |
+| debounce | openai/gpt-4 | terse | 8 | 63 | 0.0056 | 2178 | 0.10 | 10 |
+| debounce | openai/gpt-4 | budzie | 13 | 278 | 0.0260 | 2775 | 0.70 | 10 |
+| email-validator | openai/gpt-3.5-turbo | baseline | 6 | 91 | 0.0002 | 1864 | 0.00 | 10 |
+| email-validator | openai/gpt-3.5-turbo | terse | 5 | 48 | 0.0001 | 1282 | 0.00 | 10 |
+| email-validator | openai/gpt-3.5-turbo | budzie | 5 | 56 | 0.0002 | 1200 | 0.10 | 10 |
+| email-validator | openai/gpt-4 | baseline | 10 | 333 | 0.0216 | 5165 | 0.10 | 10 |
+| email-validator | openai/gpt-4 | terse | 6 | 69 | 0.0060 | 1933 | 0.50 | 10 |
+| email-validator | openai/gpt-4 | budzie | 8 | 287 | 0.0265 | 3329 | 0.20 | 10 |
+| rate-limiter | openai/gpt-3.5-turbo | baseline | 14 | 92 | 0.0002 | 1315 | 0.00 | 10 |
+| rate-limiter | openai/gpt-3.5-turbo | terse | 13 | 87 | 0.0002 | 1210 | 0.00 | 10 |
+| rate-limiter | openai/gpt-3.5-turbo | budzie | 14 | 96 | 0.0003 | 1286 | 0.00 | 10 |
+| rate-limiter | openai/gpt-4 | baseline | 22 | 359 | 0.0236 | 6703 | 0.20 | 10 |
+| rate-limiter | openai/gpt-4 | terse | 15 | 98 | 0.0082 | 1939 | 0.20 | 10 |
+| rate-limiter | openai/gpt-4 | budzie | 19 | 290 | 0.0272 | 7583 | 0.30 | 10 |
+| retry-with-backoff | openai/gpt-3.5-turbo | baseline | 26 | 247 | 0.0004 | 2618 | 0.00 | 10 |
+| retry-with-backoff | openai/gpt-3.5-turbo | terse | 13 | 82 | 0.0002 | 1192 | 0.00 | 10 |
+| retry-with-backoff | openai/gpt-3.5-turbo | budzie | 13 | 166 | 0.0004 | 1751 | 0.40 | 10 |
+| retry-with-backoff | openai/gpt-4 | baseline | 21 | 360 | 0.0240 | 5486 | 0.30 | 10 |
+| retry-with-backoff | openai/gpt-4 | terse | 11 | 98 | 0.0085 | 2736 | 0.90 | 10 |
+| retry-with-backoff | openai/gpt-4 | budzie | 24 | 432 | 0.0359 | 4115 | 0.60 | 10 |
+| slugify | openai/gpt-3.5-turbo | baseline | 4 | 48 | 0.0001 | 1243 | 0.00 | 10 |
+| slugify | openai/gpt-3.5-turbo | terse | 4 | 47 | 0.0001 | 953 | 0.10 | 10 |
+| slugify | openai/gpt-3.5-turbo | budzie | 4 | 47 | 0.0002 | 954 | 0.20 | 10 |
+| slugify | openai/gpt-4 | baseline | 14 | 323 | 0.0209 | 5145 | 0.20 | 10 |
+| slugify | openai/gpt-4 | terse | 4 | 64 | 0.0055 | 2154 | 0.30 | 10 |
+| slugify | openai/gpt-4 | budzie | 8 | 230 | 0.0230 | 2908 | 0.70 | 10 |
 
 ## Disclosure
 
-- Snapshot: `2026-06-16` (schema_version 1)
-- Token source: API usage field (exact) — values here are SYNTHETIC SEED, not real API output
+- Snapshot: `2026-06-17` (schema_version 1)
+- Token source: API usage field (exact)
 - Cost source: committed RATES table (model -> $/Mtok input+output)
-- Models: claude-haiku-4-5, claude-sonnet-4-6, claude-opus-4-8
-- **SYNTHETIC SEED DATA**: these numbers are illustrative, not real model output. Run `node benchmarks/run.mjs` with an API key to produce a real snapshot.
+- Models: openai/gpt-3.5-turbo, openai/gpt-4
