@@ -1,0 +1,23 @@
+tests/bench-rates.test.js
+  s_885ee1b1d07f33::t_d0a5eabe5efd38 24-27,30-31,35-37
+benchmarks/rates.mjs
+  s_885ee1b1d07f33::t_d0a5eabe5efd38 29-31
+benchmarks/RESULTS.md
+  s_885ee1b1d07f33::t_d0a5eabe5efd38 11-28,34-87,91-92,94-95
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "3b11bd1a63cc93af1de57ac03b08ad2b928b606f",
+  "prompts": {},
+  "sessions": {
+    "s_885ee1b1d07f33": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6f8a1eed-7289-4dc9-be8f-c311c875d78b",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
