@@ -1,0 +1,20 @@
+tests/session.test.js
+  s_c432f6c8d8babf::t_9b537997208295 1-2,4-271
+  s_c432f6c8d8babf::t_2a7e873858a10a 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "579a8d7fabb39187b8a3979722afd21687de41a3",
+  "prompts": {},
+  "sessions": {
+    "s_c432f6c8d8babf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e062cc28-44b1-49bf-b426-b7e0d4509f72",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}

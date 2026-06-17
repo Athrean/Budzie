@@ -1,0 +1,22 @@
+scripts/budget.mjs
+  s_c432f6c8d8babf::t_7e361d1b2a13bf 6-7
+  s_c432f6c8d8babf::t_84746a11d5b6ab 377-378
+  s_c432f6c8d8babf::t_b32d6a8707b9d6 370
+  s_c432f6c8d8babf::t_8afe824381aad3 300-323
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "03dd5fe7ca2084eea55eac1e18be6cb407b3a509",
+  "prompts": {},
+  "sessions": {
+    "s_c432f6c8d8babf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e062cc28-44b1-49bf-b426-b7e0d4509f72",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
