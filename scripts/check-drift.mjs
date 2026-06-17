@@ -9,6 +9,13 @@ export const BUDZIE_INVARIANTS = Object.freeze({
   pluginName: "budzie",
   pluginDisplayName: "Budzie",
   requiredRuntimeDirs: Object.freeze(["commands/", "skills/", "scripts/"]),
+  // Thin host adapter manifests. Each references runtime surfaces by relative
+  // path only and pins its version to the package version. No business logic.
+  adapterManifests: Object.freeze([
+    ".codex-plugin/plugin.json",
+    ".claude-plugin/plugin.json",
+    ".agents-plugin/plugin.json",
+  ]),
 });
 
 /**
@@ -81,6 +88,21 @@ async function listDirectories(root, dir) {
 async function fileExists(root, file) {
   try {
     return (await stat(path.join(root, file))).isFile();
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * True when `target` resolves to a real file or directory under `root`.
+ * @param {string} root
+ * @param {string} target
+ * @returns {Promise<boolean>}
+ */
+async function pathExists(root, target) {
+  try {
+    await stat(path.join(root, target));
+    return true;
   } catch {
     return false;
   }
@@ -160,6 +182,49 @@ async function checkSkillFiles(root, drift) {
 }
 
 /**
+ * Validate every thin host adapter manifest: its version must equal the
+ * package version, and every relative path it references must resolve to a real
+ * runtime surface (command, skill, script, or hook). Data-driven over
+ * `BUDZIE_INVARIANTS.adapterManifests`; adds no per-host special cases.
+ * @param {string} root
+ * @param {string | undefined} packageVersion
+ * @param {string[]} drift
+ * @returns {Promise<void>}
+ */
+async function checkAdapterManifests(root, packageVersion, drift) {
+  for (const manifest of BUDZIE_INVARIANTS.adapterManifests) {
+    const data = await readRequiredJson(root, manifest, drift);
+    if (data === undefined) continue;
+    if (!isRecord(data)) {
+      drift.push(`${manifest} must be a JSON object`);
+      continue;
+    }
+
+    if (data.name !== BUDZIE_INVARIANTS.pluginName) {
+      drift.push(`${manifest} name must be ${BUDZIE_INVARIANTS.pluginName}`);
+    }
+
+    if (typeof packageVersion === "string" && data.version !== packageVersion) {
+      drift.push(
+        `${manifest} version must match package.json version ${packageVersion}`
+      );
+    }
+
+    let referenced = 0;
+    for (const value of Object.values(data)) {
+      if (typeof value !== "string" || !/^\.\.?\//.test(value)) continue;
+      referenced += 1;
+      if (!(await pathExists(root, value))) {
+        drift.push(`${manifest} references missing ${value}`);
+      }
+    }
+    if (referenced === 0) {
+      drift.push(`${manifest} must reference at least one runtime surface`);
+    }
+  }
+}
+
+/**
  * Return every detected instruction or adapter drift problem.
  * @param {string} [root]
  * @returns {Promise<string[]>}
@@ -170,7 +235,10 @@ export async function checkDrift(root = process.cwd()) {
 
   const pkg = await readRequiredJson(root, "package.json", drift);
   const lock = await readRequiredJson(root, "package-lock.json", drift);
-  const plugin = await readRequiredJson(root, ".codex-plugin/plugin.json", drift);
+  // The codex adapter's existence/parse/name/version is reported by the
+  // data-driven checkAdapterManifests pass; here we only read it (drift sink
+  // discarded) for its host-specific interface.displayName surface.
+  const plugin = await readRequiredJson(root, ".codex-plugin/plugin.json", []);
 
   if (
     pkg !== undefined &&
@@ -216,23 +284,15 @@ export async function checkDrift(root = process.cwd()) {
         `package-lock.json root package version must match package.json version ${packageVersion}`
       );
     }
-
-    if (
-      plugin !== undefined &&
-      (!isRecord(plugin) || plugin.version !== packageVersion)
-    ) {
-      drift.push(
-        `plugin manifest version must match package.json version ${packageVersion}`
-      );
-    }
   }
 
-  if (
-    plugin !== undefined &&
-    (!isRecord(plugin) || plugin.name !== BUDZIE_INVARIANTS.pluginName)
-  ) {
-    drift.push("plugin manifest name must be budzie");
-  }
+  // Adapter name + version + referenced-surface checks are data-driven over
+  // BUDZIE_INVARIANTS.adapterManifests (covers .codex-plugin and every host).
+  await checkAdapterManifests(
+    root,
+    typeof packageVersion === "string" ? packageVersion : undefined,
+    drift
+  );
 
   const pluginInterface = isRecord(plugin) ? plugin.interface : undefined;
   if (
