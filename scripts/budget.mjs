@@ -2,6 +2,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseArgs } from "node:util";
 
 import { readSession } from "./session.mjs";
 
@@ -32,41 +33,31 @@ export function renderResult(result) {
   ].join("\n");
 }
 
+/** Flags that take a string value (`--key value` or `--key=value`). */
+const STRING_FLAGS = ["config", "ceiling", "unit", "warn-at", "mode", "estimate", "session"];
+
 /**
- * Parse `--key value` and `--key=value` flags.
+ * Parse `--key value`, `--key=value`, and bare boolean flags into the
+ * { flags, positionals } shape the rest of this CLI consumes. Thin adapter over
+ * node:util parseArgs, so flag handling is stdlib rather than hand-rolled.
  * @param {string[]} argv
  * @returns {{ flags: Record<string, string | true>, positionals: string[] }}
  */
-function parseArgs(argv) {
+function parseFlags(argv) {
+  const { values, positionals } = parseArgs({
+    args: argv,
+    options: Object.fromEntries(STRING_FLAGS.map((name) => [name, { type: "string" }])),
+    strict: false,
+    allowPositionals: true,
+  });
+
   /** @type {Record<string, string | true>} */
   const flags = {};
-  /** @type {string[]} */
-  const positionals = [];
-
-  for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i];
-    if (!arg.startsWith("--")) {
-      positionals.push(arg);
-      continue;
-    }
-
-    const eq = arg.indexOf("=");
-    if (eq !== -1) {
-      flags[arg.slice(2, eq)] = arg.slice(eq + 1);
-      continue;
-    }
-
-    const key = arg.slice(2);
-    const next = argv[i + 1];
-    if (next && !next.startsWith("--")) {
-      flags[key] = next;
-      i++;
-    } else {
-      flags[key] = true;
-    }
+  for (const [key, value] of Object.entries(values)) {
+    if (value === true) flags[key] = true;
+    else if (typeof value === "string") flags[key] = value;
   }
-
-  return { flags, positionals };
+  return { flags, positionals: [...positionals] };
 }
 
 /**
@@ -328,7 +319,7 @@ function resolveEstimate(flags) {
  */
 export async function main(argv) {
   const [command = "status", ...rest] = argv;
-  const { flags } = parseArgs(rest);
+  const { flags } = parseFlags(rest);
 
   if (command === "status") {
     const config = readConfig(process.cwd(), flags, process.env);
