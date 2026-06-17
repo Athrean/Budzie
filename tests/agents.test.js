@@ -103,6 +103,15 @@ test("budzie-reviewer loads from the host-agnostic agents surface", async () => 
   assert.match(agent.instructions, /read-only/i);
 });
 
+test("budzie-reaper loads from the host-agnostic agents surface", async () => {
+  const agent = await loadAgent(REPO_ROOT, "budzie-reaper");
+
+  assert.equal(agent.name, "budzie-reaper");
+  assert.match(agent.description, /deletion/i);
+  assert.match(agent.instructions, /reap.mjs/i);
+  assert.match(agent.instructions, /worktree/i);
+});
+
 test("dispatch meters counted session tokens and stays read-only by default", async () => {
   await withTree(async (root) => {
     const session = writeSession(root, [
