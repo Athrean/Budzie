@@ -1,0 +1,21 @@
+.codex-plugin/plugin.json
+  s_c432f6c8d8babf::t_d46eb124057d8c 14
+skills/budzie-help/SKILL.md
+  s_c432f6c8d8babf::t_2fb48da8098b0e 22-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "5e1dd65d480bd1044756d71b37e5607ad18a6de2",
+  "prompts": {},
+  "sessions": {
+    "s_c432f6c8d8babf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e062cc28-44b1-49bf-b426-b7e0d4509f72",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
