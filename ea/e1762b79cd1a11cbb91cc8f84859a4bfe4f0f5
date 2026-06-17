@@ -1,0 +1,21 @@
+scripts/hooks/activate.mjs
+  s_c432f6c8d8babf::t_b3c488266f5234 1-68
+scripts/hooks/mode-tracker.mjs
+  s_c432f6c8d8babf::t_f37d9c146b55bb 1-99
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "eae1762b79cd1a11cbb91cc8f84859a4bfe4f0f5",
+  "prompts": {},
+  "sessions": {
+    "s_c432f6c8d8babf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e062cc28-44b1-49bf-b426-b7e0d4509f72",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
