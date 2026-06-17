@@ -15,8 +15,29 @@ Guard the user's allowance with local data.
 - Read status: `node scripts/budget.mjs status`.
 - Write config: `node scripts/budget.mjs set --ceiling <n> --unit <unit>`.
 - Check a task: `node scripts/budget.mjs check --estimate <n>`.
+- Check from a local session log: `node scripts/budget.mjs check --session <path>`.
+- Session usage receipt: `node scripts/session.mjs report --session <path>`.
 
-`status` and `check` are read-only. `set` writes `.budzie/budget.json`.
+`status`, `check`, and `session report` are read-only. `set` writes
+`.budzie/budget.json`.
+
+## Session usage
+
+`node scripts/session.mjs report --session <path>` reads a LOCAL session or
+transcript log (JSON or JSONL) and prints a usage receipt: real counted turns
+and token fields when present.
+
+- Real counted token fields lead; they are not labelled as estimates.
+- `--json` emits the parsed summary; `tokensSource` is `counted`, `estimate`,
+  or `missing`.
+- `--estimate` opts into a char/token fallback when the log has no token
+  fields; the figure is labelled `ESTIMATE (session log)`.
+- When usage data is missing, the receipt says so and never invents a number.
+- No network, ever. Local file read only.
+
+`node scripts/budget.mjs check --session <path>` feeds the session log's total
+token usage into the same warn/stop check. Missing usage reports
+`estimated: unknown` rather than fabricating a stop.
 
 ## Config
 
