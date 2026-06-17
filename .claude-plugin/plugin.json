@@ -1,0 +1,16 @@
+{
+  "name": "budzie",
+  "version": "0.1.0",
+  "description": "Budget-first agent plugin. Code less, spend less, watch the meter.",
+  "author": {
+    "name": "Athrean",
+    "url": "https://github.com/Athrean"
+  },
+  "homepage": "https://github.com/Athrean/Budzie",
+  "repository": "https://github.com/Athrean/Budzie",
+  "license": "MIT",
+  "keywords": ["budget", "yagni", "code-review", "agent-skills"],
+  "commands": "./commands/",
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
+}
