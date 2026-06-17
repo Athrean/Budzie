@@ -26,6 +26,20 @@ repo, then uses that signal to guard spend and remove existing bloat.
 | `/budzie-budget` | Check or set the spend ceiling. |
 | `/budzie-help` | Show quick reference. |
 
+## Supported hosts
+
+Budzie ships one thin adapter manifest per host. Each adapter only points at the
+shared runtime surfaces in this repo; none of them re-implement a command, skill,
+or script. Every adapter is named `budzie` and pins its version to the package
+version, and `scripts/check-drift.mjs` fails if an adapter drifts off that
+version or references a surface that does not exist.
+
+| Host | Adapter manifest | Wires up |
+| --- | --- | --- |
+| Codex / plugin host | `.codex-plugin/plugin.json` | `./skills/`, `./hooks/hooks.json` |
+| Claude Code | `.claude-plugin/plugin.json` | `./commands/`, `./skills/`, `./hooks/hooks.json` |
+| Generic agents host | `.agents-plugin/plugin.json` | `./commands/`, `./skills/`, `./scripts/`, `./hooks/hooks.json` |
+
 ## Marker
 
 Use `budzie:` comments for intentional shortcuts:
