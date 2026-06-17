@@ -1,0 +1,27 @@
+tests/adapters.test.js
+  s_cb422a9b86155d::t_980cc17085ca8f 39-45,94-99
+.codex-plugin/plugin.json
+  s_cb422a9b86155d::t_c7858accdf460f 13
+.claude-plugin/plugin.json
+  s_cb422a9b86155d::t_c7858accdf460f 13
+README.md
+  s_cb422a9b86155d::t_87437530cb99e7 39-41
+.agents-plugin/plugin.json
+  s_cb422a9b86155d::t_c7858accdf460f 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "ca0c0ad04315080e726af2f60950985a63dfc2e1",
+  "prompts": {},
+  "sessions": {
+    "s_cb422a9b86155d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed3d8-bce4-75f0-8c9b-4a20c9a654f5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
