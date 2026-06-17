@@ -1,0 +1,23 @@
+tests/adapters.test.js
+  s_c432f6c8d8babf::t_b7e723402eef03 77-78,82
+tests/drift.test.js
+  s_c432f6c8d8babf::t_c29ade7b77bc1f 192-221
+  s_c432f6c8d8babf::t_4d60fd70db29af 175-176,187
+  s_c432f6c8d8babf::t_20ac683679f75f 55-56,61-76,79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "702726ab807b544fe9c0a12fbb01c3be595b92b6",
+  "prompts": {},
+  "sessions": {
+    "s_c432f6c8d8babf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e062cc28-44b1-49bf-b426-b7e0d4509f72",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
