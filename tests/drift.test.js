@@ -76,6 +76,15 @@ function writeBaseline(root) {
     scripts: "./scripts/",
     rules: "./rules/",
   });
+  writeJson(root, "gemini-extension.json", {
+    name: "budzie",
+    version: "0.1.0",
+    commands: "./commands/",
+    skills: "./skills/",
+    agents: "./agents/",
+    scripts: "./scripts/",
+    hooks: "./hooks/hooks.json",
+  });
   for (const dir of ["agents", "commands", "skills", "scripts", "hooks", "rules"]) {
     mkdirSync(path.join(root, dir), { recursive: true });
   }

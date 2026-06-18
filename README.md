@@ -71,6 +71,7 @@ contract.
 | Codex / plugin host | `.codex-plugin/plugin.json` | `./agents/`, `./skills/`, `./hooks/codex.json` |
 | Claude Code | `.claude-plugin/plugin.json` | `./agents/`, `./commands/`, `./skills/`, `./hooks/hooks.json` |
 | Rules-capable agents plugin host | `.agents-plugin/plugin.json` | `./agents/`, `./commands/`, `./skills/`, `./scripts/`, `./rules/` |
+| Antigravity / Gemini | `gemini-extension.json` | `./agents/`, `./commands/`, `./skills/`, `./scripts/`, `./hooks/hooks.json` |
 
 Claude Code and Codex activate Budzie through their native `SessionStart`
 plugin hooks. The agents adapter uses the
