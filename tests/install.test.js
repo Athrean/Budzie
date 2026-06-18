@@ -321,6 +321,35 @@ test("install does not clobber a differing existing file without --force", async
   });
 });
 
+test("uninstall preserves a user file that install skipped (not in manifest)", async () => {
+  await withFixture(async ({ pkgRoot, configDir }) => {
+    // User authored their own commands/budzie.toml before installing Budzie.
+    writeFixtureFile(configDir, "commands/budzie.toml", "USER EDIT\n");
+    const opts = parseArgs(["--config-dir", configDir], {});
+    runInstall(opts, pkgRoot);
+
+    // A file Budzie skipped because the user owns it must not be recorded as
+    // Budzie-managed, or uninstall would delete it.
+    const manifest = JSON.parse(
+      readFileSync(path.join(configDir, ".budzie-manifest.json"), "utf8")
+    );
+    assert.ok(
+      !manifest.files.includes("commands/budzie.toml"),
+      "user-authored skip is not in the manifest"
+    );
+
+    runUninstall(opts, {
+      BUDZIE_DATA_DIR: path.join(path.dirname(configDir), "data"),
+    });
+
+    assert.equal(
+      readFileSync(path.join(configDir, "commands/budzie.toml"), "utf8"),
+      "USER EDIT\n",
+      "user-authored file survives install + uninstall"
+    );
+  });
+});
+
 test("planUninstall touches only manifest-recorded paths", async () => {
   await withFixture(async ({ pkgRoot, configDir }) => {
     const opts = parseArgs(["--config-dir", configDir], {});

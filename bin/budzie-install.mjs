@@ -318,9 +318,16 @@ export function runInstall(options, packageRoot = PACKAGE_ROOT) {
     cpSync(src, dest);
   }
 
-  // Manifest tracks every file Budzie owns now, including ones that already
-  // matched, so a later uninstall removes the full set.
-  const managed = listManagedFiles(packageRoot);
+  // Manifest records only files Budzie actually owns: ones it copied now and
+  // ones already byte-identical to Budzie's source. A file skipped because the
+  // user authored a differing copy is theirs — recording it would let a later
+  // uninstall delete the user's file.
+  const managed = actions
+    .filter(
+      (a) => a.kind === "copy" || (a.kind === "skip" && a.reason === "unchanged")
+    )
+    .map((a) => a.target)
+    .sort();
   const manifest = { version: MANIFEST_VERSION, files: managed };
   writeFileSync(
     path.join(options.configDir, MANIFEST_NAME),
