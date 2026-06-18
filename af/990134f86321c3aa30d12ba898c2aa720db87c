@@ -1,0 +1,19 @@
+tests/install.test.js
+  s_0fa170e13b6920::t_d5067a14cd498e 248-250
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "af990134f86321c3aa30d12ba898c2aa720db87c",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
