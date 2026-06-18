@@ -10,6 +10,7 @@ import {
   resolveDataDir,
   flagPath,
   readMode,
+  removeMode,
   writeMode,
 } from "../scripts/hooks/mode-tracker.mjs";
 
@@ -108,6 +109,16 @@ test("mode tracker records activation and deactivation locally", async () => {
     const offState = writeMode(false, env);
     assert.equal(offState.active, false);
     assert.equal(readMode(env).active, false);
+  });
+});
+
+test("removeMode silent-fails on a bad data dir", async () => {
+  await withTree(({ root }) => {
+    const blocker = path.join(root, "blocker");
+    writeFileSync(blocker, "x");
+    const env = { BUDZIE_DATA_DIR: path.join(blocker, "nested") };
+
+    assert.doesNotThrow(() => removeMode(env));
   });
 });
 

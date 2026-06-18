@@ -51,7 +51,14 @@ export const BUDZIE_INVARIANTS = Object.freeze({
   manifestVersion: 2,
   // The minimum host count the detection matrix must cover (issue contract).
   minHostMatrixSize: 15,
-  requiredRuntimeDirs: Object.freeze(["agents/", "commands/", "skills/", "scripts/"]),
+  requiredRuntimeDirs: Object.freeze([
+    "agents/",
+    "commands/",
+    "skills/",
+    "scripts/",
+    "hooks/",
+    "rules/",
+  ]),
   // Thin host adapter manifests. Each references runtime surfaces by relative
   // path only and pins its version to the package version. No business logic.
   adapterManifests: Object.freeze([
@@ -325,7 +332,12 @@ async function checkAdapterActivationSurface(root, manifest, data, drift) {
     drift.push(`${manifest} must declare a ${surface.field} activation surface`);
     return;
   }
-  if (!(await pathExists(root, surfacePath))) return;
+  if (!(await pathExists(root, surfacePath))) {
+    drift.push(
+      `${manifest} ${surface.field} activation surface is missing ${surfacePath}`
+    );
+    return;
+  }
 
   if (surface.kind === "session-start") {
     await checkHookSurface(
