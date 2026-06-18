@@ -1,0 +1,25 @@
+hooks/statusline.sh
+  s_c5f84ebcfcd4f4::t_62f75fa0f930d9 11-14
+hooks/statusline.ps1
+  s_c5f84ebcfcd4f4::t_f7771f40e63b63 16-19
+scripts/hooks/status.mjs
+  s_c5f84ebcfcd4f4::t_2366af898d113c 54-55
+  s_c5f84ebcfcd4f4::t_c5b830f837de69 65
+  s_c5f84ebcfcd4f4::t_40f99e787d0a99 6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "eb9dee4e84c0b3e42d95dc481fbd931182289f1b",
+  "prompts": {},
+  "sessions": {
+    "s_c5f84ebcfcd4f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "655a0ca7-8b0f-4e34-941d-ef08a11b661d",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
