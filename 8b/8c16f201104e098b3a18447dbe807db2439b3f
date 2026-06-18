@@ -1,0 +1,26 @@
+tests/drift.test.js
+  s_0fa170e13b6920::t_4b110b26201668 57,77,79,82-103,251-258
+  s_0fa170e13b6920::t_afde86c78454a0 263-287
+  s_0fa170e13b6920::t_be90d07ba7ef2e 288-303
+  s_0fa170e13b6920::t_0cbd18f557de36 311
+scripts/check-drift.mjs
+  s_0fa170e13b6920::t_862311b033483a 6-40,54,246,250,256-286,297-318,320-332,372
+  s_0fa170e13b6920::t_199c590f1d1260 242-245,247-249,251-255,319,333-334
+  s_0fa170e13b6920::t_74ce140bb39659 287-296
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "8b8c16f201104e098b3a18447dbe807db2439b3f",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
