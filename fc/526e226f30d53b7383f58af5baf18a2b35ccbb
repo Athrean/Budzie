@@ -1,0 +1,22 @@
+scripts/check-drift.mjs
+  s_c5f84ebcfcd4f4::t_cd02102bbfe5dc 49-53
+  s_c5f84ebcfcd4f4::t_7beb7641342ff2 6-8
+  s_c5f84ebcfcd4f4::t_3d4b36a53db3ab 388-436
+  s_c5f84ebcfcd4f4::t_35909c9ba16e68 519
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "fc526e226f30d53b7383f58af5baf18a2b35ccbb",
+  "prompts": {},
+  "sessions": {
+    "s_c5f84ebcfcd4f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "655a0ca7-8b0f-4e34-941d-ef08a11b661d",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
