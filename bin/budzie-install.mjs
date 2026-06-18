@@ -15,6 +15,8 @@ import { homedir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { removeMode } from "../scripts/hooks/mode-tracker.mjs";
+
 /**
  * Budzie's local installer.
  *
@@ -24,8 +26,15 @@ import { fileURLToPath } from "node:url";
  * user-authored files untouched. Node stdlib only — zero dependencies.
  */
 
-/** Runtime directories Budzie ships into a host config dir. */
-const MANAGED_DIRS = Object.freeze(["agents", "commands", "skills"]);
+/** Runtime paths Budzie ships into a host config dir. */
+const MANAGED_DIRS = Object.freeze([
+  "agents",
+  "commands",
+  "skills",
+  "hooks",
+  "scripts/hooks",
+  "rules",
+]);
 
 /** Filename of the manifest that tracks Budzie-managed installs. */
 const MANIFEST_NAME = ".budzie-manifest.json";
@@ -309,9 +318,16 @@ export function runInstall(options, packageRoot = PACKAGE_ROOT) {
     cpSync(src, dest);
   }
 
-  // Manifest tracks every file Budzie owns now, including ones that already
-  // matched, so a later uninstall removes the full set.
-  const managed = listManagedFiles(packageRoot);
+  // Manifest records only files Budzie actually owns: ones it copied now and
+  // ones already byte-identical to Budzie's source. A file skipped because the
+  // user authored a differing copy is theirs — recording it would let a later
+  // uninstall delete the user's file.
+  const managed = actions
+    .filter(
+      (a) => a.kind === "copy" || (a.kind === "skip" && a.reason === "unchanged")
+    )
+    .map((a) => a.target)
+    .sort();
   const manifest = { version: MANIFEST_VERSION, files: managed };
   writeFileSync(
     path.join(options.configDir, MANIFEST_NAME),
@@ -324,9 +340,10 @@ export function runInstall(options, packageRoot = PACKAGE_ROOT) {
  * Apply an uninstall. Removes only manifest-recorded files, prunes empty
  * Budzie directories, and deletes the manifest.
  * @param {Options} options
+ * @param {NodeJS.ProcessEnv} [env]
  * @returns {Action[]} The actions performed.
  */
-export function runUninstall(options) {
+export function runUninstall(options, env = process.env) {
   const manifest = readManifest(options.configDir);
   const actions = planUninstall(options);
   for (const action of actions) {
@@ -336,6 +353,7 @@ export function runUninstall(options) {
   pruneEmptyDirs(options.configDir, manifest.files);
   const manifestPath = path.join(options.configDir, MANIFEST_NAME);
   rmSync(manifestPath, { force: true });
+  removeMode(env);
   return actions;
 }
 
@@ -359,7 +377,7 @@ export function formatPlan(options, actions) {
 }
 
 /** Usage text printed by `--help`. */
-export const HELP_TEXT = `Budzie installer — copy Budzie agents, commands, and skills into a host agent config dir.
+export const HELP_TEXT = `Budzie installer — copy Budzie runtime and activation files into a host agent config dir.
 
 Usage:
   budzie-install [options]

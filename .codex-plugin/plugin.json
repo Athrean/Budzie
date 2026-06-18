@@ -12,7 +12,7 @@
   "keywords": ["budget", "yagni", "code-review", "agent-skills"],
   "agents": "./agents/",
   "skills": "./skills/",
-  "hooks": "./hooks/hooks.json",
+  "hooks": "./hooks/codex.json",
   "interface": {
     "displayName": "Budzie",
     "shortDescription": "Budget-first coding agent mode",

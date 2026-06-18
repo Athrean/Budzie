@@ -26,6 +26,10 @@ import {
   runInstall,
   runUninstall,
 } from "../bin/budzie-install.mjs";
+import {
+  flagPath,
+  writeMode,
+} from "../scripts/hooks/mode-tracker.mjs";
 
 /** Absolute path to the CLI under test. */
 const CLI = fileURLToPath(new URL("../bin/budzie-install.mjs", import.meta.url));
@@ -48,6 +52,26 @@ async function withFixture(fn) {
       pkgRoot,
       "skills/budzie-reap/references/contracts.md",
       "# contracts\n"
+    );
+    writeFixtureFile(
+      pkgRoot,
+      "hooks/hooks.json",
+      '{"hooks":{"SessionStart":[]}}\n'
+    );
+    writeFixtureFile(
+      pkgRoot,
+      "hooks/codex.json",
+      '{"hooks":{"SessionStart":[]}}\n'
+    );
+    writeFixtureFile(
+      pkgRoot,
+      "scripts/hooks/activate.mjs",
+      'process.stdout.write("active");\n'
+    );
+    writeFixtureFile(
+      pkgRoot,
+      "rules/budzie.mdc",
+      "---\nalwaysApply: true\n---\nBudzie mode is active.\n"
     );
     await fn({ pkgRoot, configDir });
   } finally {
@@ -177,6 +201,22 @@ test("fresh install creates expected Budzie entries and a manifest", async () =>
   });
 });
 
+test("fresh install includes every activation hook and its runtime", async () => {
+  await withFixture(async ({ pkgRoot, configDir }) => {
+    const opts = parseArgs(["--config-dir", configDir], {});
+    runInstall(opts, pkgRoot);
+
+    for (const rel of [
+      "hooks/hooks.json",
+      "hooks/codex.json",
+      "scripts/hooks/activate.mjs",
+      "rules/budzie.mdc",
+    ]) {
+      assert.ok(exists(path.join(configDir, rel)), `installed ${rel}`);
+    }
+  });
+});
+
 test("reinstall is idempotent (byte-identical, no churn)", async () => {
   await withFixture(async ({ pkgRoot, configDir }) => {
     const opts = parseArgs(["--config-dir", configDir], {});
@@ -205,7 +245,9 @@ test("uninstall removes only Budzie entries and preserves user files", async () 
     writeFixtureFile(configDir, "commands/my-own.toml", "mine\n");
     writeFixtureFile(configDir, "settings.json", "{}\n");
 
-    runUninstall(opts);
+    runUninstall(opts, {
+      BUDZIE_DATA_DIR: path.join(path.dirname(configDir), "data"),
+    });
 
     // Budzie entries gone.
     assert.equal(exists(path.join(configDir, "commands/budzie.toml")), false);
@@ -231,6 +273,32 @@ test("uninstall removes only Budzie entries and preserves user files", async () 
   });
 });
 
+test("uninstall removes Budzie hooks and activation flag but preserves neighboring files", async () => {
+  await withFixture(async ({ pkgRoot, configDir }) => {
+    const opts = parseArgs(["--config-dir", configDir], {});
+    const env = { BUDZIE_DATA_DIR: path.join(path.dirname(configDir), "data") };
+    runInstall(opts, pkgRoot);
+    writeMode(true, env);
+    writeFixtureFile(configDir, "hooks/user.json", '{"hooks":{}}\n');
+    writeFixtureFile(path.dirname(flagPath(env)), "ledger.json", '{"sessions":[]}\n');
+
+    runUninstall(opts, env);
+
+    assert.equal(exists(path.join(configDir, "hooks/hooks.json")), false);
+    assert.equal(exists(path.join(configDir, "hooks/codex.json")), false);
+    assert.equal(exists(path.join(configDir, "rules/budzie.mdc")), false);
+    assert.equal(exists(flagPath(env)), false);
+    assert.equal(
+      readFileSync(path.join(configDir, "hooks/user.json"), "utf8"),
+      '{"hooks":{}}\n'
+    );
+    assert.equal(
+      readFileSync(path.join(path.dirname(flagPath(env)), "ledger.json"), "utf8"),
+      '{"sessions":[]}\n'
+    );
+  });
+});
+
 test("install does not clobber a differing existing file without --force", async () => {
   await withFixture(async ({ pkgRoot, configDir }) => {
     writeFixtureFile(configDir, "commands/budzie.toml", "USER EDIT\n");
@@ -249,6 +317,35 @@ test("install does not clobber a differing existing file without --force", async
       readFileSync(path.join(configDir, "commands/budzie.toml"), "utf8"),
       'description = "main"\n',
       "--force overwrites"
+    );
+  });
+});
+
+test("uninstall preserves a user file that install skipped (not in manifest)", async () => {
+  await withFixture(async ({ pkgRoot, configDir }) => {
+    // User authored their own commands/budzie.toml before installing Budzie.
+    writeFixtureFile(configDir, "commands/budzie.toml", "USER EDIT\n");
+    const opts = parseArgs(["--config-dir", configDir], {});
+    runInstall(opts, pkgRoot);
+
+    // A file Budzie skipped because the user owns it must not be recorded as
+    // Budzie-managed, or uninstall would delete it.
+    const manifest = JSON.parse(
+      readFileSync(path.join(configDir, ".budzie-manifest.json"), "utf8")
+    );
+    assert.ok(
+      !manifest.files.includes("commands/budzie.toml"),
+      "user-authored skip is not in the manifest"
+    );
+
+    runUninstall(opts, {
+      BUDZIE_DATA_DIR: path.join(path.dirname(configDir), "data"),
+    });
+
+    assert.equal(
+      readFileSync(path.join(configDir, "commands/budzie.toml"), "utf8"),
+      "USER EDIT\n",
+      "user-authored file survives install + uninstall"
     );
   });
 });
@@ -275,7 +372,7 @@ test("main --help prints usage and exits 0 without writing", async () => {
     });
     assert.equal(code, 0);
     assert.equal(out, HELP_TEXT);
-    assert.match(out, /agents, commands, and skills/);
+    assert.match(out, /runtime and activation files/);
     assert.equal(exists(configDir), false);
   });
 });
