@@ -1,0 +1,24 @@
+benchmarks/multilingual-compression.mjs
+  s_0fa170e13b6920::t_a57896894a9fe8 1-104
+tests/bench-multilingual.test.js
+  s_0fa170e13b6920::t_90f17c8c6ed318 46
+  s_0fa170e13b6920::t_bce5aa71533512 1-45,47-52
+benchmarks/fixtures/multilingual-compression.json
+  s_0fa170e13b6920::t_bce5aa71533512 1-44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "7cba9a0c03e8ee96d4109507d85030488aacc7f3",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
