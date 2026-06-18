@@ -1,0 +1,28 @@
+tests/hooks.test.js
+  s_0fa170e13b6920::t_b80d92eb9dc0cc 258-259
+  s_0fa170e13b6920::t_9920f27c47874c 2,130-173
+hooks/codex.json
+  s_0fa170e13b6920::t_88da596e666d2f 1-16
+.codex-plugin/plugin.json
+  s_0fa170e13b6920::t_88da596e666d2f 15
+.agents-plugin/plugin.json
+  s_0fa170e13b6920::t_88da596e666d2f 17
+hooks/agents.json
+  s_0fa170e13b6920::t_88da596e666d2f 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "d6b2d1caf3c715e8df09f135af1fefc8f418fbce",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
