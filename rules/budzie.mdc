@@ -1,0 +1,7 @@
+---
+description: Activate Budzie for every session.
+alwaysApply: true
+---
+
+Budzie mode is active from the first message. Apply the `budzie` skill to every
+task in this session.

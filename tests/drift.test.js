@@ -36,7 +36,7 @@ function writeBaseline(root) {
   writeJson(root, "package.json", {
     name: "budzie",
     version: "0.1.0",
-    files: ["agents/", "commands/", "skills/", "scripts/"],
+    files: ["agents/", "commands/", "skills/", "scripts/", "hooks/", "rules/"],
   });
   writeJson(root, "package-lock.json", {
     name: "budzie",
@@ -54,7 +54,7 @@ function writeBaseline(root) {
     version: "0.1.0",
     skills: "./skills/",
     agents: "./agents/",
-    hooks: "./hooks/hooks.json",
+    hooks: "./hooks/codex.json",
     interface: {
       displayName: "Budzie",
     },
@@ -74,12 +74,33 @@ function writeBaseline(root) {
     skills: "./skills/",
     agents: "./agents/",
     scripts: "./scripts/",
-    hooks: "./hooks/hooks.json",
+    rules: "./rules/",
   });
-  for (const dir of ["agents", "commands", "skills", "scripts", "hooks"]) {
+  for (const dir of ["agents", "commands", "skills", "scripts", "hooks", "rules"]) {
     mkdirSync(path.join(root, dir), { recursive: true });
   }
-  writeFixtureFile(root, "hooks/hooks.json", "{}\n");
+  for (const file of ["hooks/hooks.json", "hooks/codex.json"]) {
+    writeJson(root, file, {
+      hooks: {
+        SessionStart: [
+          {
+            hooks: [
+              {
+                type: "command",
+                command: "node \"${PLUGIN_ROOT}/scripts/hooks/activate.mjs\"",
+              },
+            ],
+          },
+        ],
+      },
+    });
+  }
+  writeFixtureFile(root, "scripts/hooks/activate.mjs", "// @ts-check\n");
+  writeFixtureFile(
+    root,
+    "rules/budzie.mdc",
+    "---\nalwaysApply: true\n---\nBudzie mode is active.\n"
+  );
 }
 
 /**
@@ -107,6 +128,28 @@ test("current repo satisfies canonical Budzie invariants", async () => {
 
   assert.equal(BUDZIE_INVARIANTS.productName, "Budzie");
   assert.deepEqual(drift, []);
+});
+
+test("invariants pin the installer manifest version and matrix size", () => {
+  assert.equal(BUDZIE_INVARIANTS.manifestVersion, 2);
+  assert.ok(BUDZIE_INVARIANTS.minHostMatrixSize >= 15);
+});
+
+test("installer matrix drift reports a format source missing from the tree", async () => {
+  await withTree(async (root) => {
+    // The rules-file format ships rules/budzie.mdc; remove it and the
+    // data-driven installer-matrix check must catch the dangling source.
+    rmSync(path.join(root, "rules/budzie.mdc"));
+
+    const drift = await checkDrift(root);
+
+    assert.ok(
+      drift.some((d) =>
+        d.includes("format rules-file references missing source rules/budzie.mdc")
+      ),
+      `expected installer-matrix drift, got: ${JSON.stringify(drift)}`
+    );
+  });
 });
 
 test("command files report missing matching skills and runtime scripts", async () => {
@@ -172,6 +215,8 @@ test("package files report missing shipped runtime directories", async () => {
       "package.json files must include agents/",
       "package.json files must include skills/",
       "package.json files must include scripts/",
+      "package.json files must include hooks/",
+      "package.json files must include rules/",
     ]);
   });
 });
@@ -223,6 +268,78 @@ test("adapters report references to missing runtime surfaces", async () => {
 
     assert.deepEqual(drift, [
       ".claude-plugin/plugin.json references missing ./hooks/nope.json",
+      ".claude-plugin/plugin.json hooks activation surface is missing ./hooks/nope.json",
+    ]);
+  });
+});
+
+test("adapters report missing activation paths even when not relative", async () => {
+  await withTree(async (root) => {
+    writeJson(root, ".claude-plugin/plugin.json", {
+      name: "budzie",
+      version: "0.1.0",
+      commands: "./commands/",
+      skills: "./skills/",
+      hooks: "hooks/nope.json",
+    });
+
+    const drift = await checkDrift(root);
+
+    assert.deepEqual(drift, [
+      ".claude-plugin/plugin.json hooks activation surface is missing hooks/nope.json",
+    ]);
+  });
+});
+
+test("adapters report hook surfaces without SessionStart activation", async () => {
+  await withTree(async (root) => {
+    writeJson(root, "hooks/codex.json", { hooks: {} });
+
+    const drift = await checkDrift(root);
+
+    assert.deepEqual(drift, [
+      ".codex-plugin/plugin.json hook surface must declare SessionStart",
+    ]);
+  });
+});
+
+test("adapters report SessionStart hooks without the activation runtime", async () => {
+  await withTree(async (root) => {
+    writeJson(root, "hooks/codex.json", {
+      hooks: {
+        SessionStart: [
+          {
+            hooks: [
+              {
+                type: "command",
+                command: "node \"${PLUGIN_ROOT}/scripts/hooks/missing.mjs\"",
+              },
+            ],
+          },
+        ],
+      },
+    });
+
+    const drift = await checkDrift(root);
+
+    assert.deepEqual(drift, [
+      ".codex-plugin/plugin.json SessionStart must run scripts/hooks/activate.mjs",
+    ]);
+  });
+});
+
+test("adapters report rules that are not always applied", async () => {
+  await withTree(async (root) => {
+    writeFixtureFile(
+      root,
+      "rules/budzie.mdc",
+      "---\nalwaysApply: false\n---\nBudzie mode is active.\n"
+    );
+
+    const drift = await checkDrift(root);
+
+    assert.deepEqual(drift, [
+      ".agents-plugin/plugin.json rule rules/budzie.mdc must set alwaysApply: true",
     ]);
   });
 });
@@ -234,6 +351,7 @@ test("adapters report stale versions per manifest", async () => {
       version: "0.9.9",
       skills: "./skills/",
       agents: "./agents/",
+      rules: "./rules/",
     });
 
     const drift = await checkDrift(root);

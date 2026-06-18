@@ -50,13 +50,39 @@ Budzie ships one thin adapter manifest per host. Each adapter only points at the
 shared runtime surfaces in this repo; none of them re-implement a command, skill,
 or script. Every adapter is named `budzie` and pins its version to the package
 version, and `scripts/check-drift.mjs` fails if an adapter drifts off that
-version or references a surface that does not exist.
+version, references a surface that does not exist, or loses its activation
+contract.
 
 | Host | Adapter manifest | Wires up |
 | --- | --- | --- |
-| Codex / plugin host | `.codex-plugin/plugin.json` | `./agents/`, `./skills/`, `./hooks/hooks.json` |
+| Codex / plugin host | `.codex-plugin/plugin.json` | `./agents/`, `./skills/`, `./hooks/codex.json` |
 | Claude Code | `.claude-plugin/plugin.json` | `./agents/`, `./commands/`, `./skills/`, `./hooks/hooks.json` |
-| Generic agents host | `.agents-plugin/plugin.json` | `./agents/`, `./commands/`, `./skills/`, `./scripts/`, `./hooks/hooks.json` |
+| Rules-capable agents plugin host | `.agents-plugin/plugin.json` | `./agents/`, `./commands/`, `./skills/`, `./scripts/`, `./rules/` |
+
+Claude Code and Codex activate Budzie through their native `SessionStart`
+plugin hooks. The agents adapter uses the
+[Open Plugin rules component](https://github.com/vercel-labs/open-plugin-spec#d3-rules):
+`rules/budzie.mdc` sets `alwaysApply: true`, so rules-capable hosts inject the
+activation instruction from the first message. This does not claim that every
+skill-only agent host supports `.mdc` rules.
+
+## Install
+
+`budzie-install` detects the agent hosts on your machine via a data-driven
+matrix (CLI probes, config-directory probes, editor extension dirs, and macOS
+app bundles) and installs the right adapter format into each host's config dir.
+
+```sh
+budzie-install --dry-run     # print the full plan, write nothing
+budzie-install               # install for every detected host
+budzie-install --host cursor # target one host by id
+budzie-install --uninstall   # remove only Budzie-managed files
+budzie-install --force       # overwrite existing managed files
+```
+
+Each install dir gets a `.budzie-manifest.json` recording exactly which files
+Budzie owns. Uninstall reads that manifest and removes only those entries, so
+anything you authored is left untouched. Re-runs are idempotent.
 
 ## Marker
 
