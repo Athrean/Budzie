@@ -3,9 +3,10 @@ name: budzie-compress
 description: >
   Opt-in memory-file compressor. Rewrites agent memory files such as CLAUDE.md,
   AGENTS.md, notes, todos, and project context into smaller prose while
-  preserving code, URLs, paths, identifiers, API names, and exact error strings.
-  Use for /budzie-compress, compress memory files, shrink CLAUDE.md, shrink
-  AGENTS.md, or input token compression.
+  keeping the dominant language and preserving code, CLI commands, URLs, paths,
+  identifiers, API names, and exact error strings. Use for /budzie-compress,
+  compress memory files, shrink CLAUDE.md, shrink AGENTS.md, or input token
+  compression.
 ---
 
 # Budzie Compress
@@ -25,13 +26,23 @@ node scripts/compress.mjs --json --dry-run AGENTS.md
 ## Rules
 
 - Uses the current Budzie intensity level from `scripts/intensity.mjs`.
+- Keeps prose in the same language. It never translates the input or adds an
+  English opening or status phrase.
+- Removes built-in filler and hedging in English, Spanish, Portuguese, and
+  French. All four intensity levels apply to those languages.
 - Writes `<file>.bak` before replacing the file.
 - `--dry-run` prints before/after ESTIMATE token counts and writes nothing.
 - Refuses sensitive files and non-context files.
-- Preserves byte-for-byte: fenced code blocks, inline code, URLs, file paths,
-  identifiers, API names, and exact error strings.
+- Preserves byte-for-byte: fenced code blocks, inline code, CLI commands, URLs,
+  file paths, identifiers, API names, and exact error strings.
 - Auto-clarity guard keeps destructive/security-sensitive lines in full prose.
 - No telemetry. No network.
+
+Run the deterministic multilingual fixtures locally:
+
+```bash
+node benchmarks/multilingual-compression.mjs
+```
 
 ## Output
 

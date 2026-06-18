@@ -30,13 +30,23 @@ const LEVEL_ORDER = Object.freeze({
 });
 
 const DROP_BY_LEVEL = Object.freeze({
-  low: new Set(["please", "really", "very", "basically", "actually"]),
+  low: new Set([
+    "please",
+    "really",
+    "very",
+    "basically",
+    "actually",
+    "realmente",
+    "vraiment",
+  ]),
   medium: new Set([
     "please",
     "really",
     "very",
     "basically",
     "actually",
+    "realmente",
+    "vraiment",
     "that",
     "just",
     "simply",
@@ -44,6 +54,25 @@ const DROP_BY_LEVEL = Object.freeze({
     "the",
     "a",
     "an",
+    "el",
+    "la",
+    "los",
+    "las",
+    "un",
+    "una",
+    "unos",
+    "unas",
+    "o",
+    "os",
+    "um",
+    "uma",
+    "uns",
+    "umas",
+    "le",
+    "les",
+    "une",
+    "des",
+    "du",
   ]),
   xhigh: new Set([
     "please",
@@ -51,6 +80,8 @@ const DROP_BY_LEVEL = Object.freeze({
     "very",
     "basically",
     "actually",
+    "realmente",
+    "vraiment",
     "that",
     "just",
     "simply",
@@ -58,7 +89,29 @@ const DROP_BY_LEVEL = Object.freeze({
     "the",
     "a",
     "an",
+    "el",
+    "la",
+    "los",
+    "las",
+    "un",
+    "una",
+    "unos",
+    "unas",
+    "o",
+    "os",
+    "um",
+    "uma",
+    "uns",
+    "umas",
+    "le",
+    "les",
+    "une",
+    "des",
+    "du",
     "and",
+    "y",
+    "e",
+    "et",
     "own",
   ]),
   ultra: new Set([
@@ -67,6 +120,8 @@ const DROP_BY_LEVEL = Object.freeze({
     "very",
     "basically",
     "actually",
+    "realmente",
+    "vraiment",
     "that",
     "just",
     "simply",
@@ -74,7 +129,29 @@ const DROP_BY_LEVEL = Object.freeze({
     "the",
     "a",
     "an",
+    "el",
+    "la",
+    "los",
+    "las",
+    "un",
+    "una",
+    "unos",
+    "unas",
+    "o",
+    "os",
+    "um",
+    "uma",
+    "uns",
+    "umas",
+    "le",
+    "les",
+    "une",
+    "des",
+    "du",
     "and",
+    "y",
+    "e",
+    "et",
     "own",
     "it",
     "is",
@@ -82,6 +159,15 @@ const DROP_BY_LEVEL = Object.freeze({
     "be",
     "into",
     "their",
+    "es",
+    "en",
+    "su",
+    "é",
+    "em",
+    "seu",
+    "est",
+    "dans",
+    "leur",
   ]),
 });
 
@@ -89,6 +175,13 @@ const DROP_BY_LEVEL = Object.freeze({
 const PHRASES = Object.freeze([
   [/\bmake sure to\b/gi, ""],
   [/\bremember to\b/gi, ""],
+  [/\bpor favor\b(?:,\s*)?/gi, ""],
+  [/\basegúrate de\b/gi, ""],
+  [/\bna verdade\b(?:,\s*)?/gi, ""],
+  [/\bcertifique-se de\b/gi, ""],
+  [/\bs['’]il vous plaît\b(?:,\s*)?/gi, ""],
+  [/\ben fait\b(?:,\s*)?/gi, ""],
+  [/\bassurez-vous de\b/gi, ""],
   [/\bin order to\b/gi, "to"],
   [/\bit is important to\b/gi, ""],
   [/\byou should always\b/gi, "always"],
@@ -113,11 +206,15 @@ const ABBREVIATIONS = Object.freeze([
 
 const PRESERVE_PATTERNS = [
   /`[^`]*`/,
+  /"(?:\\.|[^"\\\n])*"/,
+  /'(?:[^'\n]*(?:Error|Exception|failed|Cannot|cannot|Erreur|erro|falló|falhou|échoué)[^'\n]*)'/iu,
+  /\b(?:npm|pnpm|yarn|bun|npx|node|git|gh|python3?|pip3?|cargo|docker|kubectl|cmake|mvn|gradle|dotnet|java|javac|curl|wget|ssh|scp|rsync|rg)\b(?:[ \t]+[^\s,;!?]+)*/i,
   /\b[a-z][a-z0-9+.-]*:\/\/[^\s)]+/i,
   /"(?:[^"\n]*(?:Error|Exception|failed|Cannot|cannot)[^"\n]*)"/,
   /\b[A-Za-z]*(?:Error|Exception):[^\n"`]*/,
   /(?:\.{1,2}\/|\/)[\w./@-]*[\w@-]/,
   /\b[\w-]+(?:\.[\w-]+)+\b/,
+  /\b[$A-Za-z_][\w$]*(?:\.[$A-Za-z_][\w$]*)*\([^()\n]*\)/,
   /\b\w+\(\)/,
   /\b\w*[_/]\w[\w/.-]*\b/,
   /\b[A-Z][A-Z0-9_]{2,}\b/,
@@ -174,8 +271,10 @@ function compressPlainChunk(chunk, level) {
   const out = [];
   for (const token of text.split(/\s+/)) {
     if (!token) continue;
-    const bare = token.replace(/^[^\w]+|[^\w]+$/g, "").toLowerCase();
-    if (drop.has(bare) && /^[^\w]*[a-z]/.test(token)) continue;
+    const bare = token
+      .replace(/^[^\p{L}\p{N}_]+|[^\p{L}\p{N}_]+$/gu, "")
+      .toLowerCase();
+    if (drop.has(bare) && /^[^\p{L}\p{N}_]*\p{L}/u.test(token)) continue;
     out.push(token);
   }
   return out.join(" ").replace(/ +([.,;:!?])(\s|$)/g, "$1$2").trim();
@@ -200,7 +299,7 @@ function compressPreservingSpans(text, level) {
     pieces.push(hit.value);
     cursor = hit.end;
   }
-  return pieces.filter((p) => p !== "").join(" ").replace(/ {2,}/g, " ").trim();
+  return pieces.filter((p) => p !== "").join(" ").trim();
 }
 
 /**
