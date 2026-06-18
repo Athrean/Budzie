@@ -2,6 +2,13 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
+import { compressProse as compressAtLevel } from "./compress.mjs";
+import { DEFAULT_LEVEL } from "./intensity.mjs";
+
+/**
+ * @typedef {import("./intensity.mjs").Level} Level
+ */
+
 /**
  * Options for the tool-catalog reducer. Off by default: with no `enabled` flag
  * and no `fields`, the catalog passes through untouched.
@@ -10,6 +17,7 @@ import { fileURLToPath } from "node:url";
  * @property {string[]} [fields] - Top-level tool fields to compress (e.g.
  *   `["description"]`). Only string values at these keys are touched. An empty
  *   or missing list is also a passthrough.
+ * @property {Level} [level] - Budzie compression intensity.
  */
 
 /**
@@ -34,134 +42,13 @@ export function byteLength(value) {
 }
 
 /**
- * Filler words safe to drop from plain prose. Conservative on purpose: these
- * carry no protocol meaning and never appear inside preserved spans (which are
- * matched out first). Lowercase match only, so capitalised sentence starts and
- * proper nouns are left alone.
- *
- * budzie: hand-picked stopword list, ceiling ~30 words. Upgrade trigger: if a
- * real corpus shows it's too blunt, swap for a frequency-driven list behind the
- * same pure interface — no caller change.
- */
-const FILLER_WORDS = new Set([
-  "basically",
-  "simply",
-  "just",
-  "really",
-  "actually",
-  "please",
-  "note",
-  "that",
-  "in",
-  "order",
-  "to",
-  "make",
-  "sure",
-  "very",
-  "quite",
-  "kind",
-  "of",
-  "sort",
-  "essentially",
-  "literally",
-]);
-
-/**
- * Spans that must survive byte-for-byte. Each pattern captures a load-bearing
- * token: anything that could change protocol behavior or break a copy-paste.
- * Order matters — the scanner takes the earliest match, so put greedier
- * constructs (code fences, backtick spans, URLs) ahead of bare words.
- */
-const PRESERVE_PATTERNS = [
-  /```[\s\S]*?```/, // fenced code block
-  /`[^`]*`/, // inline backtick code span
-  /\b[a-z][a-z0-9+.-]*:\/\/\S+/i, // URL with a scheme (http://, file://, ...)
-  /(?:\.{1,2})?\/[\w./-]*\w/, // absolute or ./ relative file path
-  /\b[\w-]+\.[\w.-]+\b/, // dotted identifier or filename (a.b, settings.json)
-  /\b\w+\(\)/, // function-call token, e.g. runReader()
-  /\b\w*[_/]\w[\w/]*\b/, // snake_case / slashed identifier
-  /\b[A-Z][A-Z0-9_]{2,}\b/, // SHOUTY enum/constant tokens (GET, DELETE, ...)
-];
-
-/**
- * Find the earliest preserve-span at or after `from`. Returns its bounds and
- * text, or null if none remain.
+ * Compress one prose field with the shared Budzie intensity rules.
  * @param {string} text
- * @param {number} from
- * @returns {{ start: number, end: number, value: string } | null}
- */
-function nextPreserve(text, from) {
-  const slice = text.slice(from);
-  /** @type {{ start: number, end: number, value: string } | null} */
-  let best = null;
-  for (const pattern of PRESERVE_PATTERNS) {
-    const re = new RegExp(pattern.source, pattern.flags.replace("g", ""));
-    const m = re.exec(slice);
-    if (!m) continue;
-    const start = from + m.index;
-    if (best === null || start < best.start) {
-      best = { start, end: start + m[0].length, value: m[0] };
-    }
-  }
-  return best;
-}
-
-/**
- * Compress one plain-prose chunk (no preserved spans inside): collapse runs of
- * whitespace to a single space and drop lowercase filler words. Punctuation and
- * casing of kept words are untouched, so meaning stays intact.
- * @param {string} chunk
+ * @param {Level} [level]
  * @returns {string}
  */
-function squashProse(chunk) {
-  const out = [];
-  // Split on whitespace but remember nothing about it — we re-join with single
-  // spaces. Leading/trailing whitespace handling is done by the caller seam.
-  for (const token of chunk.split(/\s+/)) {
-    if (token === "") continue;
-    // Strip trailing punctuation only to test the bare word; keep the token.
-    const bare = token.replace(/^[^\w]+|[^\w]+$/g, "").toLowerCase();
-    if (FILLER_WORDS.has(bare) && /^[^\w]*[a-z]/.test(token)) {
-      // Drop pure-filler tokens that carry no leading capital (sentence start).
-      continue;
-    }
-    out.push(token);
-  }
-  return out.join(" ");
-}
-
-/**
- * Compress a single prose field while preserving every load-bearing span. The
- * field is scanned into alternating prose / preserved segments; only the prose
- * segments are squashed, then the pieces are re-joined with the original
- * preserved text verbatim.
- * @param {string} text
- * @returns {string}
- */
-export function compressProse(text) {
-  /** @type {string[]} */
-  const pieces = [];
-  let cursor = 0;
-  while (cursor < text.length) {
-    const hit = nextPreserve(text, cursor);
-    if (!hit) {
-      pieces.push(squashProse(text.slice(cursor)));
-      break;
-    }
-    pieces.push(squashProse(text.slice(cursor, hit.start)));
-    pieces.push(hit.value); // verbatim, never altered
-    cursor = hit.end;
-  }
-  // Join prose and preserved pieces with a single space, then collapse any
-  // doubled spaces produced at the seams. Drop a stray space before sentence
-  // punctuation, but only when the punctuation is a real boundary (followed by
-  // whitespace or end of string) so paths like `./x` are never disturbed.
-  return pieces
-    .filter((p) => p !== "")
-    .join(" ")
-    .replace(/ {2,}/g, " ")
-    .replace(/ +([.,;:!?])(\s|$)/g, "$1$2")
-    .trim();
+export function compressProse(text, level = DEFAULT_LEVEL) {
+  return compressAtLevel(text, level);
 }
 
 /**
@@ -175,6 +62,7 @@ export function compressProse(text) {
  */
 export function compressCatalog(catalog, config) {
   const fields = config && config.enabled ? config.fields ?? [] : [];
+  const level = config?.level ?? DEFAULT_LEVEL;
   const active = Array.isArray(fields) && fields.length > 0;
 
   // Passthrough: deep clone so callers can trust they own the result, but make
@@ -195,7 +83,7 @@ export function compressCatalog(catalog, config) {
       const value = tool[field];
       if (typeof value !== "string") continue;
       bytesBefore += byteLength(value);
-      const compressed = compressProse(value);
+      const compressed = compressProse(value, level);
       // Never let compression grow a field; keep the smaller of the two.
       tool[field] = byteLength(compressed) <= byteLength(value) ? compressed : value;
       bytesAfter += byteLength(tool[field]);
