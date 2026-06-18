@@ -17,11 +17,13 @@ import { fileURLToPath } from "node:url";
 
 import {
   formatFiles,
+  formatLedgerNotice,
   formatPlan,
   HELP_TEXT,
   main,
   parseArgs,
   planInstall,
+  planLedger,
   planUninstall,
   readManifest,
   resolveTargets,
@@ -35,6 +37,7 @@ import {
   HOST_MATRIX,
 } from "../scripts/hosts.mjs";
 import { flagPath, writeMode } from "../scripts/hooks/mode-tracker.mjs";
+import { ledgerPath } from "../scripts/ledger.mjs";
 
 /** Absolute path to the CLI under test. */
 const CLI = fileURLToPath(new URL("../bin/budzie-install.mjs", import.meta.url));
@@ -167,14 +170,19 @@ function fakeProbe({ home, env = {}, commands = new Set(), paths = new Set(), pl
 
 test("parseArgs reads each flag", () => {
   const opts = parseArgs(
-    ["--dry-run", "--force", "--uninstall", "--all", "--config-dir", "/tmp/x"],
+    ["--dry-run", "--force", "--uninstall", "--delete-ledger", "--all", "--config-dir", "/tmp/x"],
     {}
   );
   assert.equal(opts.dryRun, true);
   assert.equal(opts.force, true);
   assert.equal(opts.uninstall, true);
+  assert.equal(opts.deleteLedger, true);
   assert.equal(opts.all, true);
   assert.equal(opts.configDir, path.resolve("/tmp/x"));
+});
+
+test("parseArgs preserves the ledger by default", () => {
+  assert.equal(parseArgs([], {}).deleteLedger, false);
 });
 
 test("parseArgs supports --config-dir=value, --host, and -h", () => {
@@ -528,6 +536,45 @@ test("uninstall removes the activation flag but preserves neighboring files", as
       '{"sessions":[]}\n'
     );
   });
+});
+
+test("uninstall deletes the lifetime ledger only with --delete-ledger", async () => {
+  await withFixture(async ({ pkgRoot, configDir }) => {
+    const dataDir = path.join(path.dirname(configDir), "data");
+    const env = { BUDZIE_DATA_DIR: dataDir };
+    const ledger = ledgerPath(env);
+    mkdirSync(path.dirname(ledger), { recursive: true });
+    writeFileSync(ledger, '{"version":1,"entries":[{"tokensSaved":42}]}\n');
+
+    const preserve = parseArgs(["--config-dir", configDir], {});
+    runInstall(preserve, { packageRoot: pkgRoot });
+    runUninstall(preserve, { env });
+    assert.equal(exists(ledger), true, "ledger preserved by default");
+
+    runInstall(preserve, { packageRoot: pkgRoot });
+    const remove = parseArgs(
+      ["--config-dir", configDir, "--delete-ledger"],
+      {}
+    );
+    runUninstall(remove, { env });
+    assert.equal(exists(ledger), false, "ledger deleted on explicit opt-in");
+  });
+});
+
+test("ledger uninstall notice is explicit", () => {
+  const dataDir = mkdtempSync(path.join(tmpdir(), "budzie-ledger-"));
+  const env = { BUDZIE_DATA_DIR: dataDir };
+  try {
+    writeFileSync(ledgerPath(env), '{"version":1,"entries":[]}\n');
+    const preserve = planLedger(parseArgs([], {}), env);
+    assert.match(formatLedgerNotice(preserve), /preserved/);
+    assert.match(formatLedgerNotice(preserve), /--delete-ledger/);
+
+    const remove = planLedger(parseArgs(["--delete-ledger"], {}), env);
+    assert.match(formatLedgerNotice(remove), /deleted/);
+  } finally {
+    rmSync(dataDir, { recursive: true, force: true });
+  }
 });
 
 test("uninstall preserves a user file that install skipped (not in manifest)", async () => {

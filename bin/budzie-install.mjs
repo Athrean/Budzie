@@ -15,6 +15,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { removeMode } from "../scripts/hooks/mode-tracker.mjs";
+import { ledgerPath } from "../scripts/ledger.mjs";
 import {
   FORMATS,
   detectHosts,
@@ -69,6 +70,7 @@ const PACKAGE_ROOT = path.resolve(
  * @property {boolean} all - Install for every detected host.
  * @property {boolean} force - Overwrite existing managed files without asking.
  * @property {boolean} uninstall - Remove Budzie-managed entries instead of installing.
+ * @property {boolean} deleteLedger - Also delete the lifetime savings ledger on uninstall.
  * @property {boolean} help - Print usage and exit.
  */
 
@@ -97,6 +99,7 @@ export function parseArgs(argv, env = process.env) {
   let dryRun = false;
   let force = false;
   let uninstall = false;
+  let deleteLedger = false;
   let help = false;
   let all = false;
   /** @type {string | undefined} */
@@ -115,6 +118,9 @@ export function parseArgs(argv, env = process.env) {
         break;
       case "--uninstall":
         uninstall = true;
+        break;
+      case "--delete-ledger":
+        deleteLedger = true;
         break;
       case "--all":
         all = true;
@@ -157,6 +163,7 @@ export function parseArgs(argv, env = process.env) {
     dryRun,
     force,
     uninstall,
+    deleteLedger,
     help,
     all,
     hostIds,
@@ -562,6 +569,21 @@ function writeManifest(dir, dirPlans) {
 }
 
 /**
+ * Decide how uninstall should treat the local lifetime savings ledger.
+ * @param {Options} options
+ * @param {NodeJS.ProcessEnv} [env]
+ * @returns {{ path: string, deleted: boolean, existed: boolean }}
+ */
+export function planLedger(options, env = process.env) {
+  const file = ledgerPath(env);
+  return {
+    path: file,
+    deleted: options.deleteLedger === true,
+    existed: existsSync(file),
+  };
+}
+
+/**
  * Apply an uninstall across every recorded target. Removes only
  * manifest-recorded files, prunes empty Budzie dirs, and rewrites/deletes each
  * manifest.
@@ -608,6 +630,8 @@ export function runUninstall(options, ctx = {}) {
   }
 
   removeMode(env);
+  const ledger = planLedger(options, env);
+  if (ledger.deleted && ledger.existed) rmSync(ledger.path, { force: true });
   return plans;
 }
 
@@ -638,6 +662,16 @@ export function formatPlan(options, plans) {
   return out.join("\n") + "\n";
 }
 
+/**
+ * @param {{ path: string, deleted: boolean, existed: boolean }} ledger
+ * @returns {string}
+ */
+export function formatLedgerNotice(ledger) {
+  if (!ledger.existed) return `Ledger: none found at ${ledger.path}.\n`;
+  if (ledger.deleted) return `Ledger: deleted ${ledger.path} (--delete-ledger).\n`;
+  return `Ledger: preserved at ${ledger.path} (pass --delete-ledger to remove it).\n`;
+}
+
 /** Usage text printed by `--help`. */
 export const HELP_TEXT = `Budzie installer — detect agent hosts and install the right Budzie adapter for each.
 
@@ -654,11 +688,14 @@ Options:
   --dry-run             Print the planned changes and write nothing
   --force               Overwrite existing differing files
   --uninstall           Remove only Budzie-managed entries (per recorded host)
+  --delete-ledger       On uninstall, also delete the lifetime savings ledger
+                        (default: preserve it)
   -h, --help            Show this help
 
 Each install dir gets a manifest (${MANIFEST_NAME}) recording exactly which
 files Budzie owns, so uninstall removes only Budzie-managed files and preserves
-everything you authored.
+everything you authored. Uninstall preserves the lifetime savings ledger unless
+--delete-ledger is passed.
 `;
 
 /**
@@ -700,16 +737,19 @@ export function main(argv, io = {}) {
 
   if (options.dryRun) {
     out(formatPlan(options, plans));
+    if (options.uninstall) out(formatLedgerNotice(planLedger(options, io.env)));
     out("Dry run: no changes written.\n");
     return 0;
   }
 
+  const ledger = options.uninstall ? planLedger(options, io.env) : undefined;
   if (options.uninstall) {
     runUninstall(options, { probe, env: io.env });
   } else {
     runInstall(options, { probe });
   }
   out(formatPlan(options, plans));
+  if (ledger) out(formatLedgerNotice(ledger));
   out(`${options.uninstall ? "Uninstall" : "Install"} complete.\n`);
   return 0;
 }
