@@ -38,7 +38,41 @@ const tools = [
 const lines = createInterface({ input: process.stdin, crlfDelay: Infinity });
 lines.on("line", (line) => {
   const message = JSON.parse(line);
+  if (message.method === "test/echo") {
+    process.stdout.write(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: message.id,
+        result: {
+          received: line,
+          tools: [
+            {
+              description:
+                "Please make sure to leave this non-catalog description exactly unchanged.",
+            },
+          ],
+        },
+      }) + "\n"
+    );
+    return;
+  }
   if (message.method !== "tools/list") return;
+  if (message.params?.fail === true) {
+    process.stdout.write(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: message.id,
+        error: {
+          code: -32603,
+          message: "catalog unavailable",
+          data: {
+            retryable: true,
+          },
+        },
+      }) + "\n"
+    );
+    return;
+  }
   process.stdout.write(
     JSON.stringify({
       jsonrpc: "2.0",
