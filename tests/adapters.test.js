@@ -84,10 +84,10 @@ test("every shipped adapter directory is in the package files allowlist", async 
   const files = pkg.files;
   assert.ok(Array.isArray(files), "package.json files must be an array");
   for (const manifest of BUDZIE_INVARIANTS.adapterManifests) {
-    const dir = manifest.split("/")[0] + "/";
+    const entry = manifest.includes("/") ? manifest.split("/")[0] + "/" : manifest;
     assert.ok(
-      files.includes(dir),
-      `package.json files must include ${dir} so ${manifest} ships`
+      files.includes(entry),
+      `package.json files must include ${entry} so ${manifest} ships`
     );
   }
 });

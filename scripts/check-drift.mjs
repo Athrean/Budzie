@@ -15,6 +15,7 @@ export const BUDZIE_INVARIANTS = Object.freeze({
     ".codex-plugin/plugin.json",
     ".claude-plugin/plugin.json",
     ".agents-plugin/plugin.json",
+    "gemini-extension.json",
   ]),
 });
 
