@@ -38,6 +38,11 @@ const tools = [
 const lines = createInterface({ input: process.stdin, crlfDelay: Infinity });
 lines.on("line", (line) => {
   const message = JSON.parse(line);
+  if (message.method === "test/hang") {
+    process.stdout.write("{");
+    setInterval(() => {}, 1_000);
+    return;
+  }
   if (message.method === "test/echo") {
     process.stdout.write(
       JSON.stringify({

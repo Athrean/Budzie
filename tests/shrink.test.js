@@ -13,6 +13,7 @@ const UPSTREAM = fileURLToPath(
 
 /**
  * @param {object[]} messages
+ * @param {number} [timeoutMs]
  * @returns {Promise<{
  *   messages: any[],
  *   stdout: string,
@@ -20,7 +21,7 @@ const UPSTREAM = fileURLToPath(
  *   code: number | null
  * }>}
  */
-function runProxy(messages) {
+function runProxy(messages, timeoutMs = 5_000) {
   const dataDir = mkdtempSync(path.join(tmpdir(), "budzie-shrink-"));
   const upstream = `${JSON.stringify(process.execPath)} ${JSON.stringify(UPSTREAM)}`;
 
@@ -35,10 +36,13 @@ function runProxy(messages) {
     );
     let stdout = "";
     let stderr = "";
+    let settled = false;
     const timer = setTimeout(() => {
+      settled = true;
       child.kill();
+      rmSync(dataDir, { recursive: true, force: true });
       reject(new Error("budzie-shrink timed out"));
-    }, 5_000);
+    }, timeoutMs);
 
     child.stdout.setEncoding("utf8");
     child.stderr.setEncoding("utf8");
@@ -48,15 +52,27 @@ function runProxy(messages) {
     child.stderr.on("data", (chunk) => {
       stderr += chunk;
     });
-    child.on("error", reject);
-    child.on("close", (code) => {
+    child.on("error", (error) => {
+      if (settled) return;
+      settled = true;
       clearTimeout(timer);
       rmSync(dataDir, { recursive: true, force: true });
-      const parsed = stdout
-        .split("\n")
-        .filter(Boolean)
-        .map((line) => JSON.parse(line));
-      resolve({ messages: parsed, stdout, stderr, code });
+      reject(error);
+    });
+    child.on("close", (code) => {
+      clearTimeout(timer);
+      if (settled) return;
+      settled = true;
+      rmSync(dataDir, { recursive: true, force: true });
+      try {
+        const parsed = stdout
+          .split("\n")
+          .filter(Boolean)
+          .map((line) => JSON.parse(line));
+        resolve({ messages: parsed, stdout, stderr, code });
+      } catch (error) {
+        reject(error);
+      }
     });
 
     for (const message of messages) {
@@ -165,6 +181,16 @@ test("failed tools/list responses pass through without a savings report", async 
   assert.equal(response.stdout, JSON.stringify(expected) + "\n");
   assert.deepEqual(response.messages, [expected]);
   assert.equal(response.stderr, "");
+});
+
+test("timeout rejects cleanly when stdout contains a partial message", async () => {
+  await assert.rejects(
+    runProxy(
+      [{ jsonrpc: "2.0", id: "hang", method: "test/hang", params: {} }],
+      50
+    ),
+    /timed out/
+  );
 });
 
 test("package, command, skill, and README ship the budzie-shrink server", () => {

@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { compressProse as compressAtLevel } from "./compress.mjs";
-import { DEFAULT_LEVEL } from "./intensity.mjs";
+import { DEFAULT_LEVEL, LEVELS } from "./intensity.mjs";
 
 /**
  * @typedef {import("./intensity.mjs").Level} Level
@@ -62,7 +62,11 @@ export function compressProse(text, level = DEFAULT_LEVEL) {
  */
 export function compressCatalog(catalog, config) {
   const fields = config && config.enabled ? config.fields ?? [] : [];
-  const level = config?.level ?? DEFAULT_LEVEL;
+  const level = /** @type {readonly string[]} */ (LEVELS).includes(
+    config?.level ?? ""
+  )
+    ? config.level
+    : DEFAULT_LEVEL;
   const active = Array.isArray(fields) && fields.length > 0;
 
   // Passthrough: deep clone so callers can trust they own the result, but make
