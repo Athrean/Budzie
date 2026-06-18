@@ -15,6 +15,8 @@ import { homedir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { removeMode } from "../scripts/hooks/mode-tracker.mjs";
+
 /**
  * Budzie's local installer.
  *
@@ -24,8 +26,15 @@ import { fileURLToPath } from "node:url";
  * user-authored files untouched. Node stdlib only — zero dependencies.
  */
 
-/** Runtime directories Budzie ships into a host config dir. */
-const MANAGED_DIRS = Object.freeze(["agents", "commands", "skills"]);
+/** Runtime paths Budzie ships into a host config dir. */
+const MANAGED_DIRS = Object.freeze([
+  "agents",
+  "commands",
+  "skills",
+  "hooks",
+  "scripts/hooks",
+  "rules",
+]);
 
 /** Filename of the manifest that tracks Budzie-managed installs. */
 const MANIFEST_NAME = ".budzie-manifest.json";
@@ -324,9 +333,10 @@ export function runInstall(options, packageRoot = PACKAGE_ROOT) {
  * Apply an uninstall. Removes only manifest-recorded files, prunes empty
  * Budzie directories, and deletes the manifest.
  * @param {Options} options
+ * @param {NodeJS.ProcessEnv} [env]
  * @returns {Action[]} The actions performed.
  */
-export function runUninstall(options) {
+export function runUninstall(options, env = process.env) {
   const manifest = readManifest(options.configDir);
   const actions = planUninstall(options);
   for (const action of actions) {
@@ -336,6 +346,7 @@ export function runUninstall(options) {
   pruneEmptyDirs(options.configDir, manifest.files);
   const manifestPath = path.join(options.configDir, MANIFEST_NAME);
   rmSync(manifestPath, { force: true });
+  removeMode(env);
   return actions;
 }
 

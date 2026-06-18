@@ -1,5 +1,11 @@
 // @ts-check
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import path from "node:path";
 
 /**
@@ -96,4 +102,12 @@ export function writeMode(active, env = process.env) {
   mkdirSync(path.dirname(file), { recursive: true });
   writeFileSync(file, JSON.stringify(state, null, 2) + "\n");
   return state;
+}
+
+/**
+ * Remove only Budzie's activation flag. Other local data is preserved.
+ * @param {NodeJS.ProcessEnv} [env]
+ */
+export function removeMode(env = process.env) {
+  rmSync(flagPath(env), { force: true });
 }
