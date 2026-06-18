@@ -1,70 +1,60 @@
 ---
 name: budzie-shrink
 description: >
-  Opt-in tool-catalog size reducer. Shrinks prose-heavy MCP tool descriptions
-  while preserving protocol behavior exactly. Use for /budzie-shrink, tool
-  catalog, tools/list, description compression, or trimming verbose tool help.
+  Standalone MCP stdio middleware that compresses tool descriptions while
+  preserving schemas and protocol traffic. Use for /budzie-shrink,
+  budzie-shrink --upstream, MCP catalog compression, or verbose tool help.
 ---
 
 # Budzie Shrink
 
-Make a verbose MCP tool catalog smaller without changing how any tool behaves.
-Think of it as a transparent compressor over a `tools/list`-style result: it
-trims filler from configured prose fields and leaves everything that matters
-byte-for-byte intact.
+Wrap any stdio MCP server:
 
-## Opt-in only
-
-Off by default. Nothing is touched unless you name fields to compress. With no
-`--fields`, the catalog passes through unchanged and savings report as zero.
-
-## Commands
-
-- Card (default): `node scripts/tool-reducer.mjs --fields description catalog.json`
-- JSON result: `node scripts/tool-reducer.mjs --json --fields description catalog.json`
-- From stdin: `cat catalog.json | node scripts/tool-reducer.mjs --fields description`
-
-`--fields` is a comma-separated list of top-level tool fields to compress, e.g.
-`--fields description,longHelp`. Read-only: the script never writes your files.
-
-## What it preserves
-
-The compressor only squashes plain prose (collapsing whitespace, dropping a
-small filler-word list). It preserves byte-for-byte:
-
-- URLs (`https://api.example.com/v1/items`)
-- file paths (`/etc/hosts`, `./config/settings.json`)
-- identifiers: tool names, param names, enum values, snake_case, dotted names
-- backtick code spans and fenced code blocks
-- the JSON structure: schemas, `enum` arrays, nested objects
-
-Anything that could change protocol behavior is left exactly as-is.
-
-## As a proxy
-
-The same module exports a pure compressor and a passthrough seam so it can wrap
-a live server:
-
-- `compressCatalog(catalog, config) -> { catalog, bytesBefore, bytesAfter }`
-- `proxyResponse(message, config)` — returns requests and tool-call responses
-  unchanged; only `tools/list`-style results are compressed when enabled.
-
-Both are pure functions, unit-tested without a live MCP server.
-
-## Output
-
-```text
-Budzie tool reducer
-  bytes before  <n>
-  bytes after   <n>
-  bytes saved   <n> (<pct>%)
-(prose fields only; identifiers, URLs, paths, code, schema preserved)
+```bash
+budzie-shrink --upstream "node ./path/to/server.mjs"
 ```
 
-## Rules
+The host connects to `budzie-shrink` as the MCP server. Budzie starts the
+upstream command locally and forwards newline-delimited JSON-RPC in both
+directions.
 
-- Opt-in. No `--fields` means passthrough.
-- Compress only the configured prose fields; never grow a field.
-- Preserve identifiers, URLs, paths, code, and JSON structure exactly.
-- Report real before/after UTF-8 byte counts for what was compressed.
-- No telemetry. No remote calls.
+## Behavior
+
+- Tracks `tools/list` request IDs.
+- Compresses top-level tool `description` strings in successful list responses.
+- Uses the current Budzie intensity from `scripts/intensity.mjs`.
+- Keeps a description unchanged when compression would make it larger.
+- Preserves tool names, titles, schemas, parameter types, enum values,
+  annotations, cursors, request IDs, errors, and tool results.
+- Passes notifications, server requests, and every non-list response through.
+
+Nested schema descriptions stay unchanged because they are part of the schema.
+
+## Reporting
+
+After the first successful tool catalog, stderr receives one line:
+
+```text
+Budzie Shrink: level medium, descriptions 4000 -> 2500 bytes, saved 1500 (38%)
+```
+
+The counts are real UTF-8 bytes from tool description strings. Stdout contains
+MCP messages only.
+
+## Catalog inspection
+
+Inspect a saved `tools/list` result without starting a server:
+
+```bash
+node scripts/tool-reducer.mjs --fields description catalog.json
+```
+
+Add `--json` to emit the compressed catalog and byte counts. The command reads
+the file and writes its report to stdout; it does not edit the file. Catalog
+compression is opt-in through `--fields`.
+
+## Boundaries
+
+`--upstream` accepts one command string and runs it through the local shell.
+Wrap trusted commands. Budzie adds no network calls or telemetry; the upstream
+server keeps its own behavior.

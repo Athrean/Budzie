@@ -1,0 +1,44 @@
+[
+  {
+    "id": "spanish-memory",
+    "language": "es",
+    "level": "ultra",
+    "input": "# Memoria\n\nPor favor, realmente asegúrate de mantener la implementación pequeña y conservar los términos técnicos.\nEjecuta npm   test\nConserva \"Error: usuario no encontrado\"\nUsa `fetchUser(userId)`\n",
+    "expected": "# Memoria\n\nmantener implementación pequeña conservar términos técnicos.\nEjecuta npm   test\nConserva \"Error: usuario no encontrado\"\nUsa `fetchUser(userId)`\n",
+    "languageMarkers": ["mantener", "conservar", "términos"],
+    "forbiddenMarkers": ["please", "make sure", "remember to"],
+    "preservedSpans": [
+      "npm   test",
+      "\"Error: usuario no encontrado\"",
+      "`fetchUser(userId)`"
+    ]
+  },
+  {
+    "id": "portuguese-memory",
+    "language": "pt",
+    "level": "ultra",
+    "input": "# Memória\n\nPor favor, na verdade, realmente certifique-se de manter a implementação pequena e preservar os termos técnicos.\nExecute npm   test\nMantenha \"Erro: usuário não encontrado\"\nUse `fetchUser(userId)`\n",
+    "expected": "# Memória\n\nmanter implementação pequena preservar termos técnicos.\nExecute npm   test\nMantenha \"Erro: usuário não encontrado\"\nUse `fetchUser(userId)`\n",
+    "languageMarkers": ["manter", "preservar", "termos"],
+    "forbiddenMarkers": ["please", "make sure", "remember to"],
+    "preservedSpans": [
+      "npm   test",
+      "\"Erro: usuário não encontrado\"",
+      "`fetchUser(userId)`"
+    ]
+  },
+  {
+    "id": "french-memory",
+    "language": "fr",
+    "level": "ultra",
+    "input": "# Mémoire\n\nS'il vous plaît, en fait, assurez-vous de garder l'implémentation petite et préserver les termes techniques.\nExécutez npm   test\nGardez \"Erreur: utilisateur introuvable\"\nUtilisez `fetchUser(userId)`\n",
+    "expected": "# Mémoire\n\ngarder l'implémentation petite préserver termes techniques.\nExécutez npm   test\nGardez \"Erreur: utilisateur introuvable\"\nUtilisez `fetchUser(userId)`\n",
+    "languageMarkers": ["garder", "préserver", "termes"],
+    "forbiddenMarkers": ["please", "make sure", "remember to"],
+    "preservedSpans": [
+      "npm   test",
+      "\"Erreur: utilisateur introuvable\"",
+      "`fetchUser(userId)`"
+    ]
+  }
+]

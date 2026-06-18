@@ -16,6 +16,7 @@ import { walk, classifyMarker } from "./lib/scan.mjs";
  * Options for {@link plan}.
  * @typedef {object} PlanOpts
  * @property {boolean} [aggressive] - Include `aggressive`-tier cuts too.
+ * @property {(file: string) => boolean} [exclude] - Skip matching paths before reading.
  */
 
 /** Rank order used to sort cuts: auto first, then aggressive, then suggest. */
@@ -42,7 +43,7 @@ export async function plan(root, opts = {}) {
 
   /** @type {Cut[]} */
   const cuts = [];
-  for await (const row of walk(root)) {
+  for await (const row of walk(root, { exclude: opts.exclude })) {
     const marker = classifyMarker(row.text);
     if (!marker.cutTag || !marker.tier) continue;
     if (marker.tier === "aggressive" && !aggressive) continue;

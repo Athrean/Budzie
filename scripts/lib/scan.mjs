@@ -14,6 +14,7 @@ import path from "node:path";
  * Options for {@link walk}.
  * @typedef {object} WalkOpts
  * @property {number} [maxBytes] - Skip files larger than this (default 1 MiB).
+ * @property {(file: string) => boolean} [exclude] - Skip matching absolute paths before reading.
  */
 
 /**
@@ -95,6 +96,7 @@ export async function* walk(root, opts = {}) {
 
   for (const name of entries) {
     const full = path.join(root, name);
+    if (opts.exclude?.(full)) continue;
 
     /** @type {import("node:fs").Stats} */
     let st;
