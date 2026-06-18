@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -127,6 +127,52 @@ test("SessionStart hook writes the activation flag and emits the ruleset as cont
   });
 });
 
+test("every shipped adapter activates Budzie through its declared SessionStart hook", async () => {
+  const adapters = [
+    [".claude-plugin/plugin.json", "CLAUDE_PLUGIN_ROOT"],
+    [".codex-plugin/plugin.json", "PLUGIN_ROOT"],
+    [".agents-plugin/plugin.json", "PLUGIN_ROOT"],
+  ];
+
+  for (const [manifestPath, rootEnv] of adapters) {
+    await withTree(({ root, dataDir }) => {
+      const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+      const hookPath = path.resolve(manifest.hooks);
+      const hookConfig = JSON.parse(readFileSync(hookPath, "utf8"));
+      const handler = hookConfig.hooks.SessionStart[0].hooks[0];
+      const env = testEnv({ BUDZIE_DATA_DIR: dataDir });
+      delete env.CLAUDE_PLUGIN_ROOT;
+      delete env.PLUGIN_ROOT;
+      env[rootEnv] = process.cwd();
+
+      const result = spawnSync(handler.command, {
+        cwd: root,
+        encoding: "utf8",
+        env,
+        input: JSON.stringify({
+          hook_event_name: "SessionStart",
+          source: "startup",
+        }),
+        shell: true,
+      });
+
+      assert.equal(result.status, 0, `${manifestPath}: ${result.stderr}`);
+      const payload = JSON.parse(result.stdout);
+      assert.equal(
+        payload.hookSpecificOutput.hookEventName,
+        "SessionStart",
+        manifestPath
+      );
+      assert.match(
+        payload.hookSpecificOutput.additionalContext,
+        /Budzie mode is active/,
+        manifestPath
+      );
+      assert.equal(readMode({ BUDZIE_DATA_DIR: dataDir }).active, true, manifestPath);
+    });
+  }
+});
+
 test("SessionStart hook silent-fails on a bad data dir without throwing", async () => {
   await withTree(({ root }) => {
     // Point the data dir at a path whose parent is a file: mkdir must fail.
@@ -209,8 +255,8 @@ test("hooks manifest declares a SessionStart command and a statusLine", () => {
   assert.match(manifest.statusLine.command, /statusline/);
 });
 
-test("plugin manifest registers the hooks file", () => {
-  const plugin = JSON.parse(readFileSync(".codex-plugin/plugin.json", "utf8"));
+test("Claude adapter registers the status-line hook file", () => {
+  const plugin = JSON.parse(readFileSync(".claude-plugin/plugin.json", "utf8"));
   assert.equal(plugin.hooks, "./hooks/hooks.json");
 });
 
