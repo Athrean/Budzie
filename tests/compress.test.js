@@ -122,6 +122,25 @@ test("compression preserves CLI commands, identifiers, and localized errors byte
   }
 });
 
+test("CLI mentions do not protect trailing prose from compression", () => {
+  const source =
+    "Create an isolated git worktree, then please really keep the implementation small.\n";
+  const out = compressMarkdown(source, "ultra");
+
+  assert.ok(out.includes("git worktree"));
+  assert.doesNotMatch(out, /\b(?:please|really)\b/i);
+  assert.ok(out.length < source.length);
+});
+
+test("English conjunction as is never dropped as a Portuguese article", () => {
+  const source = "Treat the response as immutable data.\n";
+
+  for (const level of LEVELS) {
+    if (level === "low") continue;
+    assert.match(compressMarkdown(source, level), /(?:^|\s)as(?:\s|$)/);
+  }
+});
+
 test("Spanish filler is removed at every intensity without switching languages", () => {
   const source =
     "Por favor, realmente asegúrate de mantener la implementación pequeña y conservar la biblioteca estándar.\n";
@@ -130,9 +149,9 @@ test("Spanish filler is removed at every intensity without switching languages",
     const out = compressMarkdown(source, level);
 
     assert.doesNotMatch(out, /\b(?:por favor|realmente|asegúrate de)\b/i);
-    assert.match(out, /\bmantener\b/i);
-    assert.match(out, /\bconservar\b/i);
-    assert.match(out, /\bbiblioteca estándar\b/i);
+    assert.ok(out.includes("mantener"));
+    assert.ok(out.includes("conservar"));
+    assert.ok(out.includes("biblioteca estándar"));
     assert.doesNotMatch(out, /\b(?:please|make sure|remember to)\b/i);
   }
 });
@@ -148,9 +167,9 @@ test("Portuguese hedging is removed at every intensity without switching languag
       out,
       /\b(?:por favor|na verdade|realmente|certifique-se de)\b/i
     );
-    assert.match(out, /\bmanter\b/i);
-    assert.match(out, /\bpreservar\b/i);
-    assert.match(out, /\bbiblioteca padrão\b/i);
+    assert.ok(out.includes("manter"));
+    assert.ok(out.includes("preservar"));
+    assert.ok(out.includes("biblioteca padrão"));
     assert.doesNotMatch(out, /\b(?:please|make sure|remember to)\b/i);
   }
 });
@@ -166,9 +185,9 @@ test("French filler is removed at every intensity without switching languages", 
       out,
       /\b(?:s['’]il vous plaît|en fait|assurez-vous de)\b/i
     );
-    assert.match(out, /\bgarder\b/i);
-    assert.match(out, /\bpréserver\b/i);
-    assert.match(out, /\bbibliothèque standard\b/i);
+    assert.ok(out.includes("garder"));
+    assert.ok(out.includes("préserver"));
+    assert.ok(out.includes("bibliothèque standard"));
     assert.doesNotMatch(out, /\b(?:please|make sure|remember to)\b/i);
   }
 });
