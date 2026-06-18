@@ -1,0 +1,26 @@
+tests/shrink.test.js
+  s_da00640b035206::t_c98595064ff930 16,24,45,186-193
+  s_da00640b035206::t_7004eb7701509f 39,41,43,55-61,64-65,67-75
+scripts/tool-reducer.mjs
+  s_da00640b035206::t_7004eb7701509f 6,65-69
+tests/fixtures/shrink-upstream.mjs
+  s_da00640b035206::t_c98595064ff930 41-45
+tests/tool-reducer.test.js
+  s_da00640b035206::t_c98595064ff930 143-157
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "734ee8668fa68fcab2b41fa318392960e72c9149",
+  "prompts": {},
+  "sessions": {
+    "s_da00640b035206": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed98d-d61a-77e2-bb1b-0b5d8ca40fb5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
