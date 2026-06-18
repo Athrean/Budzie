@@ -1,0 +1,19 @@
+scripts/crew.mjs
+  s_b7d84d1be72e84::t_1a560450e727a2 1-274
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "b289e2f7ba13e73d5a8e2a968b54c880a454c885",
+  "prompts": {},
+  "sessions": {
+    "s_b7d84d1be72e84": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7d41dde7-b2c1-4ed6-b5ff-394fe25f2dac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
