@@ -1,0 +1,21 @@
+tests/install.test.js
+  s_c2ea962d3579b2::t_920db60b7cfe17 11,685-701
+bin/budzie-install.mjs
+  s_c2ea962d3579b2::t_3d499f16d45174 9,758-761
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "4045a9adbde7545d882ba87973a552d9beae4d51",
+  "prompts": {},
+  "sessions": {
+    "s_c2ea962d3579b2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eda1c-e734-7c21-9d78-42d0b125b919",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
