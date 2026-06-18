@@ -343,7 +343,7 @@ test("main --help prints usage and exits 0 without writing", async () => {
     });
     assert.equal(code, 0);
     assert.equal(out, HELP_TEXT);
-    assert.match(out, /agents, commands, and skills/);
+    assert.match(out, /runtime and activation files/);
     assert.equal(exists(configDir), false);
   });
 });

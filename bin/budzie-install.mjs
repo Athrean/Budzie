@@ -370,7 +370,7 @@ export function formatPlan(options, actions) {
 }
 
 /** Usage text printed by `--help`. */
-export const HELP_TEXT = `Budzie installer — copy Budzie agents, commands, and skills into a host agent config dir.
+export const HELP_TEXT = `Budzie installer — copy Budzie runtime and activation files into a host agent config dir.
 
 Usage:
   budzie-install [options]

@@ -172,6 +172,23 @@ test("every native-hook adapter activates Budzie through its declared SessionSta
   }
 });
 
+test("native SessionStart hooks reactivate after every context reset source", () => {
+  for (const manifestPath of [
+    ".claude-plugin/plugin.json",
+    ".codex-plugin/plugin.json",
+  ]) {
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    const hookConfig = JSON.parse(readFileSync(path.resolve(manifest.hooks), "utf8"));
+    const sources = hookConfig.hooks.SessionStart[0].matcher.split("|").sort();
+
+    assert.deepEqual(
+      sources,
+      ["clear", "compact", "resume", "startup"],
+      manifestPath
+    );
+  }
+});
+
 test("generic adapter activates Budzie through an always-applied rule", () => {
   const manifest = JSON.parse(
     readFileSync(".agents-plugin/plugin.json", "utf8")
