@@ -1,0 +1,33 @@
+README.md
+  s_0fa170e13b6920::t_b9654f0d93df12 27,31-42
+  s_0fa170e13b6920::t_3f323cf6afabfd 44-46
+tests/shrink.test.js
+  s_0fa170e13b6920::t_296a0964584860 3,169-171,173-177,183-187
+  s_0fa170e13b6920::t_3f323cf6afabfd 172,178-182
+skills/budzie-shrink/SKILL.md
+  s_0fa170e13b6920::t_b9654f0d93df12 4-6,11,13-15,17-19,21,23-29,31,33,35,37-39,41-42,56,58-60
+  s_0fa170e13b6920::t_ff58e4ee7cf1e9 53-54
+  s_0fa170e13b6920::t_3f323cf6afabfd 44,46,48-49,52,55
+skills/budzie-help/SKILL.md
+  s_0fa170e13b6920::t_b9654f0d93df12 14
+commands/budzie-shrink.toml
+  s_0fa170e13b6920::t_3f323cf6afabfd 2
+package.json
+  s_0fa170e13b6920::t_b9654f0d93df12 10-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "86172244324eff16f60e6c86af842ffbe84d9297",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
