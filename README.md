@@ -24,6 +24,7 @@ repo, then uses that signal to guard spend and remove existing bloat.
 | `/budzie-receipts` | Report local savings and badge text. |
 | `/budzie-reap` | Audit, cut, verify, and report deleted bloat. |
 | `/budzie-budget` | Check or set the spend ceiling. |
+| `/budzie-compress` | Compress one agent memory file with a `.bak` backup. |
 | `/budzie-help` | Show quick reference. |
 
 ## Supported hosts
