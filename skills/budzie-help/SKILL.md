@@ -12,7 +12,8 @@ Commands:
 - `/budzie-reap`: audit, cut, verify, report.
 - `/budzie-budget`: check or set allowance.
 - `/budzie-shrink`: shrink prose-heavy tool descriptions, preserve behavior.
-- `/budzie-compress`: compress one agent memory file with a `.bak` backup.
+- `/budzie-compress`: compress one agent memory file in the same language with
+  a `.bak` backup.
 - `/budzie-help`: this card.
 
 Marker:

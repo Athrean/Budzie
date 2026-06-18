@@ -24,8 +24,21 @@ repo, then uses that signal to guard spend and remove existing bloat.
 | `/budzie-receipts` | Report local savings and badge text. |
 | `/budzie-reap` | Audit, cut, verify, and report deleted bloat. |
 | `/budzie-budget` | Check or set the spend ceiling. |
-| `/budzie-compress` | Compress one agent memory file with a `.bak` backup. |
+| `/budzie-compress` | Compress one agent memory file in the same language with a `.bak` backup. |
 | `/budzie-help` | Show quick reference. |
+
+## Language-preserving compression
+
+`/budzie-compress` removes filler and hedging without translating the input or
+adding an English opening. Built-in rules cover Spanish, Portuguese, and French
+across all four intensity levels. Fenced and inline code, CLI commands, URLs,
+paths, identifiers, API names, and exact errors stay byte-for-byte unchanged.
+
+Run the deterministic, zero-network fixtures locally:
+
+```bash
+node benchmarks/multilingual-compression.mjs
+```
 
 ## Supported hosts
 

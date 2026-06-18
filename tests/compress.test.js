@@ -285,3 +285,19 @@ test("command and skill document the compressor entrypoint", () => {
   assert.match(skill, /\.bak/);
   assert.match(skill, /preserv/i);
 });
+
+test("shipped docs describe same-language compression and the local benchmark", () => {
+  const command = readFileSync("commands/budzie-compress.toml", "utf8");
+  const helpCommand = readFileSync("commands/budzie-help.toml", "utf8");
+  const helpSkill = readFileSync("skills/budzie-help/SKILL.md", "utf8");
+  const compressSkill = readFileSync("skills/budzie-compress/SKILL.md", "utf8");
+  const mainSkill = readFileSync("skills/budzie/SKILL.md", "utf8");
+  const readme = readFileSync("README.md", "utf8");
+
+  for (const text of [command, helpCommand, helpSkill, compressSkill, mainSkill, readme]) {
+    assert.match(text, /same language|dominant language/i);
+  }
+  assert.match(helpCommand, /\/budzie-compress/);
+  assert.match(readme, /Spanish, Portuguese, and French/i);
+  assert.match(readme, /node benchmarks\/multilingual-compression\.mjs/);
+});
