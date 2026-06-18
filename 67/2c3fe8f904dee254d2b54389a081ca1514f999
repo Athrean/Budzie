@@ -1,0 +1,28 @@
+.agents-plugin/plugin.json
+  s_0fa170e13b6920::t_58ec1c00e3df34 17
+tests/adapters.test.js
+  s_0fa170e13b6920::t_16f216694bb799 101-118
+package.json
+  s_0fa170e13b6920::t_cacdad767eafd1 8
+rules/budzie.mdc
+  s_0fa170e13b6920::t_58ec1c00e3df34 1-7
+tests/hooks.test.js
+  s_0fa170e13b6920::t_30d0ed12220dbb 130,175-184
+  s_0fa170e13b6920::t_50adc7b32b37be 185
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "672c3fe8f904dee254d2b54389a081ca1514f999",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
