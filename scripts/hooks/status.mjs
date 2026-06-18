@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { readConfig } from "../budget.mjs";
+import { renderBadge } from "../ledger.mjs";
 import { readMode } from "./mode-tracker.mjs";
 
 /**
@@ -50,7 +51,8 @@ function budgetSegment(root, env) {
 export function renderStatus(root, env = process.env) {
   const mode = readMode(env);
   const modeSegment = mode.active ? "on" : "off";
-  return `Budzie: ${modeSegment} | ${budgetSegment(root, env)}`;
+  // Lifetime-savings badge leads the line; mode/budget follow.
+  return `${renderBadge(env)} | Budzie: ${modeSegment} | ${budgetSegment(root, env)}`;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -60,7 +62,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     line = renderStatus(root);
   } catch {
     // Last-resort guard: a statusline error must never surface to the user.
-    line = "Budzie: off | no budget";
+    line = "[BUDZIE] 0 | Budzie: off | no budget";
   }
   process.stdout.write(line + "\n");
 }
