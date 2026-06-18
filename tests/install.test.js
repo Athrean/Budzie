@@ -8,6 +8,7 @@ import {
   readFileSync,
   rmSync,
   statSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -681,3 +682,20 @@ test("CLI subprocess installs into an isolated config dir", async () => {
     assert.ok(exists(path.join(configDir, "agents")));
   });
 });
+
+test(
+  "CLI runs through an npm-style symlink",
+  { skip: process.platform === "win32" ? "POSIX symlink behavior" : false },
+  () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "budzie-bin-"));
+    const executable = path.join(dir, "budzie");
+    try {
+      symlinkSync(CLI, executable);
+      const result = spawnSync(executable, ["--help"], { encoding: "utf8" });
+      assert.equal(result.status, 0, result.stderr);
+      assert.match(result.stdout, /Budzie installer/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+);
