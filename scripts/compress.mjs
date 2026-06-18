@@ -320,12 +320,11 @@ function compressLine(line, level) {
 }
 
 /**
- * Compress markdown memory text while keeping fenced blocks untouched.
  * @param {string} text
  * @param {Level} level
  * @returns {string}
  */
-export function compressMarkdown(text, level) {
+function compressMarkdownBody(text, level) {
   const pieces = [];
   const fence = /(```[\s\S]*?```|~~~[\s\S]*?~~~)/g;
   let last = 0;
@@ -351,7 +350,29 @@ export function compressMarkdown(text, level) {
         .join("\n")
     );
   }
-  return pieces.join("").replace(/\n{3,}/g, "\n\n").trimEnd() + "\n";
+  return pieces.join("").replace(/\n{3,}/g, "\n\n").trimEnd();
+}
+
+/**
+ * Compress standalone human-readable prose with the current intensity rules.
+ * Destructive or conditional multi-step text stays fully clear.
+ * @param {string} text
+ * @param {Level} level
+ * @returns {string}
+ */
+export function compressProse(text, level) {
+  if (shouldAutoClarify(text)) return text;
+  return compressMarkdownBody(text, level);
+}
+
+/**
+ * Compress markdown memory text while keeping fenced blocks untouched.
+ * @param {string} text
+ * @param {Level} level
+ * @returns {string}
+ */
+export function compressMarkdown(text, level) {
+  return compressMarkdownBody(text, level) + "\n";
 }
 
 /**

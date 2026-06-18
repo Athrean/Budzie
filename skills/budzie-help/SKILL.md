@@ -11,9 +11,9 @@ Commands:
 - `/budzie-receipts`: local savings report.
 - `/budzie-reap`: audit, cut, verify, report.
 - `/budzie-budget`: check or set allowance.
-- `/budzie-shrink`: shrink prose-heavy tool descriptions, preserve behavior.
-- `/budzie-compress`: compress one agent memory file in the same language with
-  a `.bak` backup.
+ - `/budzie-shrink`: run `budzie-shrink --upstream "<command>"` as MCP middleware.
+ - `/budzie-compress`: compress one agent memory file in the same language with
+   a `.bak` backup.
 - `/budzie-help`: this card.
 
 Marker:
@@ -22,12 +22,13 @@ Marker:
 // budzie: native date input, upgrade to date-picker only when range selection ships
 ```
 
-Hooks (opt-in, local-only):
+Auto-activation (local-only):
 
-- `hooks/hooks.json`: register to auto-activate Budzie on session start and show
-  a local status indicator.
-- SessionStart runs `node scripts/hooks/activate.mjs`, which injects the Budzie
-  ruleset as hidden context and records activation locally.
+- Claude Code uses `hooks/hooks.json`; Codex uses `hooks/codex.json`.
+- Their SessionStart hooks run `node scripts/hooks/activate.mjs`, inject the
+  Budzie ruleset as hidden context, and record activation locally.
+- Rules-capable agents plugin hosts load `rules/budzie.mdc`, whose
+  `alwaysApply: true` frontmatter activates the `budzie` skill from message one.
 - Statusline runs `hooks/statusline.sh` (POSIX) or `hooks/statusline.ps1`
   (PowerShell), printing `Budzie: on|off | budget <ceiling> <unit> (<mode>)`.
 - Activation state lives in a host data dir (`$XDG_DATA_HOME/budzie`,
