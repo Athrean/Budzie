@@ -1,0 +1,21 @@
+tests/bench-multilingual.test.js
+  s_0fa170e13b6920::t_501b06a51aa05b 29-35
+package.json
+  s_0fa170e13b6920::t_a024023be5a58b 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "8734fe7fd47811529f182559c0abd1fae470f0e5",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
