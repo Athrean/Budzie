@@ -76,6 +76,15 @@ function writeBaseline(root) {
     scripts: "./scripts/",
     hooks: "./hooks/hooks.json",
   });
+  writeJson(root, ".opencode/plugin.json", {
+    name: "budzie",
+    version: "0.1.0",
+    commands: "./commands/",
+    skills: "./skills/",
+    agents: "./agents/",
+    scripts: "./scripts/",
+    hooks: "./hooks/hooks.json",
+  });
   for (const dir of ["agents", "commands", "skills", "scripts", "hooks"]) {
     mkdirSync(path.join(root, dir), { recursive: true });
   }
