@@ -1,0 +1,25 @@
+package.json
+  s_c2ea962d3579b2::t_7cd48eae47ae4d 7-17,19,21
+install.ps1
+  s_c2ea962d3579b2::t_849f179d077990 1-40
+tests/bootstrap.test.js
+  s_c2ea962d3579b2::t_cbd06f3d253f43 1-113
+install.sh
+  s_c2ea962d3579b2::t_849f179d077990 1-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "324d7add6d854c11d436be365b37e33d3fe03556",
+  "prompts": {},
+  "sessions": {
+    "s_c2ea962d3579b2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eda1c-e734-7c21-9d78-42d0b125b919",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
