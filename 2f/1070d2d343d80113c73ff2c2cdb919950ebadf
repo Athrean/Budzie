@@ -1,0 +1,32 @@
+scripts/compress.mjs
+  s_0fa170e13b6920::t_fd50af9750d0eb 185-187
+  s_0fa170e13b6920::t_37aa8bf5220dfd 305
+  s_0fa170e13b6920::t_473843ebad8d0e 48,84,125,182
+  s_0fa170e13b6920::t_74c1748a6031c5 181,183-184
+  s_0fa170e13b6920::t_e13a0ed7dc4915 33-41,49,57-76,85,93-112,114-116,126,134-153,155-157,165-173,277-280
+  s_0fa170e13b6920::t_69b69ed0e58076 212,220
+  s_0fa170e13b6920::t_990efb8539e77b 213-214
+tests/compress.test.js
+  s_0fa170e13b6920::t_27b57207cf9339 176-210
+  s_0fa170e13b6920::t_9db60ac419f092 105-124
+  s_0fa170e13b6920::t_1615376bfdf072 140-143,145-157
+  s_0fa170e13b6920::t_bcfa98c64d56ea 13,129,144,162
+  s_0fa170e13b6920::t_2e8463a41a1e7c 125-128,130-139
+  s_0fa170e13b6920::t_7a95fff59b6c89 158-161,163-175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "2f1070d2d343d80113c73ff2c2cdb919950ebadf",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
