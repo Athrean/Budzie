@@ -121,6 +121,40 @@ test("prose-field compression: only configured fields shrink, structure intact",
   assert.deepEqual(catalog, proseCatalog());
 });
 
+test("prose-field compression follows the configured Budzie intensity", () => {
+  const catalog = proseCatalog();
+  const low = compressCatalog(catalog, {
+    enabled: true,
+    fields: ["description"],
+    level: "low",
+  });
+  const ultra = compressCatalog(catalog, {
+    enabled: true,
+    fields: ["description"],
+    level: "ultra",
+  });
+
+  assert.ok(
+    byteLength(ultra.catalog.tools[0].description) <
+      byteLength(low.catalog.tools[0].description)
+  );
+});
+
+test("invalid intensity falls back to the default level", () => {
+  const catalog = proseCatalog();
+  const fallback = compressCatalog(catalog, {
+    enabled: true,
+    fields: ["description"],
+    level: /** @type {any} */ ("turbo"),
+  });
+  const expected = compressCatalog(catalog, {
+    enabled: true,
+    fields: ["description"],
+  });
+
+  assert.deepEqual(fallback, expected);
+});
+
 test("prose-field compression: unconfigured fields are left alone", () => {
   const catalog = proseCatalog();
   const out = compressCatalog(catalog, { enabled: true, fields: ["description"] });
