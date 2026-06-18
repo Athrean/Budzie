@@ -38,6 +38,20 @@ node scripts/receipts.mjs --ledger  # rows: file, line, marker, cut tag, tier, d
 
 Real local counts only — no baseline, no estimate.
 
+## Record (lifetime ledger)
+
+After scoring, append this run to the local lifetime ledger so the statusline
+badge can show cumulative savings. Local-only, zero network:
+
+```bash
+node scripts/ledger.mjs append --tokens <N> --lines <N> --deps <N> --cost <N>
+```
+
+Pass the real counts you measured (tokens saved, lines avoided, deps avoided)
+and any labelled cost estimate; omit a flag to record 0. The command prints the
+updated `[BUDZIE] <total>` badge. The ledger lives at `~/.config/budzie/ledger.json`
+(honoring `$XDG_CONFIG_HOME`) and is created on first run.
+
 ## Output
 
 Show real local counts first. If estimating lines, tokens, or dollars, prefix the
