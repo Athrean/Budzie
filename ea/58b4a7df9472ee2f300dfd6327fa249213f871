@@ -1,0 +1,155 @@
+scripts/compress.mjs
+  s_0fa170e13b6920::t_e13a0ed7dc4915 33-41,49,57-75,84,92-110,112-114,124,132-150,152-154,162-170,274-277
+  s_0fa170e13b6920::t_74c1748a6031c5 178,180-181
+  s_da00640b035206::t_2bac7ae795a447 211
+  s_0fa170e13b6920::t_37aa8bf5220dfd 302
+  s_0fa170e13b6920::t_5a25fdbf8d27fe 327,353-375
+  s_0fa170e13b6920::t_fd50af9750d0eb 182-184
+  s_0fa170e13b6920::t_473843ebad8d0e 48,83,123,179
+  s_0fa170e13b6920::t_69b69ed0e58076 209,217
+  s_0fa170e13b6920::t_990efb8539e77b 210
+tests/install.test.js
+  s_c5f84ebcfcd4f4::t_0620aff18e7062 19,28-29,39,46-48,65-66,69-70,74-75,79-80,84-90,146-170,173,179-180,184-189,191,195-199,201-203,205-211,214-216,219-279,321-340,345,347,349,357-375,378,386-389,397-401,405,408,411,416,419-422,426-482,486,492,516,520,525,584,586,588,593,607-608,610-612,616-618,620-631,634-646,648-649,653-657,660,666-667,674-676
+  s_0fa170e13b6920::t_78f4df6265a66e 527
+  s_0fa170e13b6920::t_ec7f08bad465d7 519,521-524,528-529,531-532,535
+  s_da00640b035206::t_02b1b01f37e79f 4,33-38,280-318
+  s_0fa170e13b6920::t_acda620cec34d5 67-68,71-73,76-78,81-83,91
+  s_0fa170e13b6920::t_d5067a14cd498e 491,493
+  s_c5f84ebcfcd4f4::t_ddf850706cbe0a 580,582-583,587,589-590,592,594-600
+tests/compress.test.js
+  s_da00640b035206::t_1a69582699572f 125-137,140-143,152-154,170-172,188-190
+  s_0fa170e13b6920::t_bcfa98c64d56ea 13,148,163,181
+  s_0fa170e13b6920::t_1615376bfdf072 159-162,164-169,173-176
+  s_0fa170e13b6920::t_7a95fff59b6c89 177-180,182-187,191-194
+  s_da00640b035206::t_4a5145e852aabb 138-139
+  s_0fa170e13b6920::t_27b57207cf9339 195-229
+  s_0fa170e13b6920::t_e8e9c4f07950fd 307-322
+  s_0fa170e13b6920::t_2e8463a41a1e7c 144-147,149-151,155-158
+  s_0fa170e13b6920::t_9db60ac419f092 105-124
+bin/budzie-install.mjs
+  s_c5f84ebcfcd4f4::t_96db50f0848b5f 19-24,27,29-34,40-45,54-63,68-70,78,81,86-89,104,107-108,125-127,140-147,153-156,168-170,175-234,236,238-255,258-259,294-308,310-312,314,316-345,347-348,367,370,375,378-379,395,399-400,403,406-407,417-467,470-472,474,478-481,486,498-499,501-502,504-531,534-564,566,572,579-583,587-589,591-592,594-604,607-629,631,635,639,641,644,646-647,649-662,670-671,676,681-683,685-687,690,692,695-698,704,726-736,739,745,747,749,751
+  s_c5f84ebcfcd4f4::t_1749c1895cf789 46
+  s_0fa170e13b6920::t_3403a233b3cb6c 17,632
+tests/tool-reducer.test.js
+  s_0fa170e13b6920::t_f4b0b7d6a99c93 124-142
+  s_da00640b035206::t_c98595064ff930 143-157
+commands/budzie-shrink.toml
+  s_0fa170e13b6920::t_3f323cf6afabfd 2
+README.md
+  s_c5f84ebcfcd4f4::t_b676566fae873d 82-98
+  s_0fa170e13b6920::t_b9654f0d93df12 27,31-42
+  s_0fa170e13b6920::t_3f323cf6afabfd 44-46
+  s_0fa170e13b6920::t_53bf7094675274 28,47-58
+  s_0fa170e13b6920::t_40e9b691c422c9 66-67,71,73-80
+tests/hooks.test.js
+  s_0fa170e13b6920::t_b80d92eb9dc0cc 298-299
+  s_0fa170e13b6920::t_9920f27c47874c 2,142-183
+  s_0fa170e13b6920::t_127c176287f025 186-202
+  s_0fa170e13b6920::t_50adc7b32b37be 213
+  s_0fa170e13b6920::t_30d0ed12220dbb 141,203-212
+  s_da00640b035206::t_bdf4c7d6eb6f0c 13,115-121
+scripts/hosts.mjs
+  s_da00640b035206::t_aa62030e433b78 123,125-126,253-257,339-346
+  s_c5f84ebcfcd4f4::t_afc2937d90cae6 1,3-122,124,127-252,258-338,347-375
+  s_da00640b035206::t_49bbc9424c3288 2
+commands/budzie-help.toml
+  s_0fa170e13b6920::t_53bf7094675274 2
+skills/budzie-compress/SKILL.md
+  s_0fa170e13b6920::t_53bf7094675274 6-9,29-32,36-37,41-45
+.codex-plugin/plugin.json
+  s_0fa170e13b6920::t_88da596e666d2f 15
+tests/bench-multilingual.test.js
+  s_0fa170e13b6920::t_501b06a51aa05b 29-35
+  s_0fa170e13b6920::t_90f17c8c6ed318 53
+  s_0fa170e13b6920::t_bce5aa71533512 1-28,36-52,54-59
+benchmarks/fixtures/multilingual-compression.json
+  s_0fa170e13b6920::t_bce5aa71533512 1-44
+tests/adapters.test.js
+  s_0fa170e13b6920::t_16f216694bb799 101-118
+commands/budzie-compress.toml
+  s_0fa170e13b6920::t_53bf7094675274 2
+skills/budzie/SKILL.md
+  s_0fa170e13b6920::t_53bf7094675274 48-50
+hooks/hooks.json
+  s_0fa170e13b6920::t_51e66f389314cb 5
+skills/budzie-shrink/SKILL.md
+  s_0fa170e13b6920::t_3f323cf6afabfd 44,46,48-49,52,55
+  s_0fa170e13b6920::t_ff58e4ee7cf1e9 53-54
+  s_0fa170e13b6920::t_b9654f0d93df12 4-6,11,13-15,17-19,21,23-29,31,33,35,37-39,41-42,56,58-60
+scripts/tool-reducer.mjs
+  s_da00640b035206::t_7004eb7701509f 6,65-69
+  s_0fa170e13b6920::t_5a25fdbf8d27fe 5,7-11,20,45,47,50-51,90
+package.json
+  s_0fa170e13b6920::t_b9654f0d93df12 10-11
+  s_0fa170e13b6920::t_a024023be5a58b 8
+scripts/check-drift.mjs
+  s_c5f84ebcfcd4f4::t_3d4b36a53db3ab 400-448
+  s_c5f84ebcfcd4f4::t_35909c9ba16e68 531
+  s_da00640b035206::t_eb10621fadcadc 54-61,335-338
+  s_0fa170e13b6920::t_74ce140bb39659 302-311
+  s_da00640b035206::t_aa62030e433b78 51
+  s_0fa170e13b6920::t_199c590f1d1260 257-260,262-264,266-270,334,353-354
+  s_c5f84ebcfcd4f4::t_7beb7641342ff2 6-8
+  s_0fa170e13b6920::t_862311b033483a 9-43,69,261,265,271-301,312-333,341-352,392
+  s_c5f84ebcfcd4f4::t_cd02102bbfe5dc 49-50,52-53
+hooks/codex.json
+  s_0fa170e13b6920::t_51e66f389314cb 5
+  s_0fa170e13b6920::t_88da596e666d2f 1-4,6-16
+scripts/hooks/mode-tracker.mjs
+  s_0fa170e13b6920::t_3403a233b3cb6c 2-8,106-111
+  s_da00640b035206::t_eb10621fadcadc 112-116
+skills/budzie-help/SKILL.md
+  s_0fa170e13b6920::t_40e9b691c422c9 25,27-31
+  s_0fa170e13b6920::t_b9654f0d93df12 14
+  s_0fa170e13b6920::t_53bf7094675274 15-16
+.agents-plugin/plugin.json
+  s_0fa170e13b6920::t_58ec1c00e3df34 17
+rules/budzie.mdc
+  s_0fa170e13b6920::t_58ec1c00e3df34 1-7
+tests/drift.test.js
+  s_0fa170e13b6920::t_0cbd18f557de36 354
+  s_da00640b035206::t_bdf4c7d6eb6f0c 39,218-219,271-289
+  s_0fa170e13b6920::t_be90d07ba7ef2e 331-342
+  s_0fa170e13b6920::t_4b110b26201668 57,77,79,82-103,294-301
+  s_c5f84ebcfcd4f4::t_db0e1d408d1756 133-154
+  s_0fa170e13b6920::t_afde86c78454a0 306-330
+tests/fixtures/shrink-upstream.mjs
+  s_0fa170e13b6920::t_ffab64e147e458 65-80
+  s_da00640b035206::t_c98595064ff930 41-45
+  s_0fa170e13b6920::t_dbc6d57de56e58 1-40,64,81-91
+  s_0fa170e13b6920::t_e361fb35ae30cc 46-63
+benchmarks/multilingual-compression.mjs
+  s_0fa170e13b6920::t_a57896894a9fe8 1-104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "ea58b4a7df9472ee2f300dfd6327fa249213f871",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    },
+    "s_c5f84ebcfcd4f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "655a0ca7-8b0f-4e34-941d-ef08a11b661d",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    },
+    "s_da00640b035206": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed98d-d61a-77e2-bb1b-0b5d8ca40fb5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
