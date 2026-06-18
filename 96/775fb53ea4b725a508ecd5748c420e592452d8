@@ -1,0 +1,31 @@
+skills/budzie-compress/SKILL.md
+  s_0fa170e13b6920::t_53bf7094675274 6-9,29-32,36-37,41-45
+skills/budzie/SKILL.md
+  s_0fa170e13b6920::t_53bf7094675274 48-50
+README.md
+  s_0fa170e13b6920::t_53bf7094675274 27,30-41
+commands/budzie-help.toml
+  s_0fa170e13b6920::t_53bf7094675274 2
+tests/compress.test.js
+  s_0fa170e13b6920::t_e8e9c4f07950fd 288-303
+commands/budzie-compress.toml
+  s_0fa170e13b6920::t_53bf7094675274 2
+skills/budzie-help/SKILL.md
+  s_0fa170e13b6920::t_53bf7094675274 15-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "96775fb53ea4b725a508ecd5748c420e592452d8",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
