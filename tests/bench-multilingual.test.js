@@ -26,6 +26,13 @@ test("multilingual fixtures stay separate from coding benchmark tasks", () => {
   }
 });
 
+test("the package ships the local multilingual benchmark surface", () => {
+  const pkg = JSON.parse(readFileSync("package.json", "utf8"));
+
+  assert.ok(pkg.files.includes("benchmarks/multilingual-compression.mjs"));
+  assert.ok(pkg.files.includes("benchmarks/fixtures/multilingual-compression.json"));
+});
+
 test("multilingual compression benchmark passes same-language fixtures locally", () => {
   const rows = runMultilingualBenchmark();
 
