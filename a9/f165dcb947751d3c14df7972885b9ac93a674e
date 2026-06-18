@@ -1,0 +1,21 @@
+tests/install.test.js
+  s_c5f84ebcfcd4f4::t_ddf850706cbe0a 324-352
+bin/budzie-install.mjs
+  s_c5f84ebcfcd4f4::t_f72c06e9df1d67 321-330
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "a9f165dcb947751d3c14df7972885b9ac93a674e",
+  "prompts": {},
+  "sessions": {
+    "s_c5f84ebcfcd4f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "655a0ca7-8b0f-4e34-941d-ef08a11b661d",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
