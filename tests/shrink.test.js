@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -165,4 +165,24 @@ test("failed tools/list responses pass through without a savings report", async 
   assert.equal(response.stdout, JSON.stringify(expected) + "\n");
   assert.deepEqual(response.messages, [expected]);
   assert.equal(response.stderr, "");
+});
+
+test("package, command, skill, and README ship the budzie-shrink server", () => {
+  const pkg = JSON.parse(readFileSync("package.json", "utf8"));
+  const lock = JSON.parse(readFileSync("package-lock.json", "utf8"));
+  const command = readFileSync("commands/budzie-shrink.toml", "utf8");
+  const skill = readFileSync("skills/budzie-shrink/SKILL.md", "utf8");
+  const readme = readFileSync("README.md", "utf8");
+
+  assert.equal(pkg.bin["budzie-shrink"], "./bin/budzie-shrink.mjs");
+  assert.equal(
+    lock.packages[""].bin["budzie-shrink"],
+    "bin/budzie-shrink.mjs"
+  );
+  assert.ok(pkg.files.includes("bin/"));
+  for (const text of [command, skill, readme]) {
+    assert.match(text, /budzie-shrink --upstream/);
+  }
+  assert.match(skill, /stderr/);
+  assert.match(skill, /current Budzie intensity/i);
 });

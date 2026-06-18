@@ -24,8 +24,25 @@ repo, then uses that signal to guard spend and remove existing bloat.
 | `/budzie-receipts` | Report local savings and badge text. |
 | `/budzie-reap` | Audit, cut, verify, and report deleted bloat. |
 | `/budzie-budget` | Check or set the spend ceiling. |
+| `/budzie-shrink` | Compress MCP tool descriptions through a stdio proxy. |
 | `/budzie-compress` | Compress one agent memory file with a `.bak` backup. |
 | `/budzie-help` | Show quick reference. |
+
+## MCP middleware
+
+Wrap a local stdio MCP server:
+
+```bash
+budzie-shrink --upstream "node ./path/to/server.mjs"
+```
+
+Budzie forwards MCP traffic and compresses top-level tool descriptions with the
+current intensity setting. Schemas and other protocol fields stay unchanged.
+The first catalog's UTF-8 byte savings are written to stderr; stdout remains
+protocol-only.
+
+For a saved catalog, `node scripts/tool-reducer.mjs --fields description
+catalog.json` runs the same reducer in read-only inspection mode.
 
 ## Supported hosts
 

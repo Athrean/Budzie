@@ -7,7 +7,8 @@
   "type": "module",
   "files": ["README.md", "LICENSE", "bin/", "agents/", "commands/", "skills/", "scripts/", "hooks/", ".codex-plugin/", ".claude-plugin/", ".agents-plugin/"],
   "bin": {
-    "budzie-install": "./bin/budzie-install.mjs"
+    "budzie-install": "./bin/budzie-install.mjs",
+    "budzie-shrink": "./bin/budzie-shrink.mjs"
   },
   "scripts": {
     "test": "node --test tests/*.test.js",
