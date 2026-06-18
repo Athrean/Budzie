@@ -1,7 +1,9 @@
 // @ts-check
+import path from "node:path";
+import { parseArgs } from "node:util";
 import { fileURLToPath } from "node:url";
 
-import { scanContext } from "./context-receipts.mjs";
+import { isSensitivePath, scanContext } from "./context-receipts.mjs";
 import { plan } from "./reap.mjs";
 
 /** Default number of items kept in each `top` list — keeps output token-lean. */
@@ -83,7 +85,10 @@ export async function audit(root, opts = {}) {
   const top = opts.top ?? DEFAULT_TOP;
   const [ctx, cuts] = await Promise.all([
     scanContext(root),
-    plan(root, { aggressive: opts.aggressive ?? false }),
+    plan(root, {
+      aggressive: opts.aggressive ?? false,
+      exclude: (file) => isSensitivePath(path.relative(root, file)),
+    }),
   ]);
 
   /** @type {Record<string, number>} */
@@ -170,22 +175,23 @@ function parseTop(raw) {
  * @returns {Promise<number>}
  */
 export async function main(argv) {
-  const flags = new Set(argv.filter((a) => a.startsWith("--") && !a.includes("=")));
-  const topArg = argv.find((a) => a.startsWith("--top"));
-  const positional = argv.filter((a) => !a.startsWith("--"));
+  const parsed = parseArgs({
+    args: argv,
+    allowPositionals: true,
+    options: {
+      json: { type: "boolean", default: false },
+      aggressive: { type: "boolean", default: false },
+      top: { type: "string" },
+    },
+  });
+  const top = parsed.values.top ? parseTop(parsed.values.top) : undefined;
+  const root = parsed.positionals[0] ?? process.cwd();
+  const result = await audit(root, {
+    top,
+    aggressive: parsed.values.aggressive,
+  });
 
-  /** @type {number | undefined} */
-  let top;
-  if (topArg) {
-    const eq = topArg.indexOf("=");
-    const value = eq !== -1 ? topArg.slice(eq + 1) : argv[argv.indexOf(topArg) + 1];
-    top = parseTop(value ?? "");
-  }
-
-  const root = positional[0] ?? process.cwd();
-  const result = await audit(root, { top, aggressive: flags.has("--aggressive") });
-
-  if (flags.has("--json")) {
+  if (parsed.values.json) {
     process.stdout.write(JSON.stringify(result) + "\n");
   } else {
     process.stdout.write(renderAudit(result) + "\n");

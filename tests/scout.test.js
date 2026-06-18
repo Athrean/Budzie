@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from "node:fs";
+import {
+  mkdtempSync,
+  writeFileSync,
+  realpathSync,
+  rmSync,
+  mkdirSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -43,7 +49,10 @@ function writeFixture(root) {
       "const b = 2;",
     ].join("\n") + "\n"
   );
-  writeFileSync(path.join(root, ".env"), "SECRET=should-never-be-read\n");
+  writeFileSync(
+    path.join(root, ".env"),
+    "SECRET=should-never-be-read\n// budzie: delete secret marker\n"
+  );
 }
 
 test("audit counts bloat cuts and context, refuses sensitive paths", async () => {
@@ -61,6 +70,7 @@ test("audit counts bloat cuts and context, refuses sensitive paths", async () =>
     assert.equal(a.context.count, 1, "CLAUDE.md is the only context file");
     assert.ok(a.context.totalBytes > 0, "real byte count reported");
     assert.equal(a.context.refused, 1, ".env refused");
+    assert.equal(a.bloat.byTier.auto, 2, ".env marker was never read");
 
     // .env contents must never surface anywhere in the audit.
     assert.ok(!JSON.stringify(a).includes("should-never-be-read"));
@@ -143,7 +153,7 @@ test("CLI --json emits structured audit; default renders a card", async () => {
 
     const json = execFileSync(process.execPath, [CLI, root, "--json"], { encoding: "utf8" });
     const parsed = JSON.parse(json);
-    assert.equal(parsed.scope, root);
+    assert.equal(realpathSync(parsed.scope), realpathSync(root));
     assert.equal(parsed.bloat.total, 3);
     assert.ok(!json.includes("should-never-be-read"));
 
@@ -156,4 +166,23 @@ test("CLI rejects a non-positive --top", async () => {
   assert.throws(() =>
     execFileSync(process.execPath, [CLI, "--top", "0"], { encoding: "utf8", stdio: "pipe" })
   );
+});
+
+test("CLI --top without a root audits cwd instead of the flag value", async () => {
+  await withTree(async (root) => {
+    writeFileSync(
+      path.join(root, "code.js"),
+      "// budzie: shrink one\n// budzie: shrink two\n// budzie: shrink three\n"
+    );
+
+    const out = execFileSync(process.execPath, [CLI, "--top", "2", "--json"], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    const parsed = JSON.parse(out);
+
+    assert.equal(realpathSync(parsed.scope), realpathSync(root));
+    assert.equal(parsed.bloat.total, 3);
+    assert.equal(parsed.bloat.top.length, 2);
+  });
 });
