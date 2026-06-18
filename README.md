@@ -49,6 +49,24 @@ plugin hooks. The agents adapter uses the
 activation instruction from the first message. This does not claim that every
 skill-only agent host supports `.mdc` rules.
 
+## Install
+
+`budzie-install` detects the agent hosts on your machine via a data-driven
+matrix (CLI probes, config-directory probes, editor extension dirs, and macOS
+app bundles) and installs the right adapter format into each host's config dir.
+
+```sh
+budzie-install --dry-run     # print the full plan, write nothing
+budzie-install               # install for every detected host
+budzie-install --host cursor # target one host by id
+budzie-install --uninstall   # remove only Budzie-managed files
+budzie-install --force       # overwrite existing managed files
+```
+
+Each install dir gets a `.budzie-manifest.json` recording exactly which files
+Budzie owns. Uninstall reads that manifest and removes only those entries, so
+anything you authored is left untouched. Re-runs are idempotent.
+
 ## Marker
 
 Use `budzie:` comments for intentional shortcuts:

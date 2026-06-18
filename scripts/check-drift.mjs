@@ -3,6 +3,9 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { MANIFEST_VERSION } from "../bin/budzie-install.mjs";
+import { FORMATS, HOST_MATRIX } from "./hosts.mjs";
+
 /**
  * @typedef {object} HookActivationSurface
  * @property {"hooks"} field
@@ -43,6 +46,11 @@ export const BUDZIE_INVARIANTS = Object.freeze({
   packageName: "budzie",
   pluginName: "budzie",
   pluginDisplayName: "Budzie",
+  // The installer's manifest schema version. Drift bumps the moment this and
+  // the installer disagree, forcing a deliberate version bump on shape changes.
+  manifestVersion: 2,
+  // The minimum host count the detection matrix must cover (issue contract).
+  minHostMatrixSize: 15,
   requiredRuntimeDirs: Object.freeze([
     "agents/",
     "commands/",
@@ -389,6 +397,56 @@ async function checkAdapterManifests(root, packageVersion, drift) {
 }
 
 /**
+ * Validate the installer's host-detection matrix and manifest logic.
+ *
+ * Data-driven over `HOST_MATRIX` and `FORMATS` — no per-host special cases:
+ *   - The matrix covers at least the contracted host count.
+ *   - Host ids are unique (manifest keys must not collide).
+ *   - Every host references a real format.
+ *   - Every format's source paths resolve to real shipped surfaces under root.
+ *   - The manifest version constant is current (forces a bump on shape change).
+ * @param {string} root
+ * @param {string[]} drift
+ * @returns {Promise<void>}
+ */
+async function checkInstallerMatrix(root, drift) {
+  if (HOST_MATRIX.length < BUDZIE_INVARIANTS.minHostMatrixSize) {
+    drift.push(
+      `host matrix must cover at least ${BUDZIE_INVARIANTS.minHostMatrixSize} hosts (has ${HOST_MATRIX.length})`
+    );
+  }
+
+  /** @type {Set<string>} */
+  const seen = new Set();
+  for (const host of HOST_MATRIX) {
+    if (seen.has(host.id)) drift.push(`host matrix has a duplicate id ${host.id}`);
+    seen.add(host.id);
+    if (!FORMATS[host.format]) {
+      drift.push(`host ${host.id} references unknown format ${host.format}`);
+    }
+  }
+
+  // Every format must reuse only shipped source paths (no invented files).
+  /** @type {Set<string>} */
+  const checked = new Set();
+  for (const format of Object.values(FORMATS)) {
+    for (const spec of format.specs) {
+      if (checked.has(spec.from)) continue;
+      checked.add(spec.from);
+      if (!(await pathExists(root, spec.from))) {
+        drift.push(`format ${format.id} references missing source ${spec.from}`);
+      }
+    }
+  }
+
+  if (MANIFEST_VERSION !== BUDZIE_INVARIANTS.manifestVersion) {
+    drift.push(
+      `installer manifest version ${MANIFEST_VERSION} must equal invariant ${BUDZIE_INVARIANTS.manifestVersion}`
+    );
+  }
+}
+
+/**
  * Return every detected instruction or adapter drift problem.
  * @param {string} [root]
  * @returns {Promise<string[]>}
@@ -470,6 +528,7 @@ export async function checkDrift(root = process.cwd()) {
   await checkCommandFiles(root, drift);
   await checkSkillFiles(root, drift);
   await checkAgentFiles(root, drift);
+  await checkInstallerMatrix(root, drift);
 
   return drift;
 }

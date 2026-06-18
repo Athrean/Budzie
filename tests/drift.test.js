@@ -130,6 +130,28 @@ test("current repo satisfies canonical Budzie invariants", async () => {
   assert.deepEqual(drift, []);
 });
 
+test("invariants pin the installer manifest version and matrix size", () => {
+  assert.equal(BUDZIE_INVARIANTS.manifestVersion, 2);
+  assert.ok(BUDZIE_INVARIANTS.minHostMatrixSize >= 15);
+});
+
+test("installer matrix drift reports a format source missing from the tree", async () => {
+  await withTree(async (root) => {
+    // The rules-file format ships rules/budzie.mdc; remove it and the
+    // data-driven installer-matrix check must catch the dangling source.
+    rmSync(path.join(root, "rules/budzie.mdc"));
+
+    const drift = await checkDrift(root);
+
+    assert.ok(
+      drift.some((d) =>
+        d.includes("format rules-file references missing source rules/budzie.mdc")
+      ),
+      `expected installer-matrix drift, got: ${JSON.stringify(drift)}`
+    );
+  });
+});
+
 test("command files report missing matching skills and runtime scripts", async () => {
   await withTree(async (root) => {
     writeFixtureFile(
