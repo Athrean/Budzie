@@ -1,0 +1,25 @@
+scripts/hooks/mode-tracker.mjs
+  s_da00640b035206::t_eb10621fadcadc 112-116
+scripts/check-drift.mjs
+  s_da00640b035206::t_eb10621fadcadc 54-61,335-338
+tests/hooks.test.js
+  s_da00640b035206::t_bdf4c7d6eb6f0c 13,115-121
+tests/drift.test.js
+  s_da00640b035206::t_bdf4c7d6eb6f0c 39,218-219,271-289
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "33cd553caf0163990b2300434d0c9999210b9084",
+  "prompts": {},
+  "sessions": {
+    "s_da00640b035206": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed98d-d61a-77e2-bb1b-0b5d8ca40fb5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
