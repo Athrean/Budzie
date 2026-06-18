@@ -1,5 +1,12 @@
 // @ts-check
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { homedir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -41,21 +48,32 @@ const APP_DIR = "budzie";
  *
  * Resolution order, first hit wins:
  *   1. `BUDZIE_DATA_DIR` (explicit opt-out of host defaults, used by tests).
- *   2. `$XDG_CONFIG_HOME/budzie`.
- *   3. `~/.config/budzie` via `os.homedir()` (platform equivalent).
+ *   2. Windows: `%LOCALAPPDATA%` or `%APPDATA%`, then the user profile.
+ *   3. POSIX: `$XDG_CONFIG_HOME/budzie`, then `~/.config/budzie`.
  *
  * The ledger is machine-local config, never the user's working tree.
  * @param {NodeJS.ProcessEnv} [env]
+ * @param {NodeJS.Platform} [platformName]
+ * @param {string} [home]
  * @returns {string} Absolute path to the Budzie config dir.
  */
-export function resolveConfigDir(env = process.env) {
+export function resolveConfigDir(
+  env = process.env,
+  platformName = process.platform,
+  home = homedir()
+) {
+  const paths = platformName === "win32" ? path.win32 : path.posix;
   const explicit = env.BUDZIE_DATA_DIR;
-  if (explicit && explicit.trim() !== "") return path.resolve(explicit);
+  if (explicit && explicit.trim() !== "") return paths.resolve(explicit);
 
-  const xdg = env.XDG_CONFIG_HOME;
-  if (xdg && xdg.trim() !== "") return path.join(xdg, APP_DIR);
+  if (platformName === "win32") {
+    const base = env.LOCALAPPDATA || env.APPDATA;
+    if (base && base.trim() !== "") return paths.join(base, APP_DIR);
+    return paths.join(home, "AppData", "Local", APP_DIR);
+  }
 
-  return path.join(homedir(), ".config", APP_DIR);
+  const xdg = env.XDG_CONFIG_HOME?.trim();
+  return paths.join(xdg && paths.isAbsolute(xdg) ? xdg : paths.join(home, ".config"), APP_DIR);
 }
 
 /**
@@ -120,8 +138,21 @@ export function appendEntry(entry, env = process.env) {
   };
   ledger.entries.push(next);
   const file = ledgerPath(env);
-  mkdirSync(path.dirname(file), { recursive: true });
-  writeFileSync(file, JSON.stringify(ledger, null, 2) + "\n");
+  const dir = path.dirname(file);
+  const temp = path.join(
+    dir,
+    `.${LEDGER_FILE}.${process.pid}.${Date.now()}.tmp`
+  );
+  mkdirSync(dir, { recursive: true });
+  try {
+    writeFileSync(temp, JSON.stringify(ledger, null, 2) + "\n", {
+      flag: "wx",
+      mode: 0o600,
+    });
+    renameSync(temp, file);
+  } finally {
+    rmSync(temp, { force: true });
+  }
   return ledger;
 }
 

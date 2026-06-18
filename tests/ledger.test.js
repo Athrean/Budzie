@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -60,6 +67,14 @@ test("appendEntry creates the file on first run and persists the entry", () => {
     assert.equal(entry.costAvoided, 0.05);
     assert.equal(typeof entry.timestamp, "string");
     assert.ok(entry.timestamp.length > 0, "entry gets an ISO timestamp");
+  });
+});
+
+test("appendEntry creates a private ledger file on POSIX", () => {
+  if (process.platform === "win32") return;
+  withConfigDir((env) => {
+    appendEntry({ tokensSaved: 1 }, env);
+    assert.equal(statSync(ledgerPath(env)).mode & 0o777, 0o600);
   });
 });
 
@@ -129,6 +144,22 @@ test("resolveConfigDir honors XDG_CONFIG_HOME, else ~/.config/budzie", () => {
     resolveConfigDir({}),
     path.join(homedir(), ".config", "budzie")
   );
+  assert.equal(
+    resolveConfigDir(
+      { LOCALAPPDATA: "C:\\Users\\me\\AppData\\Local" },
+      "win32",
+      "C:\\Users\\me"
+    ),
+    "C:\\Users\\me\\AppData\\Local\\budzie"
+  );
+  assert.equal(
+    resolveConfigDir(
+      { XDG_CONFIG_HOME: "relative/config" },
+      "linux",
+      "/home/me"
+    ),
+    "/home/me/.config/budzie"
+  );
 });
 
 test("CLI append then badge round-trips through the config dir", () => {
@@ -141,8 +172,12 @@ test("CLI append then badge round-trips through the config dir", () => {
     // A second append accumulates.
     execFileSync("node", [SCRIPT, "append", "--tokens=600"], { env: merged, encoding: "utf8" });
     const ledger = JSON.parse(readFileSync(ledgerPath(env), "utf8"));
+    const total = execFileSync("node", [SCRIPT, "badge"], {
+      env: merged,
+      encoding: "utf8",
+    }).trim();
     assert.equal(ledger.entries.length, 2);
-    assert.equal(out, "[BUDZIE] 12.4k");
+    assert.equal(total, "[BUDZIE] 13k");
   });
 });
 
