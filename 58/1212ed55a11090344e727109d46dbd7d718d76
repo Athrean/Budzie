@@ -1,0 +1,23 @@
+scripts/compress.mjs
+  s_0fa170e13b6920::t_5a25fdbf8d27fe 228,251,254-276
+tests/tool-reducer.test.js
+  s_0fa170e13b6920::t_f4b0b7d6a99c93 124-142
+scripts/tool-reducer.mjs
+  s_0fa170e13b6920::t_5a25fdbf8d27fe 5-11,20,45,47,50-51,65,86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "581212ed55a11090344e727109d46dbd7d718d76",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
