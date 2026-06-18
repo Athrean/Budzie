@@ -54,7 +54,7 @@ function writeBaseline(root) {
     version: "0.1.0",
     skills: "./skills/",
     agents: "./agents/",
-    hooks: "./hooks/hooks.json",
+    hooks: "./hooks/codex.json",
     interface: {
       displayName: "Budzie",
     },
@@ -74,12 +74,33 @@ function writeBaseline(root) {
     skills: "./skills/",
     agents: "./agents/",
     scripts: "./scripts/",
-    hooks: "./hooks/hooks.json",
+    rules: "./rules/",
   });
-  for (const dir of ["agents", "commands", "skills", "scripts", "hooks"]) {
+  for (const dir of ["agents", "commands", "skills", "scripts", "hooks", "rules"]) {
     mkdirSync(path.join(root, dir), { recursive: true });
   }
-  writeFixtureFile(root, "hooks/hooks.json", "{}\n");
+  for (const file of ["hooks/hooks.json", "hooks/codex.json"]) {
+    writeJson(root, file, {
+      hooks: {
+        SessionStart: [
+          {
+            hooks: [
+              {
+                type: "command",
+                command: "node \"${PLUGIN_ROOT}/scripts/hooks/activate.mjs\"",
+              },
+            ],
+          },
+        ],
+      },
+    });
+  }
+  writeFixtureFile(root, "scripts/hooks/activate.mjs", "// @ts-check\n");
+  writeFixtureFile(
+    root,
+    "rules/budzie.mdc",
+    "---\nalwaysApply: true\n---\nBudzie mode is active.\n"
+  );
 }
 
 /**
@@ -227,6 +248,59 @@ test("adapters report references to missing runtime surfaces", async () => {
   });
 });
 
+test("adapters report hook surfaces without SessionStart activation", async () => {
+  await withTree(async (root) => {
+    writeJson(root, "hooks/codex.json", { hooks: {} });
+
+    const drift = await checkDrift(root);
+
+    assert.deepEqual(drift, [
+      ".codex-plugin/plugin.json hook surface must declare SessionStart",
+    ]);
+  });
+});
+
+test("adapters report SessionStart hooks without the activation runtime", async () => {
+  await withTree(async (root) => {
+    writeJson(root, "hooks/codex.json", {
+      hooks: {
+        SessionStart: [
+          {
+            hooks: [
+              {
+                type: "command",
+                command: "node \"${PLUGIN_ROOT}/scripts/hooks/missing.mjs\"",
+              },
+            ],
+          },
+        ],
+      },
+    });
+
+    const drift = await checkDrift(root);
+
+    assert.deepEqual(drift, [
+      ".codex-plugin/plugin.json SessionStart must run scripts/hooks/activate.mjs",
+    ]);
+  });
+});
+
+test("adapters report rules that are not always applied", async () => {
+  await withTree(async (root) => {
+    writeFixtureFile(
+      root,
+      "rules/budzie.mdc",
+      "---\nalwaysApply: false\n---\nBudzie mode is active.\n"
+    );
+
+    const drift = await checkDrift(root);
+
+    assert.deepEqual(drift, [
+      ".agents-plugin/plugin.json rule rules/budzie.mdc must set alwaysApply: true",
+    ]);
+  });
+});
+
 test("adapters report stale versions per manifest", async () => {
   await withTree(async (root) => {
     writeJson(root, ".agents-plugin/plugin.json", {
@@ -234,6 +308,7 @@ test("adapters report stale versions per manifest", async () => {
       version: "0.9.9",
       skills: "./skills/",
       agents: "./agents/",
+      rules: "./rules/",
     });
 
     const drift = await checkDrift(root);
