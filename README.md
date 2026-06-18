@@ -83,16 +83,37 @@ skill-only agent host supports `.mdc` rules.
 
 ## Install
 
+macOS / Linux:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Athrean/Budzie/main/install.sh | bash
+```
+
+Windows PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/Athrean/Budzie/main/install.ps1 | iex
+```
+
+The shell scripts check Node.js, then run the same `budzie-install` CLI used by
+local clones. To inspect a remote install without writing:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Athrean/Budzie/main/install.sh | bash -s -- --dry-run
+```
+
 `budzie-install` detects the agent hosts on your machine via a data-driven
 matrix (CLI probes, config-directory probes, editor extension dirs, and macOS
 app bundles) and installs the right adapter format into each host's config dir.
 
+From a clone:
+
 ```sh
-budzie-install --dry-run     # print the full plan, write nothing
-budzie-install               # install for every detected host
-budzie-install --host cursor # target one host by id
-budzie-install --uninstall   # remove only Budzie-managed files
-budzie-install --force       # overwrite existing managed files
+./install.sh --dry-run     # print the full plan, write nothing
+./install.sh               # install for every detected host
+./install.sh --host cursor # target one host by id
+./install.sh --uninstall   # remove only Budzie-managed files
+./install.sh --force       # overwrite existing managed files
 ```
 
 Each install dir gets a `.budzie-manifest.json` recording exactly which files
