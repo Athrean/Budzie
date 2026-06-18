@@ -1,0 +1,21 @@
+scripts/ledger.mjs
+  s_da00640b035206::t_16ea79090c4355 2-9,51-52,56-57,60-65,67,69-73,75-76,141-155
+tests/ledger.test.js
+  s_da00640b035206::t_25a1cd5072bb8e 3-10,73-80,147-162,175-178,180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "cd7de0f571de72841125baec722ef041c0aa4e17",
+  "prompts": {},
+  "sessions": {
+    "s_da00640b035206": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed98d-d61a-77e2-bb1b-0b5d8ca40fb5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
