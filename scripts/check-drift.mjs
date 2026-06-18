@@ -48,7 +48,7 @@ export const BUDZIE_INVARIANTS = Object.freeze({
   pluginDisplayName: "Budzie",
   // The installer's manifest schema version. Drift bumps the moment this and
   // the installer disagree, forcing a deliberate version bump on shape changes.
-  manifestVersion: MANIFEST_VERSION,
+  manifestVersion: 2,
   // The minimum host count the detection matrix must cover (issue contract).
   minHostMatrixSize: 15,
   requiredRuntimeDirs: Object.freeze(["agents/", "commands/", "skills/", "scripts/"]),

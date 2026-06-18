@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
+  chmodSync,
   mkdtempSync,
   mkdirSync,
   readdirSync,
@@ -27,7 +28,12 @@ import {
   runInstall,
   runUninstall,
 } from "../bin/budzie-install.mjs";
-import { detectHosts, HOST_MATRIX } from "../scripts/hosts.mjs";
+import {
+  commandOnPath,
+  detectHosts,
+  hostById,
+  HOST_MATRIX,
+} from "../scripts/hosts.mjs";
 import { flagPath, writeMode } from "../scripts/hooks/mode-tracker.mjs";
 
 /** Absolute path to the CLI under test. */
@@ -261,6 +267,47 @@ test("CLAUDE_CONFIG_DIR/CODEX_HOME override host targets", () => {
   const byId = new Map(targets.map((t) => [t.id, t]));
   assert.equal(byId.get("claude-code")?.dir, path.resolve("/custom/claude"));
   assert.equal(byId.get("codex-cli")?.dir, path.resolve("/custom/codex"));
+});
+
+test("relative XDG_CONFIG_HOME falls back to an absolute home target", () => {
+  const home = "/fake/home";
+  const host = hostById("opencode");
+  const probe = fakeProbe({
+    home,
+    env: { XDG_CONFIG_HOME: "relative/config" },
+  });
+
+  assert.equal(host?.target(probe), path.join(home, ".config", "opencode"));
+});
+
+test("Zed target matches the config path that triggered detection", () => {
+  const home = "/fake/home";
+  const xdg = path.join(home, ".config", "zed");
+  const host = hostById("zed");
+  const probe = fakeProbe({
+    home,
+    platform: "darwin",
+    paths: new Set([xdg]),
+  });
+
+  assert.equal(host?.detect(probe), true);
+  assert.equal(host?.target(probe), xdg);
+});
+
+test("commandOnPath ignores non-executable files on POSIX", () => {
+  if (process.platform === "win32") return;
+  const dir = mkdtempSync(path.join(tmpdir(), "budzie-path-"));
+  const command = path.join(dir, "budzie-probe");
+  try {
+    writeFileSync(command, "#!/bin/sh\n");
+    chmodSync(command, 0o644);
+    assert.equal(commandOnPath("budzie-probe", { PATH: dir }), false);
+
+    chmodSync(command, 0o755);
+    assert.equal(commandOnPath("budzie-probe", { PATH: dir }), true);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test("resolveTargets honors --host even when not detected", () => {

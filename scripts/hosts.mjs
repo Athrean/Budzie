@@ -1,5 +1,5 @@
 // @ts-check
-import { existsSync } from "node:fs";
+import { accessSync, constants, existsSync, statSync } from "node:fs";
 import { homedir, platform } from "node:os";
 import path from "node:path";
 
@@ -120,9 +120,10 @@ function inHome(/** @type {Probe} */ probe, /** @type {string[]} */ ...parts) {
 
 /** Resolve $XDG_CONFIG_HOME or ~/.config under the probe. */
 function xdgConfig(/** @type {Probe} */ probe, /** @type {string[]} */ ...parts) {
+  const configured = probe.env.XDG_CONFIG_HOME?.trim();
   const base =
-    probe.env.XDG_CONFIG_HOME && probe.env.XDG_CONFIG_HOME.trim() !== ""
-      ? probe.env.XDG_CONFIG_HOME
+    configured && path.isAbsolute(configured)
+      ? configured
       : inHome(probe, ".config");
   return path.join(base, ...parts);
 }
@@ -249,9 +250,11 @@ export const HOST_MATRIX = Object.freeze([
       dirPresent(p, xdgConfig(p, "zed")) ||
       (p.platform === "darwin" && dirPresent(p, appSupport(p, "Zed"))),
     target: (p) =>
-      p.platform === "darwin"
-        ? appSupport(p, "Zed")
-        : xdgConfig(p, "zed"),
+      p.pathExists(xdgConfig(p, "zed"))
+        ? xdgConfig(p, "zed")
+        : p.platform === "darwin"
+          ? appSupport(p, "Zed")
+          : xdgConfig(p, "zed"),
     format: "skills-drop",
   },
 
@@ -333,7 +336,14 @@ export function commandOnPath(name, env) {
       : [""];
   for (const dir of dirs) {
     for (const ext of exts) {
-      if (existsSync(path.join(dir, name + ext))) return true;
+      const candidate = path.join(dir, name + ext);
+      try {
+        if (!statSync(candidate).isFile()) continue;
+        if (platform() !== "win32") accessSync(candidate, constants.X_OK);
+        return true;
+      } catch {
+        // Missing, unreadable, or non-executable candidates are not commands.
+      }
     }
   }
   return false;
