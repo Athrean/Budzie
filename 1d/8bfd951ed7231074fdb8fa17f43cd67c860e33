@@ -1,0 +1,31 @@
+hooks/codex.json
+  s_0fa170e13b6920::t_51e66f389314cb 5
+tests/install.test.js
+  s_0fa170e13b6920::t_40e9b691c422c9 344
+README.md
+  s_0fa170e13b6920::t_40e9b691c422c9 36-37,41,43-50
+bin/budzie-install.mjs
+  s_0fa170e13b6920::t_40e9b691c422c9 373
+hooks/hooks.json
+  s_0fa170e13b6920::t_51e66f389314cb 5
+tests/hooks.test.js
+  s_0fa170e13b6920::t_127c176287f025 175-191
+skills/budzie-help/SKILL.md
+  s_0fa170e13b6920::t_40e9b691c422c9 24,26-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "1d8bfd951ed7231074fdb8fa17f43cd67c860e33",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
