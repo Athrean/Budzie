@@ -36,7 +36,7 @@ function writeBaseline(root) {
   writeJson(root, "package.json", {
     name: "budzie",
     version: "0.1.0",
-    files: ["agents/", "commands/", "skills/", "scripts/"],
+    files: ["agents/", "commands/", "skills/", "scripts/", "hooks/", "rules/"],
   });
   writeJson(root, "package-lock.json", {
     name: "budzie",
@@ -193,6 +193,8 @@ test("package files report missing shipped runtime directories", async () => {
       "package.json files must include agents/",
       "package.json files must include skills/",
       "package.json files must include scripts/",
+      "package.json files must include hooks/",
+      "package.json files must include rules/",
     ]);
   });
 });
@@ -244,6 +246,25 @@ test("adapters report references to missing runtime surfaces", async () => {
 
     assert.deepEqual(drift, [
       ".claude-plugin/plugin.json references missing ./hooks/nope.json",
+      ".claude-plugin/plugin.json hooks activation surface is missing ./hooks/nope.json",
+    ]);
+  });
+});
+
+test("adapters report missing activation paths even when not relative", async () => {
+  await withTree(async (root) => {
+    writeJson(root, ".claude-plugin/plugin.json", {
+      name: "budzie",
+      version: "0.1.0",
+      commands: "./commands/",
+      skills: "./skills/",
+      hooks: "hooks/nope.json",
+    });
+
+    const drift = await checkDrift(root);
+
+    assert.deepEqual(drift, [
+      ".claude-plugin/plugin.json hooks activation surface is missing hooks/nope.json",
     ]);
   });
 });

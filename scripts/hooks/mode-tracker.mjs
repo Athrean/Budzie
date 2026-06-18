@@ -109,5 +109,9 @@ export function writeMode(active, env = process.env) {
  * @param {NodeJS.ProcessEnv} [env]
  */
 export function removeMode(env = process.env) {
-  rmSync(flagPath(env), { force: true });
+  try {
+    rmSync(flagPath(env), { force: true });
+  } catch {
+    // Uninstall stays best-effort when the host data dir is unreadable.
+  }
 }
