@@ -1,0 +1,23 @@
+bin/budzie-shrink.mjs
+  s_0fa170e13b6920::t_fff9a96d68353b 1-202
+tests/fixtures/shrink-upstream.mjs
+  s_0fa170e13b6920::t_dbc6d57de56e58 1-52
+tests/shrink.test.js
+  s_0fa170e13b6920::t_dbc6d57de56e58 1-99
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "ddf58bf5fd438e47efabe2bb3b4569512e785210",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
