@@ -1,0 +1,24 @@
+tests/install.test.js
+  s_da00640b035206::t_02b1b01f37e79f 4,31-36,272-310
+scripts/check-drift.mjs
+  s_da00640b035206::t_aa62030e433b78 51
+scripts/hosts.mjs
+  s_da00640b035206::t_aa62030e433b78 123,125-126,253-257,339-346
+  s_da00640b035206::t_49bbc9424c3288 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "ccc276d2ef69078328d3b2d88df468cbefa0f649",
+  "prompts": {},
+  "sessions": {
+    "s_da00640b035206": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed98d-d61a-77e2-bb1b-0b5d8ca40fb5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
