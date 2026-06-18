@@ -14,5 +14,5 @@
   "commands": "./commands/",
   "skills": "./skills/",
   "scripts": "./scripts/",
-  "hooks": "./hooks/agents.json"
+  "rules": "./rules/"
 }

@@ -127,11 +127,10 @@ test("SessionStart hook writes the activation flag and emits the ruleset as cont
   });
 });
 
-test("every shipped adapter activates Budzie through its declared SessionStart hook", async () => {
+test("every native-hook adapter activates Budzie through its declared SessionStart hook", async () => {
   const adapters = [
     [".claude-plugin/plugin.json", "CLAUDE_PLUGIN_ROOT"],
     [".codex-plugin/plugin.json", "PLUGIN_ROOT"],
-    [".agents-plugin/plugin.json", "PLUGIN_ROOT"],
   ];
 
   for (const [manifestPath, rootEnv] of adapters) {
@@ -171,6 +170,19 @@ test("every shipped adapter activates Budzie through its declared SessionStart h
       assert.equal(readMode({ BUDZIE_DATA_DIR: dataDir }).active, true, manifestPath);
     });
   }
+});
+
+test("generic adapter activates Budzie through an always-applied rule", () => {
+  const manifest = JSON.parse(
+    readFileSync(".agents-plugin/plugin.json", "utf8")
+  );
+
+  assert.equal(manifest.hooks, undefined);
+  assert.equal(manifest.rules, "./rules/");
+  const rule = readFileSync(path.join(manifest.rules, "budzie.mdc"), "utf8");
+  assert.match(rule, /^---\n[\s\S]*alwaysApply: true\n[\s\S]*---\n/);
+  assert.match(rule, /Budzie mode is active/);
+  assert.match(rule, /`budzie` skill/i);
 });
 
 test("SessionStart hook silent-fails on a bad data dir without throwing", async () => {
