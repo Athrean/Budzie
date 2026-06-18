@@ -1,2 +1,2 @@
 description = "Quick reference for Budzie"
-prompt = "Show Budzie quick reference. Commands: /budzie, /budzie-receipts, /budzie-reap, /budzie-budget, /budzie-shrink, /budzie-help. Explain `budzie:` marker format in one example. Change nothing."
+prompt = "Show Budzie quick reference. Commands: /budzie, /budzie-receipts, /budzie-reap, /budzie-budget, /budzie-shrink, /budzie-compress, /budzie-help. Explain that /budzie-compress keeps prose in the same language while preserving technical spans byte-for-byte. Explain `budzie:` marker format in one example. Change nothing."

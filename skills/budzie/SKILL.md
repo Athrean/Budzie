@@ -45,7 +45,9 @@ measured reduction band, verified by the benchmark harness:
 | ultra  | ~48%   | Maximum compression. One word when one word is enough. |
 
 Code blocks, identifiers, URLs, paths, and quoted errors are never compressed at
-any level.
+any level. Prose stays in the dominant language at every level; compression
+never translates the input or adds an English opening. Built-in filler rules
+cover English, Spanish, Portuguese, and French.
 
 ### Auto-clarity guard
 
