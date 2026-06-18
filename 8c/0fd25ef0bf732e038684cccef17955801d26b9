@@ -1,0 +1,27 @@
+tests/install.test.js
+  s_0fa170e13b6920::t_acda620cec34d5 56-67,70-72,75,204-212,214-216
+  s_0fa170e13b6920::t_78f4df6265a66e 68-69,73-74,213,287
+  s_0fa170e13b6920::t_ec7f08bad465d7 29-32,274-286,288-296
+bin/budzie-install.mjs
+  s_0fa170e13b6920::t_d47e17830f2d23 29-35,37
+  s_0fa170e13b6920::t_3403a233b3cb6c 18-19,336,339,349
+  s_0fa170e13b6920::t_2da45530f98a8e 36
+scripts/hooks/mode-tracker.mjs
+  s_0fa170e13b6920::t_3403a233b3cb6c 2-8,106-112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "8c0fd25ef0bf732e038684cccef17955801d26b9",
+  "prompts": {},
+  "sessions": {
+    "s_0fa170e13b6920": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed4e3-0167-7b61-b403-53efa6b3188f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
