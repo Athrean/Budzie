@@ -44,6 +44,11 @@ const ADAPTER_ACTIVATION_SURFACES = Object.freeze({
     kind: "session-start",
     runtime: "scripts/hooks/activate.mjs",
   }),
+  ".opencode/plugin.json": Object.freeze({
+    field: "hooks",
+    kind: "session-start",
+    runtime: "scripts/hooks/activate.mjs",
+  }),
 });
 
 export const BUDZIE_INVARIANTS = Object.freeze({
@@ -70,6 +75,7 @@ export const BUDZIE_INVARIANTS = Object.freeze({
     ".codex-plugin/plugin.json",
     ".claude-plugin/plugin.json",
     ".agents-plugin/plugin.json",
+    ".opencode/plugin.json",
     "gemini-extension.json",
   ]),
   adapterActivationSurfaces: ADAPTER_ACTIVATION_SURFACES,
