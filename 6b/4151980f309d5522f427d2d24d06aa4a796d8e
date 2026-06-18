@@ -1,0 +1,27 @@
+scripts/lib/scan.mjs
+  s_da00640b035206::t_8c1ea03f6353b1 17,99
+scripts/reap.mjs
+  s_da00640b035206::t_8c1ea03f6353b1 19,46
+scripts/scout.mjs
+  s_da00640b035206::t_8c1ea03f6353b1 2-3,6,88-91,178-194
+tests/scout.test.js
+  s_da00640b035206::t_09dfef3d8f2002 184
+  s_da00640b035206::t_f3621a2cee91ad 52-55,73,170-183,185-187
+  s_da00640b035206::t_9bdfb977051987 3-9,156
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "6b4151980f309d5522f427d2d24d06aa4a796d8e",
+  "prompts": {},
+  "sessions": {
+    "s_da00640b035206": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed98d-d61a-77e2-bb1b-0b5d8ca40fb5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
