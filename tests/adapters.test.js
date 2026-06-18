@@ -84,10 +84,10 @@ test("every shipped adapter directory is in the package files allowlist", async 
   const files = pkg.files;
   assert.ok(Array.isArray(files), "package.json files must be an array");
   for (const manifest of BUDZIE_INVARIANTS.adapterManifests) {
-    const dir = manifest.split("/")[0] + "/";
+    const entry = manifest.includes("/") ? manifest.split("/")[0] + "/" : manifest;
     assert.ok(
-      files.includes(dir),
-      `package.json files must include ${dir} so ${manifest} ships`
+      files.includes(entry),
+      `package.json files must include ${entry} so ${manifest} ships`
     );
   }
 });
@@ -97,4 +97,22 @@ test("shared agents surface is in the package files allowlist", async () => {
   const files = pkg.files;
   assert.ok(Array.isArray(files), "package.json files must be an array");
   assert.ok(files.includes("agents/"), "package.json files must include agents/");
+});
+
+test("every adapter runtime surface is in the package files allowlist", async () => {
+  const pkg = await readJson("package.json");
+  const files = pkg.files;
+  assert.ok(Array.isArray(files), "package.json files must be an array");
+
+  for (const manifest of BUDZIE_INVARIANTS.adapterManifests) {
+    const data = await readJson(manifest);
+    for (const value of Object.values(data)) {
+      if (typeof value !== "string" || !RELATIVE_REF.test(value)) continue;
+      const topLevel = `${value.replace(/^\.\//, "").split("/")[0]}/`;
+      assert.ok(
+        files.includes(topLevel),
+        `package.json files must include ${topLevel} for ${manifest}`
+      );
+    }
+  }
 });

@@ -3,12 +3,72 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { MANIFEST_VERSION } from "../bin/budzie-install.mjs";
+import { FORMATS, HOST_MATRIX } from "./hosts.mjs";
+
+/**
+ * @typedef {object} HookActivationSurface
+ * @property {"hooks"} field
+ * @property {"session-start"} kind
+ * @property {string} runtime
+ */
+
+/**
+ * @typedef {object} RuleActivationSurface
+ * @property {"rules"} field
+ * @property {"always-applied-rule"} kind
+ * @property {string} file
+ */
+
+/** @typedef {HookActivationSurface | RuleActivationSurface} ActivationSurface */
+
+/** @type {Readonly<Record<string, ActivationSurface>>} */
+const ADAPTER_ACTIVATION_SURFACES = Object.freeze({
+  ".codex-plugin/plugin.json": Object.freeze({
+    field: "hooks",
+    kind: "session-start",
+    runtime: "scripts/hooks/activate.mjs",
+  }),
+  ".claude-plugin/plugin.json": Object.freeze({
+    field: "hooks",
+    kind: "session-start",
+    runtime: "scripts/hooks/activate.mjs",
+  }),
+  ".agents-plugin/plugin.json": Object.freeze({
+    field: "rules",
+    kind: "always-applied-rule",
+    file: "budzie.mdc",
+  }),
+  "gemini-extension.json": Object.freeze({
+    field: "hooks",
+    kind: "session-start",
+    runtime: "scripts/hooks/activate.mjs",
+  }),
+  ".opencode/plugin.json": Object.freeze({
+    field: "hooks",
+    kind: "session-start",
+    runtime: "scripts/hooks/activate.mjs",
+  }),
+});
+
 export const BUDZIE_INVARIANTS = Object.freeze({
   productName: "Budzie",
   packageName: "budzie",
   pluginName: "budzie",
   pluginDisplayName: "Budzie",
-  requiredRuntimeDirs: Object.freeze(["agents/", "commands/", "skills/", "scripts/"]),
+  // The installer's manifest schema version. Drift bumps the moment this and
+  // the installer disagree, forcing a deliberate version bump on shape changes.
+  manifestVersion: 2,
+  // The minimum host count the detection matrix must cover (issue contract).
+  minHostMatrixSize: 15,
+  requiredRuntimeDirs: Object.freeze([
+    "agents/",
+    "commands/",
+    "skills/",
+    "scripts/",
+    "hooks/",
+    "rules/",
+  ]),
   // Thin host adapter manifests. Each references runtime surfaces by relative
   // path only and pins its version to the package version. No business logic.
   adapterManifests: Object.freeze([
@@ -16,7 +76,9 @@ export const BUDZIE_INVARIANTS = Object.freeze({
     ".claude-plugin/plugin.json",
     ".agents-plugin/plugin.json",
     ".opencode/plugin.json",
+    "gemini-extension.json",
   ]),
+  adapterActivationSurfaces: ADAPTER_ACTIVATION_SURFACES,
 });
 
 /**
@@ -204,6 +266,105 @@ async function checkAgentFiles(root, drift) {
 }
 
 /**
+ * Validate that an adapter hook file exposes a real SessionStart surface.
+ * @param {string} root
+ * @param {string} manifest
+ * @param {string} hookPath
+ * @param {string} runtime
+ * @param {string[]} drift
+ * @returns {Promise<void>}
+ */
+async function checkHookSurface(root, manifest, hookPath, runtime, drift) {
+  const data = await readRequiredJson(root, hookPath, drift);
+  const hooks = isRecord(data) ? data.hooks : undefined;
+  const sessionStart = isRecord(hooks) ? hooks.SessionStart : undefined;
+  if (!Array.isArray(sessionStart) || sessionStart.length === 0) {
+    drift.push(`${manifest} hook surface must declare SessionStart`);
+    return;
+  }
+
+  const commands = sessionStart.flatMap((group) => {
+    if (!isRecord(group) || !Array.isArray(group.hooks)) return [];
+    return group.hooks
+      .filter(isRecord)
+      .map((handler) => handler.command)
+      .filter((command) => typeof command === "string");
+  });
+  if (
+    !commands.some((command) => command.includes(runtime)) ||
+    !(await fileExists(root, runtime))
+  ) {
+    drift.push(`${manifest} SessionStart must run ${runtime}`);
+  }
+}
+
+/**
+ * Validate the always-applied rule file declared by a rules adapter.
+ * @param {string} root
+ * @param {string} manifest
+ * @param {string} rulesPath
+ * @param {string} file
+ * @param {string[]} drift
+ * @returns {Promise<void>}
+ */
+async function checkRuleSurface(root, manifest, rulesPath, file, drift) {
+  const rulePath = path.join(rulesPath, file);
+  if (!(await fileExists(root, rulePath))) {
+    drift.push(`${manifest} rules activation is missing ${rulePath}`);
+    return;
+  }
+
+  const text = await readFile(path.join(root, rulePath), "utf8");
+  const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
+  if (
+    frontmatter === null ||
+    !/^alwaysApply:\s*true\s*$/m.test(frontmatter[1])
+  ) {
+    drift.push(`${manifest} rule ${rulePath} must set alwaysApply: true`);
+  }
+}
+
+/**
+ * Validate the activation contract assigned to one adapter.
+ * @param {string} root
+ * @param {string} manifest
+ * @param {Record<string, unknown>} data
+ * @param {string[]} drift
+ * @returns {Promise<void>}
+ */
+async function checkAdapterActivationSurface(root, manifest, data, drift) {
+  const surface = ADAPTER_ACTIVATION_SURFACES[manifest];
+  if (surface === undefined) {
+    drift.push(`${manifest} is missing an activation-surface contract`);
+    return;
+  }
+
+  const surfacePath = data[surface.field];
+  if (typeof surfacePath !== "string") {
+    drift.push(`${manifest} must declare a ${surface.field} activation surface`);
+    return;
+  }
+  if (!(await pathExists(root, surfacePath))) {
+    drift.push(
+      `${manifest} ${surface.field} activation surface is missing ${surfacePath}`
+    );
+    return;
+  }
+
+  if (surface.kind === "session-start") {
+    await checkHookSurface(
+      root,
+      manifest,
+      surfacePath,
+      surface.runtime,
+      drift
+    );
+  } else {
+    await checkRuleSurface(root, manifest, surfacePath, surface.file, drift);
+  }
+}
+
+/**
  * Validate every thin host adapter manifest: its version must equal the
  * package version, and every relative path it references must resolve to a real
  * runtime surface (command, skill, script, or hook). Data-driven over
@@ -240,9 +401,60 @@ async function checkAdapterManifests(root, packageVersion, drift) {
         drift.push(`${manifest} references missing ${value}`);
       }
     }
+    await checkAdapterActivationSurface(root, manifest, data, drift);
     if (referenced === 0) {
       drift.push(`${manifest} must reference at least one runtime surface`);
     }
+  }
+}
+
+/**
+ * Validate the installer's host-detection matrix and manifest logic.
+ *
+ * Data-driven over `HOST_MATRIX` and `FORMATS` — no per-host special cases:
+ *   - The matrix covers at least the contracted host count.
+ *   - Host ids are unique (manifest keys must not collide).
+ *   - Every host references a real format.
+ *   - Every format's source paths resolve to real shipped surfaces under root.
+ *   - The manifest version constant is current (forces a bump on shape change).
+ * @param {string} root
+ * @param {string[]} drift
+ * @returns {Promise<void>}
+ */
+async function checkInstallerMatrix(root, drift) {
+  if (HOST_MATRIX.length < BUDZIE_INVARIANTS.minHostMatrixSize) {
+    drift.push(
+      `host matrix must cover at least ${BUDZIE_INVARIANTS.minHostMatrixSize} hosts (has ${HOST_MATRIX.length})`
+    );
+  }
+
+  /** @type {Set<string>} */
+  const seen = new Set();
+  for (const host of HOST_MATRIX) {
+    if (seen.has(host.id)) drift.push(`host matrix has a duplicate id ${host.id}`);
+    seen.add(host.id);
+    if (!FORMATS[host.format]) {
+      drift.push(`host ${host.id} references unknown format ${host.format}`);
+    }
+  }
+
+  // Every format must reuse only shipped source paths (no invented files).
+  /** @type {Set<string>} */
+  const checked = new Set();
+  for (const format of Object.values(FORMATS)) {
+    for (const spec of format.specs) {
+      if (checked.has(spec.from)) continue;
+      checked.add(spec.from);
+      if (!(await pathExists(root, spec.from))) {
+        drift.push(`format ${format.id} references missing source ${spec.from}`);
+      }
+    }
+  }
+
+  if (MANIFEST_VERSION !== BUDZIE_INVARIANTS.manifestVersion) {
+    drift.push(
+      `installer manifest version ${MANIFEST_VERSION} must equal invariant ${BUDZIE_INVARIANTS.manifestVersion}`
+    );
   }
 }
 
@@ -328,6 +540,7 @@ export async function checkDrift(root = process.cwd()) {
   await checkCommandFiles(root, drift);
   await checkSkillFiles(root, drift);
   await checkAgentFiles(root, drift);
+  await checkInstallerMatrix(root, drift);
 
   return drift;
 }
