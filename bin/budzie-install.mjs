@@ -15,6 +15,8 @@ import { homedir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { ledgerPath } from "../scripts/ledger.mjs";
+
 /**
  * Budzie's local installer.
  *
@@ -46,6 +48,7 @@ const PACKAGE_ROOT = path.resolve(
  * @property {string} configDir - Resolved host config directory.
  * @property {boolean} force - Overwrite existing managed files without asking.
  * @property {boolean} uninstall - Remove Budzie-managed entries instead of installing.
+ * @property {boolean} deleteLedger - Also delete the lifetime savings ledger on uninstall.
  * @property {boolean} help - Print usage and exit.
  */
 
@@ -83,6 +86,7 @@ export function parseArgs(argv, env = process.env) {
   let dryRun = false;
   let force = false;
   let uninstall = false;
+  let deleteLedger = false;
   let help = false;
   /** @type {string | undefined} */
   let configDir;
@@ -98,6 +102,9 @@ export function parseArgs(argv, env = process.env) {
         break;
       case "--uninstall":
         uninstall = true;
+        break;
+      case "--delete-ledger":
+        deleteLedger = true;
         break;
       case "--help":
       case "-h":
@@ -125,6 +132,7 @@ export function parseArgs(argv, env = process.env) {
     dryRun,
     force,
     uninstall,
+    deleteLedger,
     help,
     configDir: configDir ? path.resolve(configDir) : defaultConfigDir(env),
   };
@@ -321,12 +329,30 @@ export function runInstall(options, packageRoot = PACKAGE_ROOT) {
 }
 
 /**
- * Apply an uninstall. Removes only manifest-recorded files, prunes empty
- * Budzie directories, and deletes the manifest.
+ * Decide how uninstall should treat the lifetime savings ledger.
+ *
+ * Data-loss boundary: the ledger is the user's accumulated savings history, so
+ * the DEFAULT is always preserve. Deletion only happens when the user opts in
+ * explicitly with `--delete-ledger`.
  * @param {Options} options
- * @returns {Action[]} The actions performed.
+ * @param {NodeJS.ProcessEnv} [env]
+ * @returns {{ path: string, deleted: boolean, existed: boolean }}
  */
-export function runUninstall(options) {
+export function planLedger(options, env = process.env) {
+  const file = ledgerPath(env);
+  const existed = existsSync(file);
+  return { path: file, deleted: options.deleteLedger === true, existed };
+}
+
+/**
+ * Apply an uninstall. Removes only manifest-recorded files, prunes empty
+ * Budzie directories, and deletes the manifest. The lifetime savings ledger is
+ * preserved by default and only deleted when `--delete-ledger` is set.
+ * @param {Options} options
+ * @param {NodeJS.ProcessEnv} [env]
+ * @returns {{ actions: Action[], ledger: { path: string, deleted: boolean, existed: boolean } }}
+ */
+export function runUninstall(options, env = process.env) {
   const manifest = readManifest(options.configDir);
   const actions = planUninstall(options);
   for (const action of actions) {
@@ -336,7 +362,12 @@ export function runUninstall(options) {
   pruneEmptyDirs(options.configDir, manifest.files);
   const manifestPath = path.join(options.configDir, MANIFEST_NAME);
   rmSync(manifestPath, { force: true });
-  return actions;
+
+  const ledger = planLedger(options, env);
+  if (ledger.deleted && ledger.existed) {
+    rmSync(ledger.path, { force: true });
+  }
+  return { actions, ledger };
 }
 
 /**
@@ -358,6 +389,21 @@ export function formatPlan(options, actions) {
   return `${head}\n${lines.join("\n")}\n`;
 }
 
+/**
+ * Render the one-line ledger preserve/delete notice for an uninstall.
+ * @param {{ path: string, deleted: boolean, existed: boolean }} ledger
+ * @returns {string}
+ */
+export function formatLedgerNotice(ledger) {
+  if (!ledger.existed) {
+    return `Ledger: none found at ${ledger.path}.\n`;
+  }
+  if (ledger.deleted) {
+    return `Ledger: deleted ${ledger.path} (--delete-ledger).\n`;
+  }
+  return `Ledger: preserved at ${ledger.path} (pass --delete-ledger to remove it).\n`;
+}
+
 /** Usage text printed by `--help`. */
 export const HELP_TEXT = `Budzie installer — copy Budzie agents, commands, and skills into a host agent config dir.
 
@@ -370,10 +416,14 @@ Options:
   --dry-run             Print the planned changes and write nothing
   --force               Overwrite existing differing files
   --uninstall           Remove only Budzie-managed entries
+  --delete-ledger       On uninstall, also delete the lifetime savings ledger
+                        (default: preserve it — your savings history is kept)
   -h, --help            Show this help
 
 Install records a manifest (${MANIFEST_NAME}) in the config dir so uninstall
 removes only Budzie-managed files and preserves everything you authored.
+Uninstall preserves your lifetime savings ledger by default; pass
+--delete-ledger to remove it too.
 `;
 
 /**
@@ -407,16 +457,19 @@ export function main(argv, io = {}) {
 
   if (options.dryRun) {
     out(formatPlan(options, actions));
+    if (options.uninstall) out(formatLedgerNotice(planLedger(options, io.env)));
     out("Dry run: no changes written.\n");
     return 0;
   }
 
   if (options.uninstall) {
-    runUninstall(options);
+    const { ledger } = runUninstall(options, io.env);
+    out(formatPlan(options, actions));
+    out(formatLedgerNotice(ledger));
   } else {
     runInstall(options);
+    out(formatPlan(options, actions));
   }
-  out(formatPlan(options, actions));
   out(`${options.uninstall ? "Uninstall" : "Install"} complete.\n`);
   return 0;
 }
