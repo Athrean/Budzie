@@ -10,6 +10,7 @@ import { compressFile, compressMarkdown, renderReport } from "../scripts/compres
 import { writeLevel } from "../scripts/intensity.mjs";
 
 const CLI = fileURLToPath(new URL("../scripts/compress.mjs", import.meta.url));
+const LEVELS = /** @type {const} */ (["low", "medium", "xhigh", "ultra"]);
 
 /**
  * Run `fn` inside a throwaway directory and remove it afterwards.
@@ -99,6 +100,112 @@ test("compression preserves code blocks, URLs, paths, API names, and exact error
     out.includes("\"TypeError: Cannot read property userId\""),
     "exact error string must survive byte-for-byte"
   );
+});
+
+test("compression preserves CLI commands, identifiers, and localized errors byte-for-byte", () => {
+  const command = "npm   run test -- --grep=usuario";
+  const call = "fetchUser( userId, APIClient )";
+  const exactError = "\"Erreur: la connexion est refusée\"";
+  const inline = "`git status --short`";
+  const source = [
+    `Por favor ejecuta ${command}`,
+    `Después llama ${call} en src/usuarios/api-client.mjs.`,
+    `Conserva exactamente ${exactError}.`,
+    `No cambies ${inline}.`,
+    "",
+  ].join("\n");
+
+  const out = compressMarkdown(source, "ultra");
+
+  for (const span of [command, call, exactError, inline]) {
+    assert.ok(out.includes(span), `protected span changed: ${span}`);
+  }
+});
+
+test("Spanish filler is removed at every intensity without switching languages", () => {
+  const source =
+    "Por favor, realmente asegúrate de mantener la implementación pequeña y conservar la biblioteca estándar.\n";
+
+  for (const level of LEVELS) {
+    const out = compressMarkdown(source, level);
+
+    assert.doesNotMatch(out, /\b(?:por favor|realmente|asegúrate de)\b/i);
+    assert.match(out, /\bmantener\b/i);
+    assert.match(out, /\bconservar\b/i);
+    assert.match(out, /\bbiblioteca estándar\b/i);
+    assert.doesNotMatch(out, /\b(?:please|make sure|remember to)\b/i);
+  }
+});
+
+test("Portuguese hedging is removed at every intensity without switching languages", () => {
+  const source =
+    "Por favor, na verdade, realmente certifique-se de manter a implementação pequena e preservar a biblioteca padrão.\n";
+
+  for (const level of LEVELS) {
+    const out = compressMarkdown(source, level);
+
+    assert.doesNotMatch(
+      out,
+      /\b(?:por favor|na verdade|realmente|certifique-se de)\b/i
+    );
+    assert.match(out, /\bmanter\b/i);
+    assert.match(out, /\bpreservar\b/i);
+    assert.match(out, /\bbiblioteca padrão\b/i);
+    assert.doesNotMatch(out, /\b(?:please|make sure|remember to)\b/i);
+  }
+});
+
+test("French filler is removed at every intensity without switching languages", () => {
+  const source =
+    "S'il vous plaît, en fait, assurez-vous de garder l'implémentation petite et préserver la bibliothèque standard.\n";
+
+  for (const level of LEVELS) {
+    const out = compressMarkdown(source, level);
+
+    assert.doesNotMatch(
+      out,
+      /\b(?:s['’]il vous plaît|en fait|assurez-vous de)\b/i
+    );
+    assert.match(out, /\bgarder\b/i);
+    assert.match(out, /\bpréserver\b/i);
+    assert.match(out, /\bbibliothèque standard\b/i);
+    assert.doesNotMatch(out, /\b(?:please|make sure|remember to)\b/i);
+  }
+});
+
+test("intensity increases compression in Spanish, Portuguese, and French", () => {
+  const cases = [
+    {
+      source:
+        "Realmente mantener la implementación y conservar los términos es importante en su contexto.\n",
+      marker: "mantener",
+    },
+    {
+      source:
+        "Realmente manter a implementação e preservar os termos é importante em seu contexto.\n",
+      marker: "manter",
+    },
+    {
+      source:
+        "Vraiment garder la mise en œuvre et préserver les termes est important dans leur contexte.\n",
+      marker: "garder",
+    },
+  ];
+
+  for (const { source, marker } of cases) {
+    const low = compressMarkdown(source, "low");
+    const medium = compressMarkdown(source, "medium");
+    const xhigh = compressMarkdown(source, "xhigh");
+    const ultra = compressMarkdown(source, "ultra");
+
+    assert.ok(medium.length < low.length, `${marker}: medium should beat low`);
+    assert.ok(xhigh.length < medium.length, `${marker}: xhigh should beat medium`);
+    assert.ok(ultra.length < xhigh.length, `${marker}: ultra should beat xhigh`);
+    for (const out of [low, medium, xhigh, ultra]) {
+      assert.match(out, new RegExp(`\\b${marker}\\b`, "i"));
+      assert.doesNotMatch(out, /\b(?:please|make sure|remember to)\b/i);
+    }
+  }
 });
 
 test("current intensity controls compression strength", async () => {
