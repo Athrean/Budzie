@@ -16,16 +16,19 @@ import { fileURLToPath } from "node:url";
 
 import {
   defaultConfigDir,
+  formatLedgerNotice,
   formatPlan,
   HELP_TEXT,
   listManagedFiles,
   main,
   parseArgs,
   planInstall,
+  planLedger,
   planUninstall,
   runInstall,
   runUninstall,
 } from "../bin/budzie-install.mjs";
+import { ledgerPath } from "../scripts/ledger.mjs";
 
 /** Absolute path to the CLI under test. */
 const CLI = fileURLToPath(new URL("../bin/budzie-install.mjs", import.meta.url));
@@ -263,6 +266,76 @@ test("planUninstall touches only manifest-recorded paths", async () => {
     assert.ok(!targets.includes("commands/my-own.toml"));
     assert.ok(targets.includes("commands/budzie.toml"));
   });
+});
+
+test("parseArgs reads --delete-ledger; default is false (preserve)", () => {
+  assert.equal(parseArgs([], {}).deleteLedger, false);
+  assert.equal(parseArgs(["--uninstall", "--delete-ledger"], {}).deleteLedger, true);
+});
+
+test("uninstall preserves the ledger by DEFAULT (data-loss boundary)", async () => {
+  await withFixture(async ({ pkgRoot, configDir }) => {
+    const base = mkdtempSync(path.join(tmpdir(), "budzie-ledger-cfg-"));
+    const env = { BUDZIE_DATA_DIR: base };
+    try {
+      const ledger = ledgerPath(env);
+      mkdirSync(path.dirname(ledger), { recursive: true });
+      writeFileSync(ledger, '{"version":1,"entries":[{"tokensSaved":42}]}\n');
+
+      const opts = parseArgs(["--config-dir", configDir], {});
+      runInstall(opts, pkgRoot);
+      const result = runUninstall(opts, env);
+
+      assert.equal(result.ledger.deleted, false);
+      assert.equal(exists(ledger), true, "ledger preserved by default");
+      assert.match(readFileSync(ledger, "utf8"), /tokensSaved/);
+    } finally {
+      rmSync(base, { recursive: true, force: true });
+    }
+  });
+});
+
+test("uninstall --delete-ledger removes the ledger only when opted in", async () => {
+  await withFixture(async ({ pkgRoot, configDir }) => {
+    const base = mkdtempSync(path.join(tmpdir(), "budzie-ledger-cfg-"));
+    const env = { BUDZIE_DATA_DIR: base };
+    try {
+      const ledger = ledgerPath(env);
+      mkdirSync(path.dirname(ledger), { recursive: true });
+      writeFileSync(ledger, '{"version":1,"entries":[]}\n');
+
+      const opts = parseArgs(["--config-dir", configDir, "--delete-ledger"], {});
+      runInstall(opts, pkgRoot);
+      const result = runUninstall(opts, env);
+
+      assert.equal(result.ledger.deleted, true);
+      assert.equal(exists(ledger), false, "ledger deleted on opt-in");
+    } finally {
+      rmSync(base, { recursive: true, force: true });
+    }
+  });
+});
+
+test("planLedger reports preserve vs delete; formatLedgerNotice is explicit", () => {
+  const base = mkdtempSync(path.join(tmpdir(), "budzie-ledger-cfg-"));
+  const env = { BUDZIE_DATA_DIR: base };
+  try {
+    const ledger = ledgerPath(env);
+    mkdirSync(path.dirname(ledger), { recursive: true });
+    writeFileSync(ledger, '{"version":1,"entries":[]}\n');
+
+    const preserve = planLedger(parseArgs([], {}), env);
+    assert.equal(preserve.existed, true);
+    assert.equal(preserve.deleted, false);
+    assert.match(formatLedgerNotice(preserve), /preserved/);
+    assert.match(formatLedgerNotice(preserve), /--delete-ledger/);
+
+    const del = planLedger(parseArgs(["--delete-ledger"], {}), env);
+    assert.equal(del.deleted, true);
+    assert.match(formatLedgerNotice(del), /deleted/);
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+  }
 });
 
 test("main --help prints usage and exits 0 without writing", async () => {
