@@ -7,10 +7,15 @@ test("package and plugin are named budzie", async () => {
   const plugin = JSON.parse(
     await readFile(".codex-plugin/plugin.json", "utf8")
   );
+  const marketplace = JSON.parse(
+    await readFile(".claude-plugin/marketplace.json", "utf8")
+  );
 
   assert.equal(pkg.name, "budzie");
   assert.equal(plugin.name, "budzie");
   assert.equal(plugin.interface.displayName, "Budzie");
+  assert.equal(marketplace.name, "budzie");
+  assert.equal(marketplace.owner.name, "Athrean");
 });
 
 test("package ships the local runtime scripts used by skills", async () => {
