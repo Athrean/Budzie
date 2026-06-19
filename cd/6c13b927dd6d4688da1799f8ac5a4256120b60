@@ -1,0 +1,21 @@
+src/model-tier.mjs
+  s_45069443dbe555::t_d3c6d8efb97e3a 1-70
+tests/model-tier.test.js
+  s_45069443dbe555::t_64b73419d0d9db 1-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "cd6c13b927dd6d4688da1799f8ac5a4256120b60",
+  "prompts": {},
+  "sessions": {
+    "s_45069443dbe555": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b54a00e1-525b-4047-89c9-e4bf36ceb400",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
