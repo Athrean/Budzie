@@ -96,6 +96,9 @@ Each detected host installs one of these formats:
   the activation instruction is injected from the first message.
 - **Skills tree** — the `skills/` tree dropped into the host's config or
   extension directory.
+- **Single-file bundle** — `dist/budzie.skill`, every skill concatenated into
+  one drop-in Markdown file for hosts that take a single instructions file.
+  Regenerate with `npm run pack`; a test keeps it in sync with `skills/`.
 
 Full plugins and the agents plugin use the
 [Open Plugin rules component](https://github.com/vercel-labs/open-plugin-spec#d3-rules)
