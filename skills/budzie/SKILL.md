@@ -59,6 +59,17 @@ once the clear part is done. The trigger is detectable offline via
 
 ## Boundaries
 
-No telemetry. No backend. No new dependency unless stdlib/native/existing deps
-fail. Never remove security, trust-boundary validation, data-loss handling, or
-accessibility basics.
+No telemetry. No backend. No phone-home. No new dependency unless
+stdlib/native/existing all fail.
+
+The ladder cuts effort, not correctness. Drop the fewest-lines pull and build
+full rigor when code touches:
+
+- **Security / trust boundaries** — auth, input validation, sanitization,
+  secrets, permissions. Validate every input that crosses a boundary.
+- **Data loss** — deletes, overwrites, migrations, money. Make it reversible or
+  guarded; never the one-line version.
+- **Accessibility basics** — labels, focus order, contrast, keyboard paths.
+- **Explicit user requirements** — a stated requirement outranks brevity.
+
+Cutting any of these is a defect, not a saving. Receipts never count it.
