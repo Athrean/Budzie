@@ -1,15 +1,10 @@
 // @ts-check
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  renameSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { writeFileAtomic } from "./lib/atomic-write.mjs";
 
 /**
  * Lifetime savings ledger. A local-only, append-on-write record of what Budzie
@@ -137,22 +132,7 @@ export function appendEntry(entry, env = process.env) {
     costAvoided: toCount(entry.costAvoided),
   };
   ledger.entries.push(next);
-  const file = ledgerPath(env);
-  const dir = path.dirname(file);
-  const temp = path.join(
-    dir,
-    `.${LEDGER_FILE}.${process.pid}.${Date.now()}.tmp`
-  );
-  mkdirSync(dir, { recursive: true });
-  try {
-    writeFileSync(temp, JSON.stringify(ledger, null, 2) + "\n", {
-      flag: "wx",
-      mode: 0o600,
-    });
-    renameSync(temp, file);
-  } finally {
-    rmSync(temp, { force: true });
-  }
+  writeFileAtomic(ledgerPath(env), JSON.stringify(ledger, null, 2) + "\n");
   return ledger;
 }
 
