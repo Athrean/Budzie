@@ -1,0 +1,26 @@
+.claude-plugin/plugin.json
+  s_f4f1db020513a8::t_85f1c6f27c2f21 12
+src/check-drift.mjs
+  s_f4f1db020513a8::t_85f1c6f27c2f21 14,38,345-347
+  s_f4f1db020513a8::t_ccd0c6ff36565f 22,410-413
+tests/adapters.test.js
+  s_f4f1db020513a8::t_85f1c6f27c2f21 83-86
+tests/hooks.test.js
+  s_f4f1db020513a8::t_85f1c6f27c2f21 150,192-194,300,302-303
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "3ace6daf969410a50cab7948ce53fc01bfff2eff",
+  "prompts": {},
+  "sessions": {
+    "s_f4f1db020513a8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019edf30-97a4-7f23-ab9b-9d1fae23acb8",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
