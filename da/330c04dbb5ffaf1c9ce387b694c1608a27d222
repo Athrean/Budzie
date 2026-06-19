@@ -1,0 +1,19 @@
+commands/budzie.toml
+  s_45069443dbe555::t_524bb44347a4f9 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "da330c04dbb5ffaf1c9ce387b694c1608a27d222",
+  "prompts": {},
+  "sessions": {
+    "s_45069443dbe555": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b54a00e1-525b-4047-89c9-e4bf36ceb400",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
