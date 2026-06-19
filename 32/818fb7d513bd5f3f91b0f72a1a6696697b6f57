@@ -1,0 +1,30 @@
+tests/agents.test.js
+  s_7737eff258f176::t_7e50bf879d886d 97-98,100,106-107,109
+  s_7737eff258f176::t_92623b5e17e263 128,149,169,193,207
+agents/hopper.md
+  s_7737eff258f176::t_08525fb1cc228d 2-3,6,8-20,24-35,39-45,48-53,56-60,64-74
+agents/steve.md
+  s_7737eff258f176::t_403eb119912ef4 2-3,6,8-11,29
+agents/nancy.md
+  s_7737eff258f176::t_12f3470e9fe635 2,6,8-9,17-18,22-24
+agents/dustin.md
+  s_7737eff258f176::t_8a61d43b5bd78b 2-3,6,8-12,16-17,29,43,50
+agents/eleven.md
+  s_7737eff258f176::t_957af0a6ed0301 2-3,6,8-11,15-31,35-45,49-50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "32818fb7d513bd5f3f91b0f72a1a6696697b6f57",
+  "prompts": {},
+  "sessions": {
+    "s_7737eff258f176": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6944b575-e261-452b-8228-65e2062d7236",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
