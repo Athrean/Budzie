@@ -1,0 +1,26 @@
+src/reap.mjs
+  s_7737eff258f176::t_90d6f813b0c0ad 77-78
+  s_7737eff258f176::t_e8e32a62a3e34b 2-6,8
+  s_7737eff258f176::t_56485109c498e3 84-86
+  s_7737eff258f176::t_3f9c7bae188cbb 18
+  s_7737eff258f176::t_8ae5b53e041753 268-295,299-324
+  s_7737eff258f176::t_53c420155c816e 95-229
+tests/reap-verify.test.js
+  s_7737eff258f176::t_1e38cfdbb30a77 1-107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "67401404635bfc8b763cc0e38fea0ffdbb416c65",
+  "prompts": {},
+  "sessions": {
+    "s_7737eff258f176": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6944b575-e261-452b-8228-65e2062d7236",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
