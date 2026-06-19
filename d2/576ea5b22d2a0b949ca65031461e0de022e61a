@@ -1,0 +1,19 @@
+scripts/check-drift.mjs
+  s_45069443dbe555::t_aa2b072a391ec4 459-479
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "d2576ea5b22d2a0b949ca65031461e0de022e61a",
+  "prompts": {},
+  "sessions": {
+    "s_45069443dbe555": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b54a00e1-525b-4047-89c9-e4bf36ceb400",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
