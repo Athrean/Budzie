@@ -1,0 +1,21 @@
+{
+  "name": "budzie",
+  "interface": {
+    "displayName": "Budzie"
+  },
+  "plugins": [
+    {
+      "name": "budzie",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/Athrean/Budzie.git",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

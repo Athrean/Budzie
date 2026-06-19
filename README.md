@@ -12,8 +12,8 @@ repo, then uses that signal to guard spend and remove existing bloat.
 ## Powers
 
 - **Receipts**: scan `budzie:` markers and local diffs, then report real savings.
-- **Reaper**: audit bloat, plan cuts, apply each cut in a worktree, keep only
-  cuts that pass tests.
+- **Reaper**: audit bloat and summarize safe cuts first; apply approved cuts in
+  isolated worktrees and keep only cuts that pass tests.
 - **Budget guard**: set an allowance and stop tasks that would blow it.
 
 ## Commands
@@ -22,7 +22,7 @@ repo, then uses that signal to guard spend and remove existing bloat.
 | --- | --- |
 | `/budzie` | Activate Budzie mode. |
 | `/budzie-receipts` | Report local savings and badge text. |
-| `/budzie-reap` | Audit, cut, verify, and report deleted bloat. |
+| `/budzie-reap` | Audit and summarize bloat; apply only after approval. |
 | `/budzie-budget` | Check or set the spend ceiling. |
 | `/budzie-shrink` | Compress MCP tool descriptions through a stdio proxy. |
 | `/budzie-compress` | Compress one agent memory file in the same language with a `.bak` backup. |
@@ -108,6 +108,17 @@ manifests (`.claude-plugin/`, `.codex-plugin/`, `.agents-plugin/`, `.opencode/`,
 marketplace. Listing a host here does not claim it supports `.mdc` rules.
 
 ## Install
+
+### Codex plugin marketplace
+
+```sh
+codex plugin marketplace add Athrean/Budzie --ref main
+codex plugin add budzie@budzie
+```
+
+Restart Codex, open `/plugins` to confirm Budzie is enabled, then start a new
+thread. `$budzie` activates the mode; `$budzie:budzie-reap` audits first and
+asks before changing files.
 
 macOS / Linux:
 

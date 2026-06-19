@@ -18,6 +18,8 @@ test("reaper skill summarizes operator boundaries", async () => {
   assert.match(skill, /Locate[\s\S]*read-only/);
   assert.match(skill, /Cut[\s\S]*one cut per worktree/);
   assert.match(skill, /Review[\s\S]*findings only/);
+  assert.match(skill, /no files changed/i);
+  assert.match(skill, /explicitly[\s\S]*approves/i);
 });
 
 test("operator contracts define the required boundaries", async () => {
@@ -26,6 +28,7 @@ test("operator contracts define the required boundaries", async () => {
   assert.match(contracts, /^## Locate Contract$/m);
   assert.match(contracts, /read-only discovery/);
   assert.match(contracts, /file and line evidence/);
+  assert.match(contracts, /stop after the locate summary/);
 
   assert.match(contracts, /^## Cut Contract$/m);
   assert.match(contracts, /one cut per worktree/);
