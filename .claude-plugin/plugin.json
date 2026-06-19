@@ -10,7 +10,6 @@
   "repository": "https://github.com/Athrean/Budzie",
   "license": "MIT",
   "keywords": ["budget", "yagni", "code-review", "agent-skills"],
-  "agents": "./agents/",
   "commands": "./commands/",
   "skills": "./skills/",
   "hooks": "./hooks/hooks.json"
