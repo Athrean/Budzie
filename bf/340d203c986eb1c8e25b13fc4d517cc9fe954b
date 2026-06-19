@@ -1,0 +1,24 @@
+src/lib/atomic-write.mjs
+  s_45069443dbe555::t_d321ef473b5ede 1-32
+tests/atomic-write.test.js
+  s_45069443dbe555::t_3faf206ca5526b 19-22
+  s_45069443dbe555::t_8a599909a99bf0 1-6,8-18,23-78,81-82
+  s_45069443dbe555::t_6675c8cf484e96 79-80
+  s_45069443dbe555::t_f1c364d9960b84 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "bf340d203c986eb1c8e25b13fc4d517cc9fe954b",
+  "prompts": {},
+  "sessions": {
+    "s_45069443dbe555": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b54a00e1-525b-4047-89c9-e4bf36ceb400",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
