@@ -68,7 +68,6 @@ const PACKAGE_ROOT = path.resolve(
  * @property {boolean} dryRun - Print the plan, write nothing.
  * @property {string | undefined} configDir - Explicit single-target override.
  * @property {string[]} hostIds - Explicit host ids to target (via --host).
- * @property {boolean} all - Install for every detected host.
  * @property {boolean} force - Overwrite existing managed files without asking.
  * @property {boolean} uninstall - Remove Budzie-managed entries instead of installing.
  * @property {boolean} deleteLedger - Also delete the lifetime savings ledger on uninstall.
@@ -102,7 +101,6 @@ export function parseArgs(argv, env = process.env) {
   let uninstall = false;
   let deleteLedger = false;
   let help = false;
-  let all = false;
   /** @type {string | undefined} */
   let configDir;
   /** @type {string[]} */
@@ -122,9 +120,6 @@ export function parseArgs(argv, env = process.env) {
         break;
       case "--delete-ledger":
         deleteLedger = true;
-        break;
-      case "--all":
-        all = true;
         break;
       case "--help":
       case "-h":
@@ -166,7 +161,6 @@ export function parseArgs(argv, env = process.env) {
     uninstall,
     deleteLedger,
     help,
-    all,
     hostIds,
     configDir: configDir ? path.resolve(configDir) : undefined,
   };
@@ -179,8 +173,7 @@ export function parseArgs(argv, env = process.env) {
  *   1. `--config-dir` → one explicit target using the claude-plugin format
  *      (back-compatible default layout).
  *   2. `--host <id>` (repeatable) → those specific matrix hosts, detected or not.
- *   3. `--all` → every host the probe detects.
- *   4. (default) → every host the probe detects (same as --all).
+ *   3. (default) → every host the probe detects.
  *
  * For uninstall, targets also include any host recorded in an existing manifest
  * so a host that has since disappeared from the machine still gets cleaned up.
@@ -683,7 +676,6 @@ By default, detects every supported host on this machine and installs Budzie's
 runtime and activation files for each in the correct format.
 
 Options:
-  --all                 Install for every detected host (the default behavior)
   --host <id>           Target a specific host by id (repeatable)
   --config-dir <path>   Install one explicit target dir using the default layout
   --dry-run             Print the planned changes and write nothing

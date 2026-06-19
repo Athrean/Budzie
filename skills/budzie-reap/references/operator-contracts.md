@@ -12,6 +12,8 @@ and hands off to the next role through written evidence.
 - Work in an isolated worktree and branch for every cut.
 - Keep one cut per worktree. If a candidate needs unrelated edits, split it.
 - Treat writes as opt-in. Locate and review are read-only.
+- Always stop after the locate summary and wait for explicit user approval
+  before creating a worktree or applying a cut.
 - Never auto-merge, push, or bypass project checks.
 - Never remove security, trust-boundary validation, data-loss handling, or
   accessibility basics.

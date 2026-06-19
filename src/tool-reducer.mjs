@@ -10,10 +10,9 @@ import { DEFAULT_LEVEL, LEVELS } from "./intensity.mjs";
  */
 
 /**
- * Options for the tool-catalog reducer. Off by default: with no `enabled` flag
- * and no `fields`, the catalog passes through untouched.
+ * Options for the tool-catalog reducer. Off by default: with no `fields`, the
+ * catalog passes through untouched.
  * @typedef {object} ReducerConfig
- * @property {boolean} [enabled] - Master opt-in switch. Falsey => passthrough.
  * @property {string[]} [fields] - Top-level tool fields to compress (e.g.
  *   `["description"]`). Only string values at these keys are touched. An empty
  *   or missing list is also a passthrough.
@@ -42,16 +41,6 @@ export function byteLength(value) {
 }
 
 /**
- * Compress one prose field with the shared Budzie intensity rules.
- * @param {string} text
- * @param {Level} [level]
- * @returns {string}
- */
-export function compressProse(text, level = DEFAULT_LEVEL) {
-  return compressAtLevel(text, level);
-}
-
-/**
  * Pure compressor: `(catalog, config) -> { catalog, bytesBefore, bytesAfter }`.
  * Off by default. Only string values at the configured top-level tool fields
  * are touched; everything else — tool names, schemas, enum values, nested
@@ -61,11 +50,10 @@ export function compressProse(text, level = DEFAULT_LEVEL) {
  * @returns {CompressResult}
  */
 export function compressCatalog(catalog, config) {
-  const fields = config && config.enabled ? config.fields ?? [] : [];
-  const level = /** @type {readonly string[]} */ (LEVELS).includes(
-    config?.level ?? ""
-  )
-    ? config.level
+  const fields = config?.fields ?? [];
+  const requestedLevel = config?.level;
+  const level = requestedLevel && LEVELS.includes(requestedLevel)
+    ? requestedLevel
     : DEFAULT_LEVEL;
   const active = Array.isArray(fields) && fields.length > 0;
 
@@ -87,7 +75,7 @@ export function compressCatalog(catalog, config) {
       const value = tool[field];
       if (typeof value !== "string") continue;
       bytesBefore += byteLength(value);
-      const compressed = compressProse(value, level);
+      const compressed = compressAtLevel(value, level);
       // Never let compression grow a field; keep the smaller of the two.
       tool[field] = byteLength(compressed) <= byteLength(value) ? compressed : value;
       bytesAfter += byteLength(tool[field]);
@@ -111,8 +99,7 @@ export function compressCatalog(catalog, config) {
  * @returns {any}
  */
 export function proxyResponse(message, config) {
-  const active =
-    config && config.enabled && Array.isArray(config.fields) && config.fields.length > 0;
+  const active = Array.isArray(config?.fields) && config.fields.length > 0;
   if (!active) return message;
   if (!message || typeof message !== "object") return message;
   const result = message.result;
@@ -207,8 +194,7 @@ export async function main(argv) {
     : readFileSync(0, "utf8"); // fd 0 = stdin
   const catalog = JSON.parse(text);
 
-  const config = { enabled: fields.length > 0, fields };
-  const result = compressCatalog(catalog, config);
+  const result = compressCatalog(catalog, { fields });
 
   if (flags.json) {
     process.stdout.write(JSON.stringify(result) + "\n");

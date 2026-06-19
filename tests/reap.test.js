@@ -149,5 +149,7 @@ test("reaper skill and command drive the loop through reap.mjs", () => {
   for (const text of [skill, command]) {
     assert.match(text, /node src\/reap\.mjs plan/);
     assert.match(text, /node src\/reap\.mjs receipt/);
+    assert.match(text, /no files changed/i);
+    assert.match(text, /explicitly approves/i);
   }
 });

@@ -171,14 +171,13 @@ function fakeProbe({ home, env = {}, commands = new Set(), paths = new Set(), pl
 
 test("parseArgs reads each flag", () => {
   const opts = parseArgs(
-    ["--dry-run", "--force", "--uninstall", "--delete-ledger", "--all", "--config-dir", "/tmp/x"],
+    ["--dry-run", "--force", "--uninstall", "--delete-ledger", "--config-dir", "/tmp/x"],
     {}
   );
   assert.equal(opts.dryRun, true);
   assert.equal(opts.force, true);
   assert.equal(opts.uninstall, true);
   assert.equal(opts.deleteLedger, true);
-  assert.equal(opts.all, true);
   assert.equal(opts.configDir, path.resolve("/tmp/x"));
 });
 
@@ -195,6 +194,7 @@ test("parseArgs supports --config-dir=value, --host, and -h", () => {
 
 test("parseArgs rejects unknown flags and missing values", () => {
   assert.throws(() => parseArgs(["--nope"], {}), /Unknown argument/);
+  assert.throws(() => parseArgs(["--all"], {}), /Unknown argument/);
   assert.throws(() => parseArgs(["--config-dir"], {}), /requires a path/);
   assert.throws(() => parseArgs(["--host"], {}), /requires a host id/);
 });

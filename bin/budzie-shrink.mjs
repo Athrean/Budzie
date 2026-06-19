@@ -157,7 +157,6 @@ export function main(argv) {
     }
 
     const reduced = compressCatalog(message.result, {
-      enabled: true,
       fields: ["description"],
       level,
     });

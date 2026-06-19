@@ -15,13 +15,6 @@ import { fileURLToPath } from "node:url";
  */
 export const CHARS_PER_TOKEN = 4;
 
-/**
- * Optional benchmark snapshot version. Cited in output when present, but never
- * a hard dependency — absence does not change behaviour.
- * @type {string | null}
- */
-export const BENCHMARK_SNAPSHOT = null;
-
 /** Directories never descended into. */
 const EXCLUDED_DIRS = new Set([
   ".git",
@@ -175,12 +168,11 @@ export function isContextFile(relPath) {
 }
 
 /**
- * The ESTIMATE label stating the tokenizer assumption (and snapshot if present).
+ * The ESTIMATE label stating the tokenizer assumption.
  * @returns {string}
  */
 function tokenizerNote() {
-  const base = `ESTIMATE: tokens ~= ceil(chars / ${CHARS_PER_TOKEN}); ~${CHARS_PER_TOKEN} chars/token heuristic`;
-  return BENCHMARK_SNAPSHOT ? `${base} (snapshot ${BENCHMARK_SNAPSHOT})` : base;
+  return `ESTIMATE: tokens ~= ceil(chars / ${CHARS_PER_TOKEN}); ~${CHARS_PER_TOKEN} chars/token heuristic`;
 }
 
 /**

@@ -64,11 +64,10 @@ test("opt-out default: no config passes the catalog through unchanged", () => {
   assert.equal(out.bytesBefore, out.bytesAfter);
 });
 
-test("opt-out default: enabled omitted is treated as off", () => {
+test("configured fields activate compression without a second switch", () => {
   const catalog = proseCatalog();
   const out = compressCatalog(catalog, { fields: ["description"] });
-  assert.deepEqual(out.catalog, catalog);
-  assert.equal(out.bytesBefore, out.bytesAfter);
+  assert.ok(out.bytesBefore > out.bytesAfter);
 });
 
 test("passthrough: a tool-call response goes through proxyResponse unchanged", () => {
@@ -80,7 +79,7 @@ test("passthrough: a tool-call response goes through proxyResponse unchanged", (
       isError: false,
     },
   };
-  const out = proxyResponse(response, { enabled: true, fields: ["description"] });
+  const out = proxyResponse(response, { fields: ["description"] });
   assert.deepEqual(out, response);
 });
 
@@ -91,13 +90,13 @@ test("passthrough: a request object is never mutated by the proxy", () => {
     method: "tools/call",
     params: { name: "fetch_url", arguments: { url: "https://a.test/x" } },
   };
-  const out = proxyResponse(request, { enabled: true, fields: ["description"] });
+  const out = proxyResponse(request, { fields: ["description"] });
   assert.deepEqual(out, request);
 });
 
 test("prose-field compression: only configured fields shrink, structure intact", () => {
   const catalog = proseCatalog();
-  const out = compressCatalog(catalog, { enabled: true, fields: ["description"] });
+  const out = compressCatalog(catalog, { fields: ["description"] });
 
   // Structure is identical apart from the compressed prose field.
   assert.equal(out.catalog.tools.length, 2);
@@ -124,12 +123,10 @@ test("prose-field compression: only configured fields shrink, structure intact",
 test("prose-field compression follows the configured Budzie intensity", () => {
   const catalog = proseCatalog();
   const low = compressCatalog(catalog, {
-    enabled: true,
     fields: ["description"],
     level: "low",
   });
   const ultra = compressCatalog(catalog, {
-    enabled: true,
     fields: ["description"],
     level: "ultra",
   });
@@ -143,12 +140,10 @@ test("prose-field compression follows the configured Budzie intensity", () => {
 test("invalid intensity falls back to the default level", () => {
   const catalog = proseCatalog();
   const fallback = compressCatalog(catalog, {
-    enabled: true,
     fields: ["description"],
     level: /** @type {any} */ ("turbo"),
   });
   const expected = compressCatalog(catalog, {
-    enabled: true,
     fields: ["description"],
   });
 
@@ -157,7 +152,7 @@ test("invalid intensity falls back to the default level", () => {
 
 test("prose-field compression: unconfigured fields are left alone", () => {
   const catalog = proseCatalog();
-  const out = compressCatalog(catalog, { enabled: true, fields: ["description"] });
+  const out = compressCatalog(catalog, { fields: ["description"] });
   // inputSchema descriptions are NOT in the configured top-level field list and
   // must remain byte-for-byte identical.
   assert.deepEqual(
@@ -168,7 +163,7 @@ test("prose-field compression: unconfigured fields are left alone", () => {
 
 test("preservation: URLs survive byte-for-byte inside a compressed description", () => {
   const catalog = proseCatalog();
-  const out = compressCatalog(catalog, { enabled: true, fields: ["description"] });
+  const out = compressCatalog(catalog, { fields: ["description"] });
   assert.match(
     String(out.catalog.tools[0].description),
     /https:\/\/api\.example\.com\/v1\/items/
@@ -177,7 +172,7 @@ test("preservation: URLs survive byte-for-byte inside a compressed description",
 
 test("preservation: file paths survive byte-for-byte", () => {
   const catalog = proseCatalog();
-  const out = compressCatalog(catalog, { enabled: true, fields: ["description"] });
+  const out = compressCatalog(catalog, { fields: ["description"] });
   const desc = String(out.catalog.tools[1].description);
   assert.ok(desc.includes("/etc/hosts"), "absolute path preserved");
   assert.ok(desc.includes("./config/settings.json"), "relative path preserved");
@@ -185,7 +180,7 @@ test("preservation: file paths survive byte-for-byte", () => {
 
 test("preservation: backtick code spans and identifiers survive", () => {
   const catalog = proseCatalog();
-  const out = compressCatalog(catalog, { enabled: true, fields: ["description"] });
+  const out = compressCatalog(catalog, { fields: ["description"] });
   assert.ok(
     String(out.catalog.tools[0].description).includes("`url`"),
     "code span preserved"
@@ -206,7 +201,7 @@ test("preservation: backtick code spans and identifiers survive", () => {
 test("byte accounting: reported counts match actual serialized field sizes", () => {
   const catalog = proseCatalog();
   const fields = ["description"];
-  const out = compressCatalog(catalog, { enabled: true, fields });
+  const out = compressCatalog(catalog, { fields });
 
   let expectedBefore = 0;
   let expectedAfter = 0;
@@ -228,7 +223,7 @@ test("byteLength counts UTF-8 bytes, not characters", () => {
 
 test("compressCatalog tolerates a catalog with no tools array", () => {
   const weird = { somethingElse: true };
-  const out = compressCatalog(weird, { enabled: true, fields: ["description"] });
+  const out = compressCatalog(weird, { fields: ["description"] });
   assert.deepEqual(out.catalog, weird);
   assert.equal(out.bytesBefore, out.bytesAfter);
 });
