@@ -1,5 +1,9 @@
 {
   "name": "budzie",
+  "owner": {
+    "name": "Athrean"
+  },
+  "description": "Budget-first agent tooling for smaller, verified changes.",
   "interface": {
     "displayName": "Budzie"
   },
