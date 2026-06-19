@@ -1,0 +1,26 @@
+src/hooks/mode-tracker.mjs
+  s_45069443dbe555::t_86c5dfdad7cab9 97
+  s_45069443dbe555::t_d19584a7e94f3e 2,5
+src/budget.mjs
+  s_45069443dbe555::t_8f2b23070f34a9 253
+  s_45069443dbe555::t_319cca4d7b2c6b 2,7
+src/intensity.mjs
+  s_45069443dbe555::t_be5f6fbb27a31e 59
+  s_45069443dbe555::t_e67f974c47ec11 2,7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "8cd6ba0d22a4396f0213f1f7f158bbcb60f0c9a1",
+  "prompts": {},
+  "sessions": {
+    "s_45069443dbe555": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b54a00e1-525b-4047-89c9-e4bf36ceb400",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
