@@ -59,6 +59,17 @@ sequences where dropping connectives would change the meaning. Resume compressio
 once the clear part is done. The trigger is detectable offline via
 `shouldAutoClarify` in `src/intensity.mjs`.
 
+### Tier-aware terseness (Claude Code)
+
+Output tokens cost the most on top-tier models, so Budzie pushes the hardest
+terseness there. A `UserPromptSubmit` hook reads the active model from the
+transcript and injects a scaled instruction: top tier (opus / fable / gpt-5.5)
+compresses prose hardest, mid tier (sonnet) trims moderately, cheap or unknown
+models inject nothing. Code, identifiers, errors, and security text stay full —
+the same boundary as the auto-clarity guard. This is a prompt effect, not the
+file compressor: any saving it claims is an `ESTIMATE`, measured through
+`evals/`. Claude Code only; other hosts no-op. See `src/model-tier.mjs`.
+
 ## Boundaries
 
 No telemetry. No backend. No phone-home. No new dependency unless
