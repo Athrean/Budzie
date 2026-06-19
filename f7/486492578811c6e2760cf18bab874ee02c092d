@@ -1,0 +1,20 @@
+tests/drift.test.js
+  s_45069443dbe555::t_e6e565ef0be657 13
+  s_45069443dbe555::t_cba1f0cb4a6e41 174-213
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "f7486492578811c6e2760cf18bab874ee02c092d",
+  "prompts": {},
+  "sessions": {
+    "s_45069443dbe555": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b54a00e1-525b-4047-89c9-e4bf36ceb400",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
