@@ -1,0 +1,25 @@
+src/hopper.mjs
+  s_7737eff258f176::t_d053436982f541 201-398
+  s_7737eff258f176::t_af03507cb76dd0 119-133
+  s_7737eff258f176::t_2326fde56d0c3a 402-490
+tests/hopper.test.js
+  s_7737eff258f176::t_51f7704748092b 15-18
+  s_7737eff258f176::t_90e165845aa95d 202-285
+  s_7737eff258f176::t_6d29beeeba344e 19-131
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "568732e2e7e83df659a6b209cfbbabb773db9db0",
+  "prompts": {},
+  "sessions": {
+    "s_7737eff258f176": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6944b575-e261-452b-8228-65e2062d7236",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
