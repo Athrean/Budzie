@@ -1,0 +1,21 @@
+dist/budzie.skill
+  s_45069443dbe555::t_ab07009892fa80 62-72
+skills/budzie/SKILL.md
+  s_45069443dbe555::t_64b7e93ba02b48 60-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "5b000d254755d10e25f90b9cb26e7b9f600c66d6",
+  "prompts": {},
+  "sessions": {
+    "s_45069443dbe555": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b54a00e1-525b-4047-89c9-e4bf36ceb400",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
