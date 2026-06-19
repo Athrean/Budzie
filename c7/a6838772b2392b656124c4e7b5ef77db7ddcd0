@@ -1,0 +1,35 @@
+tests/reap-contracts.test.js
+  s_f4f1db020513a8::t_dcdeafbc55bbf5 21-22,31
+.claude-plugin/marketplace.json
+  s_f4f1db020513a8::t_2a90be4aaff262 1-21
+commands/budzie-reap.toml
+  s_f4f1db020513a8::t_dcdeafbc55bbf5 1-2
+skills/budzie-reap/SKILL.md
+  s_f4f1db020513a8::t_dcdeafbc55bbf5 4-7,23,28-41,46-48
+tests/reap.test.js
+  s_f4f1db020513a8::t_dcdeafbc55bbf5 152-153
+agents/budzie-reaper.md
+  s_f4f1db020513a8::t_dcdeafbc55bbf5 3,8,12,23-26,32-33
+README.md
+  s_f4f1db020513a8::t_dcdeafbc55bbf5 15-16,25,112-121
+skills/budzie-reap/references/operator-contracts.md
+  s_f4f1db020513a8::t_dcdeafbc55bbf5 15-16
+dist/budzie.skill
+  s_f4f1db020513a8::t_095e226d0fe6cb 298,303-316,321-323
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "c7a6838772b2392b656124c4e7b5ef77db7ddcd0",
+  "prompts": {},
+  "sessions": {
+    "s_f4f1db020513a8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019edf30-97a4-7f23-ab9b-9d1fae23acb8",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
