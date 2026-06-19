@@ -1,0 +1,19 @@
+src/compress.mjs
+  s_f4f1db020513a8::t_4b2f28db738329 32-89,91-94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "a9b990517f26e2d29716dc17c1304022c3a18b12",
+  "prompts": {},
+  "sessions": {
+    "s_f4f1db020513a8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019edf30-97a4-7f23-ab9b-9d1fae23acb8",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
