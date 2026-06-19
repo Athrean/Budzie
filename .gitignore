@@ -7,6 +7,9 @@ node_modules/
 dist/
 build/
 coverage/
+# ...but the committed single-file skill bundle is a tracked distribution artifact.
+!dist/
+!dist/budzie.skill
 
 # Env/secrets
 .env
