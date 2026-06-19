@@ -147,7 +147,7 @@ test("every native-hook adapter activates Budzie through its declared SessionSta
   for (const [manifestPath, rootEnv] of adapters) {
     await withTree(({ root, dataDir }) => {
       const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-      const hookPath = path.resolve(manifest.hooks);
+      const hookPath = path.resolve(manifest.hooks ?? "hooks/hooks.json");
       const hookConfig = JSON.parse(readFileSync(hookPath, "utf8"));
       const handler = hookConfig.hooks.SessionStart[0].hooks[0];
       const env = testEnv({ BUDZIE_DATA_DIR: dataDir });
@@ -189,7 +189,9 @@ test("native SessionStart hooks reactivate after every context reset source", ()
     ".codex-plugin/plugin.json",
   ]) {
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-    const hookConfig = JSON.parse(readFileSync(path.resolve(manifest.hooks), "utf8"));
+    const hookConfig = JSON.parse(
+      readFileSync(path.resolve(manifest.hooks ?? "hooks/hooks.json"), "utf8")
+    );
     const sources = hookConfig.hooks.SessionStart[0].matcher.split("|").sort();
 
     assert.deepEqual(
@@ -295,9 +297,10 @@ test("hooks manifest declares a SessionStart command and a statusLine", () => {
   assert.match(manifest.statusLine.command, /statusline/);
 });
 
-test("Claude adapter registers the status-line hook file", () => {
+test("Claude adapter uses the standard auto-discovered hook file", () => {
   const plugin = JSON.parse(readFileSync(".claude-plugin/plugin.json", "utf8"));
-  assert.equal(plugin.hooks, "./hooks/hooks.json");
+  assert.equal(plugin.hooks, undefined);
+  assert.ok(readFileSync("hooks/hooks.json", "utf8").includes("SessionStart"));
 });
 
 test("both posix and powershell statusline wrappers exist and call the node script", () => {

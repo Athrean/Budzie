@@ -80,6 +80,10 @@ test("every relative path an adapter references resolves to a real surface", asy
         `${manifest} references missing ${value}`
       );
     }
+    if (manifest === ".claude-plugin/plugin.json") {
+      assert.equal(referenced, 0);
+      continue;
+    }
     assert.ok(referenced > 0, `${manifest} should wire up at least one runtime surface`);
   }
 });
