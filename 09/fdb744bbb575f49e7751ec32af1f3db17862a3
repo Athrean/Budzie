@@ -1,0 +1,24 @@
+tests/tier-terseness.test.js
+  s_45069443dbe555::t_a40a4c5ddb2890 1-3,5-137
+  s_45069443dbe555::t_0b740c6293699e 4
+hooks/hooks.json
+  s_45069443dbe555::t_95a4cecea420c4 14-24
+src/hooks/tier-terseness.mjs
+  s_45069443dbe555::t_9ab79440178cfc 1-106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "09fdb744bbb575f49e7751ec32af1f3db17862a3",
+  "prompts": {},
+  "sessions": {
+    "s_45069443dbe555": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b54a00e1-525b-4047-89c9-e4bf36ceb400",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
