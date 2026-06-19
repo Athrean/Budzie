@@ -36,9 +36,14 @@ test("adapter manifest list is non-empty and includes every host", () => {
   assert.ok(BUDZIE_INVARIANTS.adapterManifests.includes(".agents-plugin/plugin.json"));
 });
 
-test("every adapter manifest exposes the shared agents surface", async () => {
+test("adapters expose agents explicitly or through Claude's default directory", async () => {
   for (const manifest of BUDZIE_INVARIANTS.adapterManifests) {
     const data = await readJson(manifest);
+    if (manifest === ".claude-plugin/plugin.json") {
+      assert.equal(data.agents, undefined);
+      assert.ok(await pathExists("agents/"));
+      continue;
+    }
     assert.equal(data.agents, "./agents/", `${manifest} must wire up ./agents/`);
   }
 });
