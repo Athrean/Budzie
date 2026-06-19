@@ -94,19 +94,19 @@ function runAgentsFailure(args, env) {
   assert.fail("expected agents command to fail");
 }
 
-test("budzie-reviewer loads from the host-agnostic agents surface", async () => {
-  const agent = await loadAgent(REPO_ROOT, "budzie-reviewer");
+test("nancy loads from the host-agnostic agents surface", async () => {
+  const agent = await loadAgent(REPO_ROOT, "nancy");
 
-  assert.equal(agent.name, "budzie-reviewer");
+  assert.equal(agent.name, "nancy");
   assert.match(agent.description, /budget-aware/i);
   assert.match(agent.instructions, /receipt/i);
   assert.match(agent.instructions, /read-only/i);
 });
 
-test("budzie-reaper loads from the host-agnostic agents surface", async () => {
-  const agent = await loadAgent(REPO_ROOT, "budzie-reaper");
+test("eleven loads from the host-agnostic agents surface", async () => {
+  const agent = await loadAgent(REPO_ROOT, "eleven");
 
-  assert.equal(agent.name, "budzie-reaper");
+  assert.equal(agent.name, "eleven");
   assert.match(agent.description, /deletion/i);
   assert.match(agent.instructions, /reap.mjs/i);
   assert.match(agent.instructions, /worktree/i);
@@ -125,7 +125,7 @@ test("dispatch meters counted session tokens and stays read-only by default", as
 
     const result = await dispatchAgent({
       root: REPO_ROOT,
-      agentName: "budzie-reviewer",
+      agentName: "nancy",
       task: "Review the current branch for budget regressions.",
       session,
       env: testEnv({
@@ -146,7 +146,7 @@ test("dispatch meters counted session tokens and stays read-only by default", as
 test("dispatch receipt labels explicit token estimates with their source", async () => {
   const result = await dispatchAgent({
     root: REPO_ROOT,
-    agentName: "budzie-reviewer",
+    agentName: "nancy",
     task: "Review one small file.",
     estimate: 42,
     env: testEnv({
@@ -166,7 +166,7 @@ test("dispatch exits 2 when the subagent run exceeds a stop-mode ceiling", () =>
     [
       "dispatch",
       "--agent",
-      "budzie-reviewer",
+      "nancy",
       "--task",
       "Review a large branch.",
       "--estimate",
@@ -190,7 +190,7 @@ test("dispatch --json emits the subagent receipt shape", () => {
     [
       "dispatch",
       "--agent",
-      "budzie-reviewer",
+      "nancy",
       "--task",
       "Review a small branch.",
       "--estimate",
@@ -204,7 +204,7 @@ test("dispatch --json emits the subagent receipt shape", () => {
   );
   const parsed = JSON.parse(out);
 
-  assert.equal(parsed.agent.name, "budzie-reviewer");
+  assert.equal(parsed.agent.name, "nancy");
   assert.equal(parsed.receipt.kind, "subagent_run");
   assert.equal(parsed.receipt.tokenLabel, "ESTIMATE (explicit)");
   assert.equal(parsed.readOnly, true);
