@@ -11,6 +11,7 @@ import { FORMATS, HOST_MATRIX } from "./hosts.mjs";
  * @property {"hooks"} field
  * @property {"session-start"} kind
  * @property {string} runtime
+ * @property {string} [defaultPath]
  */
 
 /**
@@ -18,6 +19,7 @@ import { FORMATS, HOST_MATRIX } from "./hosts.mjs";
  * @property {"rules"} field
  * @property {"always-applied-rule"} kind
  * @property {string} file
+ * @property {string} [defaultPath]
  */
 
 /** @typedef {HookActivationSurface | RuleActivationSurface} ActivationSurface */
@@ -33,6 +35,7 @@ const ADAPTER_ACTIVATION_SURFACES = Object.freeze({
     field: "hooks",
     kind: "session-start",
     runtime: "src/hooks/activate.mjs",
+    defaultPath: "hooks/hooks.json",
   }),
   ".agents-plugin/plugin.json": Object.freeze({
     field: "rules",
@@ -339,7 +342,9 @@ async function checkAdapterActivationSurface(root, manifest, data, drift) {
     return;
   }
 
-  const surfacePath = data[surface.field];
+  const configuredPath = data[surface.field];
+  const surfacePath =
+    typeof configuredPath === "string" ? configuredPath : surface.defaultPath;
   if (typeof surfacePath !== "string") {
     drift.push(`${manifest} must declare a ${surface.field} activation surface`);
     return;
@@ -402,7 +407,10 @@ async function checkAdapterManifests(root, packageVersion, drift) {
       }
     }
     await checkAdapterActivationSurface(root, manifest, data, drift);
-    if (referenced === 0) {
+    if (
+      referenced === 0 &&
+      ADAPTER_ACTIVATION_SURFACES[manifest].defaultPath === undefined
+    ) {
       drift.push(`${manifest} must reference at least one runtime surface`);
     }
   }
