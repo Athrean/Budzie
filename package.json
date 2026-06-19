@@ -4,9 +4,21 @@
   "description": "Budget-first agent plugin: code less, spend less, watch the meter.",
   "keywords": ["budzie", "skills", "ai-agents", "budget", "productivity"],
   "license": "MIT",
+  "homepage": "https://github.com/Athrean/Budzie",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Athrean/Budzie.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Athrean/Budzie/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
   "type": "module",
-  "files": ["README.md", "LICENSE", "bin/", "agents/", "commands/", "skills/", "scripts/", "hooks/", "rules/", "benchmarks/multilingual-compression.mjs", "benchmarks/fixtures/multilingual-compression.json", ".codex-plugin/", ".claude-plugin/", ".agents-plugin/", ".opencode/", "gemini-extension.json"],
+  "files": ["README.md", "LICENSE", "install.sh", "install.ps1", "bin/", "agents/", "commands/", "skills/", "scripts/", "hooks/", "rules/", "benchmarks/multilingual-compression.mjs", "benchmarks/fixtures/multilingual-compression.json", ".codex-plugin/", ".claude-plugin/", ".agents-plugin/", ".opencode/", "gemini-extension.json"],
   "bin": {
+    "budzie": "./bin/budzie-install.mjs",
     "budzie-install": "./bin/budzie-install.mjs",
     "budzie-shrink": "./bin/budzie-shrink.mjs"
   },
