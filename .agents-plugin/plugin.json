@@ -13,6 +13,6 @@
   "agents": "./agents/",
   "commands": "./commands/",
   "skills": "./skills/",
-  "scripts": "./scripts/",
+  "scripts": "./src/",
   "rules": "./rules/"
 }

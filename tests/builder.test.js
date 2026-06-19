@@ -6,10 +6,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-import { buildReceipt, renderReceipt } from "../scripts/builder.mjs";
+import { buildReceipt, renderReceipt } from "../src/builder.mjs";
 
 /** Absolute path to the CLI under test. */
-const CLI = fileURLToPath(new URL("../scripts/builder.mjs", import.meta.url));
+const CLI = fileURLToPath(new URL("../src/builder.mjs", import.meta.url));
 
 /**
  * Create a throwaway directory tree and clean it up after `fn` runs.

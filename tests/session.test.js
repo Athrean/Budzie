@@ -7,9 +7,9 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 /** Absolute path to the session CLI under test. */
-const SESSION_CLI = fileURLToPath(new URL("../scripts/session.mjs", import.meta.url));
+const SESSION_CLI = fileURLToPath(new URL("../src/session.mjs", import.meta.url));
 /** Absolute path to the budget CLI under test. */
-const BUDGET_CLI = fileURLToPath(new URL("../scripts/budget.mjs", import.meta.url));
+const BUDGET_CLI = fileURLToPath(new URL("../src/budget.mjs", import.meta.url));
 
 const BUDGET_ENV_KEYS = [
   "BUDZIE_BUDGET_CEILING",
@@ -265,7 +265,7 @@ test("session surface is wired into the skill and command", () => {
   const command = fileURLToPath(new URL("../commands/budzie-budget.toml", import.meta.url));
   for (const file of [skill, command]) {
     const text = readFileSync(file, "utf8");
-    assert.match(text, /scripts\/session\.mjs/);
+    assert.match(text, /src\/session\.mjs/);
     assert.match(text, /--session/);
   }
 });

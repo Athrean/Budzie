@@ -41,7 +41,7 @@ current intensity setting. Schemas and other protocol fields stay unchanged.
 The first catalog's UTF-8 byte savings are written to stderr; stdout remains
 protocol-only.
 
-For a saved catalog, `node scripts/tool-reducer.mjs --fields description
+For a saved catalog, `node src/tool-reducer.mjs --fields description
 catalog.json` runs the same reducer in read-only inspection mode.
 
 ## Language-preserving compression
@@ -63,7 +63,7 @@ node benchmarks/multilingual-compression.mjs
 matrix — CLI probes (`command -v`), editor config directories, VS Code extension
 directories, and macOS app bundles — and installs the right format into each one.
 No host re-implements a command, skill, or script; every adapter is named
-`budzie` and pins its version to the package version. `scripts/check-drift.mjs`
+`budzie` and pins its version to the package version. `src/check-drift.mjs`
 fails if an adapter drifts off that version, references a surface that does not
 exist, loses its activation contract, or detects a host that is not listed here.
 
@@ -96,6 +96,9 @@ Each detected host installs one of these formats:
   the activation instruction is injected from the first message.
 - **Skills tree** — the `skills/` tree dropped into the host's config or
   extension directory.
+- **Single-file bundle** — `dist/budzie.skill`, every skill concatenated into
+  one drop-in Markdown file for hosts that take a single instructions file.
+  Regenerate with `npm run pack`; a test keeps it in sync with `skills/`.
 
 Full plugins and the agents plugin use the
 [Open Plugin rules component](https://github.com/vercel-labs/open-plugin-spec#d3-rules)

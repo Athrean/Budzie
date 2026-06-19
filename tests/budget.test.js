@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 /** Absolute path to the CLI under test. */
-const CLI = fileURLToPath(new URL("../scripts/budget.mjs", import.meta.url));
+const CLI = fileURLToPath(new URL("../src/budget.mjs", import.meta.url));
 const BUDGET_ENV_KEYS = [
   "BUDZIE_BUDGET_CEILING",
   "BUDZIE_BUDGET_UNIT",
@@ -194,9 +194,9 @@ test("budget skill and command drive the guard CLI", () => {
   const command = readFileSync("commands/budzie-budget.toml", "utf8");
 
   for (const text of [skill, command]) {
-    assert.match(text, /node scripts\/budget\.mjs status/);
-    assert.match(text, /node scripts\/budget\.mjs set/);
-    assert.match(text, /node scripts\/budget\.mjs check/);
+    assert.match(text, /node src\/budget\.mjs status/);
+    assert.match(text, /node src\/budget\.mjs set/);
+    assert.match(text, /node src\/budget\.mjs check/);
     assert.match(text, /\.budzie\/budget\.json/);
     assert.match(text, /BUDZIE_BUDGET_CEILING/);
   }

@@ -18,14 +18,14 @@ first.
 ## Commands
 
 ```bash
-node scripts/compress.mjs --dry-run CLAUDE.md  # read-only savings card
-node scripts/compress.mjs CLAUDE.md            # writes CLAUDE.md + CLAUDE.md.bak
-node scripts/compress.mjs --json --dry-run AGENTS.md
+node src/compress.mjs --dry-run CLAUDE.md  # read-only savings card
+node src/compress.mjs CLAUDE.md            # writes CLAUDE.md + CLAUDE.md.bak
+node src/compress.mjs --json --dry-run AGENTS.md
 ```
 
 ## Rules
 
-- Uses the current Budzie intensity level from `scripts/intensity.mjs`.
+- Uses the current Budzie intensity level from `src/intensity.mjs`.
 - Keeps prose in the same language. It never translates the input or adds an
   English opening or status phrase.
 - Removes built-in filler and hedging in English, Spanish, Portuguese, and

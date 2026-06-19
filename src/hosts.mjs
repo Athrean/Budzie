@@ -23,7 +23,7 @@ const RUNTIME_DIRS = Object.freeze([
   "commands",
   "skills",
   "hooks",
-  "scripts/hooks",
+  "src/hooks",
   "rules",
 ]);
 

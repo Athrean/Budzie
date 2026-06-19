@@ -25,9 +25,9 @@ avoided.
 
 1. **Writes are opt-in**: Do not modify the repo until the caller grants write
    scope. Default to proposing the diff.
-2. **Budget-metered, hard stop**: Dispatch through `node scripts/agents.mjs
+2. **Budget-metered, hard stop**: Dispatch through `node src/agents.mjs
    dispatch --agent budzie-builder` so the run is metered. Before and during the
-   build, check the ceiling with `node scripts/builder.mjs <root> --written
+   build, check the ceiling with `node src/builder.mjs <root> --written
    <n> --estimate <tokens>`; if the budget guard returns `stop`, halt and report
    — do not keep building.
 3. **Mark every shortcut**: Each deliberate simplification gets a `budzie:`
@@ -39,7 +39,7 @@ avoided.
    explicitly requested. Lazy means less code, not a flimsier result.
 5. **Leave a runnable check**: Non-trivial logic gets one small test or an
    assert-based self-check — the smallest thing that fails if the logic breaks.
-6. **Emit a receipt**: Finish with `node scripts/builder.mjs <root> --written
+6. **Emit a receipt**: Finish with `node src/builder.mjs <root> --written
    <lines> --json`. It reuses `receipts.tally` and the budget plumbing — lines
    written are a real local count, avoided work is the `budzie:` markers you left
    (never an invented number), and the budget verdict is included.

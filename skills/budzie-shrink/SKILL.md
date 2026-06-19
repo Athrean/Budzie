@@ -22,7 +22,7 @@ directions.
 
 - Tracks `tools/list` request IDs.
 - Compresses top-level tool `description` strings in successful list responses.
-- Uses the current Budzie intensity from `scripts/intensity.mjs`.
+- Uses the current Budzie intensity from `src/intensity.mjs`.
 - Keeps a description unchanged when compression would make it larger.
 - Preserves tool names, titles, schemas, parameter types, enum values,
   annotations, cursors, request IDs, errors, and tool results.
@@ -46,7 +46,7 @@ MCP messages only.
 Inspect a saved `tools/list` result without starting a server:
 
 ```bash
-node scripts/tool-reducer.mjs --fields description catalog.json
+node src/tool-reducer.mjs --fields description catalog.json
 ```
 
 Add `--json` to emit the compressed catalog and byte counts. The command reads

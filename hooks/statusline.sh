@@ -5,7 +5,7 @@
 set -u
 
 root="${CLAUDE_PLUGIN_ROOT:-$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)}"
-script="$root/scripts/hooks/status.mjs"
+script="$root/src/hooks/status.mjs"
 
 if ! node "$script" 2>/dev/null; then
   # budzie: static fallback when node or the ledger is unavailable; the live

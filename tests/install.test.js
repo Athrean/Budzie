@@ -36,9 +36,9 @@ import {
   detectHosts,
   hostById,
   HOST_MATRIX,
-} from "../scripts/hosts.mjs";
-import { flagPath, writeMode } from "../scripts/hooks/mode-tracker.mjs";
-import { ledgerPath } from "../scripts/ledger.mjs";
+} from "../src/hosts.mjs";
+import { flagPath, writeMode } from "../src/hooks/mode-tracker.mjs";
+import { ledgerPath } from "../src/ledger.mjs";
 
 /** Absolute path to the CLI under test. */
 const CLI = fileURLToPath(new URL("../bin/budzie-install.mjs", import.meta.url));
@@ -67,7 +67,7 @@ async function withFixture(fn) {
     writeFixtureFile(pkgRoot, "hooks/codex.json", '{"hooks":{"SessionStart":[]}}\n');
     writeFixtureFile(
       pkgRoot,
-      "scripts/hooks/activate.mjs",
+      "src/hooks/activate.mjs",
       'process.stdout.write("active");\n'
     );
     writeFixtureFile(
@@ -153,7 +153,7 @@ function exists(p) {
  * @param {Set<string>} [opts.commands] - Names that "exist on PATH".
  * @param {Set<string>} [opts.paths] - Absolute paths that "exist".
  * @param {NodeJS.Platform} [opts.platform]
- * @returns {import("../scripts/hosts.mjs").Probe}
+ * @returns {import("../src/hosts.mjs").Probe}
  */
 function fakeProbe({ home, env = {}, commands = new Set(), paths = new Set(), platform = "linux" }) {
   return {
@@ -385,7 +385,7 @@ test("fresh install creates expected Budzie entries and a v2 manifest", async ()
       "skills/budzie/SKILL.md",
       "skills/budzie-reap/references/contracts.md",
       "hooks/hooks.json",
-      "scripts/hooks/activate.mjs",
+      "src/hooks/activate.mjs",
       "rules/budzie.mdc",
       ".claude-plugin/plugin.json",
     ]) {

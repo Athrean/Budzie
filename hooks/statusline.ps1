@@ -8,7 +8,7 @@ $root = $env:CLAUDE_PLUGIN_ROOT
 if (-not $root) {
   $root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 }
-$script = Join-Path $root 'scripts/hooks/status.mjs'
+$script = Join-Path $root 'src/hooks/status.mjs'
 
 $stdin = [Console]::In.ReadToEnd()
 $line = $stdin | node $script 2>$null

@@ -16,7 +16,7 @@
     "node": ">=18"
   },
   "type": "module",
-  "files": ["README.md", "LICENSE", "install.sh", "install.ps1", "bin/", "agents/", "commands/", "skills/", "scripts/", "hooks/", "rules/", "benchmarks/multilingual-compression.mjs", "benchmarks/fixtures/multilingual-compression.json", ".codex-plugin/", ".claude-plugin/", ".agents-plugin/", ".opencode/", "gemini-extension.json"],
+  "files": ["README.md", "LICENSE", "install.sh", "install.ps1", "bin/", "agents/", "commands/", "skills/", "src/", "hooks/", "rules/", "dist/budzie.skill", "benchmarks/multilingual-compression.mjs", "benchmarks/fixtures/multilingual-compression.json", ".codex-plugin/", ".claude-plugin/", ".agents-plugin/", ".opencode/", "gemini-extension.json"],
   "bin": {
     "budzie": "./bin/budzie-install.mjs",
     "budzie-install": "./bin/budzie-install.mjs",
@@ -24,7 +24,8 @@
   },
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "typecheck": "tsc -p jsconfig.json"
+    "typecheck": "tsc -p jsconfig.json",
+    "pack": "node src/pack-skill.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

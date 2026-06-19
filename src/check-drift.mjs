@@ -27,12 +27,12 @@ const ADAPTER_ACTIVATION_SURFACES = Object.freeze({
   ".codex-plugin/plugin.json": Object.freeze({
     field: "hooks",
     kind: "session-start",
-    runtime: "scripts/hooks/activate.mjs",
+    runtime: "src/hooks/activate.mjs",
   }),
   ".claude-plugin/plugin.json": Object.freeze({
     field: "hooks",
     kind: "session-start",
-    runtime: "scripts/hooks/activate.mjs",
+    runtime: "src/hooks/activate.mjs",
   }),
   ".agents-plugin/plugin.json": Object.freeze({
     field: "rules",
@@ -42,12 +42,12 @@ const ADAPTER_ACTIVATION_SURFACES = Object.freeze({
   "gemini-extension.json": Object.freeze({
     field: "hooks",
     kind: "session-start",
-    runtime: "scripts/hooks/activate.mjs",
+    runtime: "src/hooks/activate.mjs",
   }),
   ".opencode/plugin.json": Object.freeze({
     field: "hooks",
     kind: "session-start",
-    runtime: "scripts/hooks/activate.mjs",
+    runtime: "src/hooks/activate.mjs",
   }),
 });
 
@@ -65,7 +65,7 @@ export const BUDZIE_INVARIANTS = Object.freeze({
     "agents/",
     "commands/",
     "skills/",
-    "scripts/",
+    "src/",
     "hooks/",
     "rules/",
   ]),
@@ -193,7 +193,7 @@ function isStringArray(value) {
  */
 function runtimeScriptRefs(text) {
   const refs = new Set();
-  const re = /node\s+(scripts\/[A-Za-z0-9._/-]+\.mjs)\b/g;
+  const re = /node\s+(src\/[A-Za-z0-9._/-]+\.mjs)\b/g;
   for (const match of text.matchAll(re)) refs.add(match[1]);
   return [...refs].sort();
 }

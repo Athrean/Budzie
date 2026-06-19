@@ -14,10 +14,10 @@ import {
   rewriteFile,
   renderReport,
   CHARS_PER_TOKEN,
-} from "../scripts/context-receipts.mjs";
+} from "../src/context-receipts.mjs";
 
 /** Absolute path to the CLI under test. */
-const CLI = fileURLToPath(new URL("../scripts/context-receipts.mjs", import.meta.url));
+const CLI = fileURLToPath(new URL("../src/context-receipts.mjs", import.meta.url));
 
 /**
  * Create a throwaway directory tree and clean it up after `fn` runs.
@@ -142,7 +142,7 @@ test("rewrite preserves code blocks, inline code, URLs, paths, headings and writ
       "",
       "Use `npm run typecheck` and visit https://example.com/docs for more.",
       "",
-      "Edit the file at scripts/lib/scan.mjs when needed.",
+      "Edit the file at src/lib/scan.mjs when needed.",
       "",
       "```js",
       "const   x   =   1;   // spacing inside code must survive",
@@ -174,7 +174,7 @@ test("rewrite preserves code blocks, inline code, URLs, paths, headings and writ
     // URL preserved.
     assert.match(rewritten, /https:\/\/example\.com\/docs/);
     // Path preserved.
-    assert.match(rewritten, /scripts\/lib\/scan\.mjs/);
+    assert.match(rewritten, /src\/lib\/scan\.mjs/);
 
     assert.equal(result.backup, backup);
     assert.equal(result.applied, true);

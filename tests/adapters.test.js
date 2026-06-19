@@ -3,7 +3,7 @@ import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
-import { BUDZIE_INVARIANTS } from "../scripts/check-drift.mjs";
+import { BUDZIE_INVARIANTS } from "../src/check-drift.mjs";
 
 /**
  * @param {string} file

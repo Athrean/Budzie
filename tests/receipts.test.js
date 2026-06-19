@@ -6,10 +6,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-import { ledger, tally, renderCard, renderBadge, renderLedger } from "../scripts/receipts.mjs";
+import { ledger, tally, renderCard, renderBadge, renderLedger } from "../src/receipts.mjs";
 
 /** Absolute path to the CLI under test. */
-const CLI = fileURLToPath(new URL("../scripts/receipts.mjs", import.meta.url));
+const CLI = fileURLToPath(new URL("../src/receipts.mjs", import.meta.url));
 
 /**
  * Create a throwaway directory tree and clean it up after `fn` runs.

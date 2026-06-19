@@ -21,13 +21,13 @@ Before locating, cutting, or reviewing a cut, read
 
 ## Loop
 
-1. Build the ranked plan: `node scripts/reap.mjs plan`.
-2. Use `node scripts/reap.mjs plan --aggressive` only when the user asks for
+1. Build the ranked plan: `node src/reap.mjs plan`.
+2. Use `node src/reap.mjs plan --aggressive` only when the user asks for
    `native` or `yagni` cuts.
 3. Apply one cut per worktree.
 4. Run detected tests.
 5. Keep green cuts, discard red cuts.
-6. Render the PR receipt with `node scripts/reap.mjs receipt`, reading results
+6. Render the PR receipt with `node src/reap.mjs receipt`, reading results
    JSON on stdin: `{ kept, discarded, linesRemoved, depsRemoved }`.
 
 ## Defaults

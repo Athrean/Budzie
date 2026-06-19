@@ -30,10 +30,10 @@ Count:
 After the scan, get the real counts from the shared scanner:
 
 ```bash
-node scripts/receipts.mjs           # terminal card with the three counts
-node scripts/receipts.mjs --badge   # shields.io badge string for a README
-node scripts/receipts.mjs --json    # { markers, noUpgradeTrigger, depsAvoided }
-node scripts/receipts.mjs --ledger  # rows: file, line, marker, cut tag, tier, dep flag, trigger flag
+node src/receipts.mjs           # terminal card with the three counts
+node src/receipts.mjs --badge   # shields.io badge string for a README
+node src/receipts.mjs --json    # { markers, noUpgradeTrigger, depsAvoided }
+node src/receipts.mjs --ledger  # rows: file, line, marker, cut tag, tier, dep flag, trigger flag
 ```
 
 Real local counts only — no baseline, no estimate.
@@ -44,7 +44,7 @@ After scoring, append this run to the local lifetime ledger so the statusline
 badge can show cumulative savings. Local-only, zero network:
 
 ```bash
-node scripts/ledger.mjs append --tokens <N> --lines <N> --deps <N> --cost <N>
+node src/ledger.mjs append --tokens <N> --lines <N> --deps <N> --cost <N>
 ```
 
 Pass the real counts you measured (tokens saved, lines avoided, deps avoided)
