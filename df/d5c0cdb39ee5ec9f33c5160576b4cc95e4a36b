@@ -1,0 +1,136 @@
+skills/budzie-context/SKILL.md
+  s_45069443dbe555::t_8910217132ebaa 20-22,44
+tests/agents.test.js
+  s_45069443dbe555::t_dd18460ef734c7 13,16
+tests/compress.test.js
+  s_45069443dbe555::t_41c6f9a6a1f811 301
+  s_45069443dbe555::t_dd18460ef734c7 9-10,12
+  s_45069443dbe555::t_8910217132ebaa 86,97
+commands/budzie-budget.toml
+  s_45069443dbe555::t_8910217132ebaa 2
+.opencode/plugin.json
+  s_45069443dbe555::t_ffffe448cee14a 16
+hooks/statusline.sh
+  s_45069443dbe555::t_ffffe448cee14a 8
+bin/budzie-shrink.mjs
+  s_45069443dbe555::t_dd18460ef734c7 9-10,13
+.agents-plugin/plugin.json
+  s_45069443dbe555::t_ffffe448cee14a 16
+hooks/codex.json
+  s_45069443dbe555::t_ffffe448cee14a 9
+agents/budzie-reaper.md
+  s_45069443dbe555::t_8910217132ebaa 13,18,22,31
+tests/metadata.test.js
+  s_45069443dbe555::t_8910217132ebaa 19
+tests/session.test.js
+  s_45069443dbe555::t_dd18460ef734c7 10,12
+  s_45069443dbe555::t_41c6f9a6a1f811 268
+tests/tool-reducer.test.js
+  s_45069443dbe555::t_dd18460ef734c7 13,16
+tests/receipts.test.js
+  s_45069443dbe555::t_dd18460ef734c7 9,12
+tests/drift.test.js
+  s_45069443dbe555::t_41c6f9a6a1f811 445
+  s_45069443dbe555::t_dd18460ef734c7 12-13,16
+  s_45069443dbe555::t_8910217132ebaa 40,77,86,95,109,117,219,226,236,242,252,258,276,374,385
+commands/budzie-reap.toml
+  s_45069443dbe555::t_8910217132ebaa 2
+skills/budzie-compress/SKILL.md
+  s_45069443dbe555::t_8910217132ebaa 21-23,28
+tests/adapters.test.js
+  s_45069443dbe555::t_dd18460ef734c7 6
+skills/budzie-shrink/SKILL.md
+  s_45069443dbe555::t_8910217132ebaa 25,49
+tests/ledger.test.js
+  s_45069443dbe555::t_dd18460ef734c7 25,27,105
+skills/budzie-reap/SKILL.md
+  s_45069443dbe555::t_8910217132ebaa 24-25,30
+src/check-drift.mjs
+  s_45069443dbe555::t_ffffe448cee14a 30,35,45,50,68
+  s_45069443dbe555::t_e526e0f877f0c2 196
+tests/install.test.js
+  s_45069443dbe555::t_dd18460ef734c7 39-41,156
+  s_45069443dbe555::t_8910217132ebaa 70,388
+commands/budzie-receipts.toml
+  s_45069443dbe555::t_8910217132ebaa 2
+tests/intensity.test.js
+  s_45069443dbe555::t_dd18460ef734c7 9,11
+tests/reap.test.js
+  s_45069443dbe555::t_41c6f9a6a1f811 150-151
+  s_45069443dbe555::t_dd18460ef734c7 9,12
+package.json
+  s_45069443dbe555::t_7a2493d03be315 19
+hooks/hooks.json
+  s_45069443dbe555::t_ffffe448cee14a 9
+skills/budzie-reap/references/operator-contracts.md
+  s_45069443dbe555::t_8910217132ebaa 51,108
+tests/scan.test.js
+  s_45069443dbe555::t_dd18460ef734c7 7
+skills/budzie-receipts/SKILL.md
+  s_45069443dbe555::t_8910217132ebaa 33-36,47
+agents/budzie-builder.md
+  s_45069443dbe555::t_8910217132ebaa 28,30,42
+agents/budzie-crew.md
+  s_45069443dbe555::t_8910217132ebaa 29
+tests/context-receipts.test.js
+  s_45069443dbe555::t_8910217132ebaa 145
+  s_45069443dbe555::t_dd18460ef734c7 17,20
+  s_45069443dbe555::t_41c6f9a6a1f811 177
+src/hosts.mjs
+  s_45069443dbe555::t_ffffe448cee14a 26
+skills/budzie/SKILL.md
+  s_45069443dbe555::t_8910217132ebaa 37,58
+skills/budzie-budget/SKILL.md
+  s_45069443dbe555::t_8910217132ebaa 15-19,26,38
+tests/scout.test.js
+  s_45069443dbe555::t_dd18460ef734c7 15,18
+tests/crew.test.js
+  s_45069443dbe555::t_dd18460ef734c7 15,21,24,38-39,42,55,127
+skills/budzie-help/SKILL.md
+  s_45069443dbe555::t_8910217132ebaa 28
+commands/budzie-compress.toml
+  s_45069443dbe555::t_8910217132ebaa 2
+bin/budzie-install.mjs
+  s_45069443dbe555::t_8910217132ebaa 31
+  s_45069443dbe555::t_dd18460ef734c7 18-19,25,188,421,438,502,592,705
+hooks/statusline.ps1
+  s_45069443dbe555::t_ffffe448cee14a 11
+README.md
+  s_45069443dbe555::t_ffffe448cee14a 44,66
+gemini-extension.json
+  s_45069443dbe555::t_ffffe448cee14a 16
+benchmarks/multilingual-compression.mjs
+  s_45069443dbe555::t_dd18460ef734c7 5,8
+tests/budget.test.js
+  s_45069443dbe555::t_41c6f9a6a1f811 197-199
+  s_45069443dbe555::t_dd18460ef734c7 10
+commands/budzie-shrink.toml
+  s_45069443dbe555::t_8910217132ebaa 2
+agents/budzie-scout.md
+  s_45069443dbe555::t_8910217132ebaa 21,28,37
+benchmarks/run.mjs
+  s_45069443dbe555::t_dd18460ef734c7 9
+commands/budzie.toml
+  s_45069443dbe555::t_8910217132ebaa 2
+tests/builder.test.js
+  s_45069443dbe555::t_dd18460ef734c7 9,12
+tests/hooks.test.js
+  s_45069443dbe555::t_41c6f9a6a1f811 291,308
+  s_45069443dbe555::t_dd18460ef734c7 15,18-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "dfd5c0cdb39ee5ec9f33c5160576b4cc95e4a36b",
+  "prompts": {},
+  "sessions": {
+    "s_45069443dbe555": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b54a00e1-525b-4047-89c9-e4bf36ceb400",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
