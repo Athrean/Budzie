@@ -12,11 +12,11 @@ import {
   readMode,
   removeMode,
   writeMode,
-} from "../scripts/hooks/mode-tracker.mjs";
+} from "../src/hooks/mode-tracker.mjs";
 
 /** Absolute paths to the hook scripts under test. */
-const ACTIVATE = fileURLToPath(new URL("../scripts/hooks/activate.mjs", import.meta.url));
-const STATUS = fileURLToPath(new URL("../scripts/hooks/status.mjs", import.meta.url));
+const ACTIVATE = fileURLToPath(new URL("../src/hooks/activate.mjs", import.meta.url));
+const STATUS = fileURLToPath(new URL("../src/hooks/status.mjs", import.meta.url));
 
 /** Env keys that influence host data dir + budget resolution. */
 const ENV_KEYS = [
@@ -288,7 +288,7 @@ test("hooks manifest declares a SessionStart command and a statusLine", () => {
   assert.ok(Array.isArray(manifest.hooks.SessionStart));
   const inner = manifest.hooks.SessionStart[0].hooks[0];
   assert.equal(inner.type, "command");
-  assert.match(inner.command, /scripts\/hooks\/activate\.mjs/);
+  assert.match(inner.command, /src\/hooks\/activate\.mjs/);
   assert.equal(typeof inner.timeout, "number");
 
   assert.equal(manifest.statusLine.type, "command");
@@ -305,6 +305,6 @@ test("both posix and powershell statusline wrappers exist and call the node scri
   const ps1 = readFileSync("hooks/statusline.ps1", "utf8");
 
   for (const text of [sh, ps1]) {
-    assert.match(text, /scripts\/hooks\/status\.mjs/);
+    assert.match(text, /src\/hooks\/status\.mjs/);
   }
 });

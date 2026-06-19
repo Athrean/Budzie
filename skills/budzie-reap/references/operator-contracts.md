@@ -48,7 +48,7 @@ Locator output shape:
 
 - Type: delete
 - Risk: low
-- Evidence: `scripts/example.mjs:42` repeats `scripts/lib/example.mjs:18`
+- Evidence: `src/example.mjs:42` repeats `src/lib/example.mjs:18`
 - Cut: remove the local helper and call the shared helper
 - Verify: `npm test`
 ```
@@ -105,7 +105,7 @@ Reviewer output shape:
 
 ```md
 Blocking
-- `scripts/example.mjs:42` still imports the removed helper, so the cut is not
+- `src/example.mjs:42` still imports the removed helper, so the cut is not
   green.
 
 Decision: discard this cut.

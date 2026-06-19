@@ -6,11 +6,11 @@ import { Transform } from "node:stream";
 import { parseArgs } from "node:util";
 import { fileURLToPath } from "node:url";
 
-import { readLevel } from "../scripts/intensity.mjs";
-import { compressCatalog } from "../scripts/tool-reducer.mjs";
+import { readLevel } from "../src/intensity.mjs";
+import { compressCatalog } from "../src/tool-reducer.mjs";
 
 /**
- * @typedef {import("../scripts/intensity.mjs").Level} Level
+ * @typedef {import("../src/intensity.mjs").Level} Level
  * @typedef {(line: string) => string | undefined} LineHandler
  */
 

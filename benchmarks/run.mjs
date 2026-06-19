@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { TASKS, gradeTask, taskHash } from "./tasks.mjs";
 import { RATES, costUsd } from "./rates.mjs";
 import { codeLines, primaryCodeBlock } from "./lib/extract.mjs";
-import { readConfig, checkBudget } from "../scripts/budget.mjs";
+import { readConfig, checkBudget } from "../src/budget.mjs";
 
 /** Schema version of the snapshot format. Bump on any shape change. */
 const SCHEMA_VERSION = 1;

@@ -6,9 +6,9 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
-import { readLevel, writeLevel, shouldAutoClarify, DEFAULT_LEVEL } from "../scripts/intensity.mjs";
+import { readLevel, writeLevel, shouldAutoClarify, DEFAULT_LEVEL } from "../src/intensity.mjs";
 
-const SCRIPT = fileURLToPath(new URL("../scripts/intensity.mjs", import.meta.url));
+const SCRIPT = fileURLToPath(new URL("../src/intensity.mjs", import.meta.url));
 
 /**
  * Run `fn` with an isolated, throwaway data dir; clean up after.

@@ -10,10 +10,10 @@ import {
   dispatchAgent,
   loadAgent,
   renderSubagentReceipt,
-} from "../scripts/agents.mjs";
+} from "../src/agents.mjs";
 
 /** Absolute path to the subagent CLI under test. */
-const AGENTS_CLI = fileURLToPath(new URL("../scripts/agents.mjs", import.meta.url));
+const AGENTS_CLI = fileURLToPath(new URL("../src/agents.mjs", import.meta.url));
 /** Repo root containing the shipped `agents/` surface. */
 const REPO_ROOT = fileURLToPath(new URL("..", import.meta.url));
 const BUDGET_ENV_KEYS = [

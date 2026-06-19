@@ -9,11 +9,11 @@ import { fileURLToPath } from "node:url";
 import {
   BUDZIE_INVARIANTS,
   checkDrift,
-} from "../scripts/check-drift.mjs";
-import { HOST_MATRIX } from "../scripts/hosts.mjs";
+} from "../src/check-drift.mjs";
+import { HOST_MATRIX } from "../src/hosts.mjs";
 
 /** Absolute path to the CLI under test. */
-const CLI = fileURLToPath(new URL("../scripts/check-drift.mjs", import.meta.url));
+const CLI = fileURLToPath(new URL("../src/check-drift.mjs", import.meta.url));
 
 /**
  * Create a throwaway package-shaped tree and clean it up after `fn` runs.
@@ -37,7 +37,7 @@ function writeBaseline(root) {
   writeJson(root, "package.json", {
     name: "budzie",
     version: "0.1.0",
-    files: ["agents/", "commands/", "skills/", "scripts/", "hooks/", "rules/"],
+    files: ["agents/", "commands/", "skills/", "src/", "hooks/", "rules/"],
   });
   writeJson(root, "package-lock.json", {
     name: "budzie",
@@ -74,7 +74,7 @@ function writeBaseline(root) {
     commands: "./commands/",
     skills: "./skills/",
     agents: "./agents/",
-    scripts: "./scripts/",
+    scripts: "./src/",
     rules: "./rules/",
   });
   writeJson(root, "gemini-extension.json", {
@@ -83,7 +83,7 @@ function writeBaseline(root) {
     commands: "./commands/",
     skills: "./skills/",
     agents: "./agents/",
-    scripts: "./scripts/",
+    scripts: "./src/",
     hooks: "./hooks/hooks.json",
   });
   writeJson(root, ".opencode/plugin.json", {
@@ -92,7 +92,7 @@ function writeBaseline(root) {
     commands: "./commands/",
     skills: "./skills/",
     agents: "./agents/",
-    scripts: "./scripts/",
+    scripts: "./src/",
     hooks: "./hooks/hooks.json",
   });
   for (const dir of ["agents", "commands", "skills", "scripts", "hooks", "rules"]) {
@@ -106,7 +106,7 @@ function writeBaseline(root) {
             hooks: [
               {
                 type: "command",
-                command: "node \"${PLUGIN_ROOT}/scripts/hooks/activate.mjs\"",
+                command: "node \"${PLUGIN_ROOT}/src/hooks/activate.mjs\"",
               },
             ],
           },
@@ -114,7 +114,7 @@ function writeBaseline(root) {
       },
     });
   }
-  writeFixtureFile(root, "scripts/hooks/activate.mjs", "// @ts-check\n");
+  writeFixtureFile(root, "src/hooks/activate.mjs", "// @ts-check\n");
   writeFixtureFile(
     root,
     "rules/budzie.mdc",
@@ -216,14 +216,14 @@ test("command files report missing matching skills and runtime scripts", async (
     writeFixtureFile(
       root,
       "commands/budzie-receipts.toml",
-      'prompt = "Run `node scripts/receipts.mjs`."\n'
+      'prompt = "Run `node src/receipts.mjs`."\n'
     );
 
     const drift = await checkDrift(root);
 
     assert.deepEqual(drift, [
       "commands/budzie-receipts.toml is missing skills/budzie-receipts/SKILL.md",
-      "commands/budzie-receipts.toml references missing scripts/receipts.mjs",
+      "commands/budzie-receipts.toml references missing src/receipts.mjs",
     ]);
   });
 });
@@ -233,13 +233,13 @@ test("skills report missing claimed runtime scripts", async () => {
     writeFixtureFile(
       root,
       "skills/budzie-reap/SKILL.md",
-      "# Budzie Reaper\n\nRun `node scripts/reap.mjs plan`.\n"
+      "# Budzie Reaper\n\nRun `node src/reap.mjs plan`.\n"
     );
 
     const drift = await checkDrift(root);
 
     assert.deepEqual(drift, [
-      "skills/budzie-reap/SKILL.md references missing scripts/reap.mjs",
+      "skills/budzie-reap/SKILL.md references missing src/reap.mjs",
     ]);
   });
 });
@@ -249,13 +249,13 @@ test("agents report missing claimed runtime scripts", async () => {
     writeFixtureFile(
       root,
       "agents/budzie-reviewer.md",
-      "---\nname: budzie-reviewer\n---\nRun `node scripts/agents.mjs dispatch`.\n"
+      "---\nname: budzie-reviewer\n---\nRun `node src/agents.mjs dispatch`.\n"
     );
 
     const drift = await checkDrift(root);
 
     assert.deepEqual(drift, [
-      "agents/budzie-reviewer.md references missing scripts/agents.mjs",
+      "agents/budzie-reviewer.md references missing src/agents.mjs",
     ]);
   });
 });
@@ -273,7 +273,7 @@ test("package files report missing shipped runtime directories", async () => {
     assert.deepEqual(drift, [
       "package.json files must include agents/",
       "package.json files must include skills/",
-      "package.json files must include scripts/",
+      "package.json files must include src/",
       "package.json files must include hooks/",
       "package.json files must include rules/",
     ]);
@@ -371,7 +371,7 @@ test("adapters report SessionStart hooks without the activation runtime", async 
             hooks: [
               {
                 type: "command",
-                command: "node \"${PLUGIN_ROOT}/scripts/hooks/missing.mjs\"",
+                command: "node \"${PLUGIN_ROOT}/src/hooks/missing.mjs\"",
               },
             ],
           },
@@ -382,7 +382,7 @@ test("adapters report SessionStart hooks without the activation runtime", async 
     const drift = await checkDrift(root);
 
     assert.deepEqual(drift, [
-      ".codex-plugin/plugin.json SessionStart must run scripts/hooks/activate.mjs",
+      ".codex-plugin/plugin.json SessionStart must run src/hooks/activate.mjs",
     ]);
   });
 });
@@ -442,6 +442,6 @@ test("command exits nonzero and prints drift when checks fail", async () => {
     const result = spawnSync("node", [CLI, root], { encoding: "utf8" });
 
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /package\.json files must include scripts\//);
+    assert.match(result.stderr, /package\.json files must include src\//);
   });
 });

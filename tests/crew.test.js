@@ -12,16 +12,16 @@ import {
   dispatchCrew,
   renderCrewReceipt,
   parseSpec,
-} from "../scripts/crew.mjs";
+} from "../src/crew.mjs";
 
 /**
  * A minimal counted/estimate usage object for merge tests.
  * @param {number | null} total
  * @param {string} [label]
- * @returns {import("../scripts/agents.mjs").AgentUsage}
+ * @returns {import("../src/agents.mjs").AgentUsage}
  */
 function usage(total, label = "estimate") {
-  return /** @type {import("../scripts/agents.mjs").AgentUsage} */ ({
+  return /** @type {import("../src/agents.mjs").AgentUsage} */ ({
     inputTokens: null,
     outputTokens: null,
     totalTokens: total,
@@ -35,11 +35,11 @@ function usage(total, label = "estimate") {
  * @param {string} name
  * @param {number | null} total
  * @param {string} [label]
- * @param {import("../scripts/crew.mjs").BudgetCheck} [budget]
- * @returns {import("../scripts/crew.mjs").MemberOutcome}
+ * @param {import("../src/crew.mjs").BudgetCheck} [budget]
+ * @returns {import("../src/crew.mjs").MemberOutcome}
  */
 function outcome(name, total, label, budget) {
-  return /** @type {import("../scripts/crew.mjs").MemberOutcome} */ ({
+  return /** @type {import("../src/crew.mjs").MemberOutcome} */ ({
     member: { agent: name, task: "t" },
     agent: name,
     usage: usage(total, label),
@@ -52,7 +52,7 @@ function outcome(name, total, label, budget) {
  * Build a budget config for tests.
  * @param {number} ceiling
  * @param {"warn" | "stop"} mode
- * @returns {import("../scripts/budget.mjs").BudgetConfig}
+ * @returns {import("../src/budget.mjs").BudgetConfig}
  */
 function cfg(ceiling, mode) {
   return { ceiling, unit: "tokens", warnAt: 0.8, mode };
@@ -124,7 +124,7 @@ test("mergeCrew labels aggregate counted only when every member is counted", () 
 test("mergeCrew honours a per-member hard-stop even when the aggregate fits", () => {
   const config = cfg(1000, "stop");
   // Aggregate 150 < 1000 (ok), but member b blew its slice with mode=stop.
-  const stopped = /** @type {import("../scripts/crew.mjs").BudgetCheck} */ ({ budget: "333 tokens", estimated: "120", status: "stop", reason: "estimate exceeds budget" });
+  const stopped = /** @type {import("../src/crew.mjs").BudgetCheck} */ ({ budget: "333 tokens", estimated: "120", status: "stop", reason: "estimate exceeds budget" });
   const crew = mergeCrew([outcome("a", 30), outcome("b", 120, "estimate", stopped)], config);
   assert.equal(crew.budget.status, "ok");
   assert.equal(crew.status, "stop");

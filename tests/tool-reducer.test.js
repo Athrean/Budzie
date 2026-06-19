@@ -10,10 +10,10 @@ import {
   compressCatalog,
   proxyResponse,
   byteLength,
-} from "../scripts/tool-reducer.mjs";
+} from "../src/tool-reducer.mjs";
 
 /** Absolute path to the CLI under test. */
-const CLI = fileURLToPath(new URL("../scripts/tool-reducer.mjs", import.meta.url));
+const CLI = fileURLToPath(new URL("../src/tool-reducer.mjs", import.meta.url));
 
 /**
  * A prose-heavy fixture catalog: a `tools/list`-style result. Descriptions are

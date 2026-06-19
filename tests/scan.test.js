@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { walk, classifyMarker, detectTestCommand } from "../scripts/lib/scan.mjs";
+import { walk, classifyMarker, detectTestCommand } from "../src/lib/scan.mjs";
 
 /**
  * Create a throwaway directory tree and clean it up after `fn` runs.

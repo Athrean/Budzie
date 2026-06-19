@@ -6,10 +6,10 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
-import { compressFile, compressMarkdown, renderReport } from "../scripts/compress.mjs";
-import { writeLevel } from "../scripts/intensity.mjs";
+import { compressFile, compressMarkdown, renderReport } from "../src/compress.mjs";
+import { writeLevel } from "../src/intensity.mjs";
 
-const CLI = fileURLToPath(new URL("../scripts/compress.mjs", import.meta.url));
+const CLI = fileURLToPath(new URL("../src/compress.mjs", import.meta.url));
 const LEVELS = /** @type {const} */ (["low", "medium", "xhigh", "ultra"]);
 
 /**
@@ -83,7 +83,7 @@ test("compression preserves code blocks, URLs, paths, API names, and exact error
   const source = [
     "# Memory",
     "",
-    "Please make sure to open scripts/lib/scan.mjs and https://example.com/docs before changing OpenAIClient.",
+    "Please make sure to open src/lib/scan.mjs and https://example.com/docs before changing OpenAIClient.",
     "Keep the exact error string \"TypeError: Cannot read property userId\" in the notes.",
     "",
     codeBlock,
@@ -94,7 +94,7 @@ test("compression preserves code blocks, URLs, paths, API names, and exact error
 
   assert.ok(out.includes(codeBlock), "fenced code block must survive byte-for-byte");
   assert.ok(out.includes("https://example.com/docs"), "URL must survive byte-for-byte");
-  assert.ok(out.includes("scripts/lib/scan.mjs"), "path must survive byte-for-byte");
+  assert.ok(out.includes("src/lib/scan.mjs"), "path must survive byte-for-byte");
   assert.ok(out.includes("OpenAIClient"), "API name must survive byte-for-byte");
   assert.ok(
     out.includes("\"TypeError: Cannot read property userId\""),
@@ -298,7 +298,7 @@ test("command and skill document the compressor entrypoint", () => {
   const command = readFileSync("commands/budzie-compress.toml", "utf8");
   const skill = readFileSync("skills/budzie-compress/SKILL.md", "utf8");
 
-  assert.match(command, /node scripts\/compress\.mjs/);
+  assert.match(command, /node src\/compress\.mjs/);
   assert.match(command, /--dry-run/);
   assert.match(skill, /name: budzie-compress/);
   assert.match(skill, /\.bak/);

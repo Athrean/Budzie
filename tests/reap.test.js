@@ -6,10 +6,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-import { plan, formatReceipt } from "../scripts/reap.mjs";
+import { plan, formatReceipt } from "../src/reap.mjs";
 
 /** Absolute path to the CLI under test. */
-const CLI = fileURLToPath(new URL("../scripts/reap.mjs", import.meta.url));
+const CLI = fileURLToPath(new URL("../src/reap.mjs", import.meta.url));
 
 /**
  * Create a throwaway directory tree and clean it up after `fn` runs.
@@ -147,7 +147,7 @@ test("reaper skill and command drive the loop through reap.mjs", () => {
   const command = readFileSync("commands/budzie-reap.toml", "utf8");
 
   for (const text of [skill, command]) {
-    assert.match(text, /node scripts\/reap\.mjs plan/);
-    assert.match(text, /node scripts\/reap\.mjs receipt/);
+    assert.match(text, /node src\/reap\.mjs plan/);
+    assert.match(text, /node src\/reap\.mjs receipt/);
   }
 });

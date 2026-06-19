@@ -15,20 +15,20 @@ import {
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { removeMode } from "../scripts/hooks/mode-tracker.mjs";
-import { ledgerPath } from "../scripts/ledger.mjs";
+import { removeMode } from "../src/hooks/mode-tracker.mjs";
+import { ledgerPath } from "../src/ledger.mjs";
 import {
   FORMATS,
   detectHosts,
   hostById,
   realProbe,
-} from "../scripts/hosts.mjs";
+} from "../src/hosts.mjs";
 
 /**
  * Budzie's multi-host installer.
  *
  * Detects every supported agent host via a data-driven matrix (see
- * `scripts/hosts.mjs`) and installs the correct shipped adapter format into
+ * `src/hosts.mjs`) and installs the correct shipped adapter format into
  * each host's config dir, idempotently. A versioned manifest records, per host,
  * exactly which paths Budzie installed so `--uninstall` removes only
  * Budzie-managed entries and leaves user-authored files untouched. Node stdlib
@@ -185,7 +185,7 @@ export function parseArgs(argv, env = process.env) {
  * For uninstall, targets also include any host recorded in an existing manifest
  * so a host that has since disappeared from the machine still gets cleaned up.
  * @param {Options} options
- * @param {import("../scripts/hosts.mjs").Probe} [probe]
+ * @param {import("../src/hosts.mjs").Probe} [probe]
  * @returns {Target[]}
  */
 export function resolveTargets(options, probe = realProbe()) {
@@ -418,7 +418,7 @@ export function planUninstallTarget(dir, files) {
 /**
  * Build the full multi-target install plan.
  * @param {Options} options
- * @param {{ probe?: import("../scripts/hosts.mjs").Probe, packageRoot?: string }} [ctx]
+ * @param {{ probe?: import("../src/hosts.mjs").Probe, packageRoot?: string }} [ctx]
  * @returns {TargetPlan[]}
  */
 export function planInstall(options, ctx = {}) {
@@ -435,7 +435,7 @@ export function planInstall(options, ctx = {}) {
  * lists), never from a fresh source walk — uninstall touches only what was
  * recorded as Budzie-managed.
  * @param {Options} options
- * @param {{ probe?: import("../scripts/hosts.mjs").Probe }} [ctx]
+ * @param {{ probe?: import("../src/hosts.mjs").Probe }} [ctx]
  * @returns {TargetPlan[]}
  */
 export function planUninstall(options, ctx = {}) {
@@ -499,7 +499,7 @@ function pruneEmptyDirs(dir, relFiles) {
  * Apply an install across every resolved target. Copies managed files and
  * writes one manifest per install dir.
  * @param {Options} options
- * @param {{ probe?: import("../scripts/hosts.mjs").Probe, packageRoot?: string }} [ctx]
+ * @param {{ probe?: import("../src/hosts.mjs").Probe, packageRoot?: string }} [ctx]
  * @returns {TargetPlan[]} The plans performed.
  */
 export function runInstall(options, ctx = {}) {
@@ -589,7 +589,7 @@ export function planLedger(options, env = process.env) {
  * manifest-recorded files, prunes empty Budzie dirs, and rewrites/deletes each
  * manifest.
  * @param {Options} options
- * @param {{ probe?: import("../scripts/hosts.mjs").Probe, env?: NodeJS.ProcessEnv }} [ctx]
+ * @param {{ probe?: import("../src/hosts.mjs").Probe, env?: NodeJS.ProcessEnv }} [ctx]
  * @returns {TargetPlan[]} The plans performed.
  */
 export function runUninstall(options, ctx = {}) {
@@ -702,7 +702,7 @@ everything you authored. Uninstall preserves the lifetime savings ledger unless
 /**
  * CLI entry point.
  * @param {string[]} argv - `process.argv.slice(2)`.
- * @param {{ stdout?: (s: string) => void, stderr?: (s: string) => void, env?: NodeJS.ProcessEnv, probe?: import("../scripts/hosts.mjs").Probe }} [io]
+ * @param {{ stdout?: (s: string) => void, stderr?: (s: string) => void, env?: NodeJS.ProcessEnv, probe?: import("../src/hosts.mjs").Probe }} [io]
  * @returns {number} Process exit code.
  */
 export function main(argv, io = {}) {

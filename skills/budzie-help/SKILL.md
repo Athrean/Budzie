@@ -25,7 +25,7 @@ Marker:
 Auto-activation (local-only):
 
 - Claude Code uses `hooks/hooks.json`; Codex uses `hooks/codex.json`.
-- Their SessionStart hooks run `node scripts/hooks/activate.mjs`, inject the
+- Their SessionStart hooks run `node src/hooks/activate.mjs`, inject the
   Budzie ruleset as hidden context, and record activation locally.
 - Rules-capable agents plugin hosts load `rules/budzie.mdc`, whose
   `alwaysApply: true` frontmatter activates the `budzie` skill from message one.

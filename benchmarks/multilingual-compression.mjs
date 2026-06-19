@@ -2,10 +2,10 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { compressMarkdown } from "../scripts/compress.mjs";
+import { compressMarkdown } from "../src/compress.mjs";
 
 /**
- * @typedef {import("../scripts/intensity.mjs").Level} Level
+ * @typedef {import("../src/intensity.mjs").Level} Level
  */
 
 /**

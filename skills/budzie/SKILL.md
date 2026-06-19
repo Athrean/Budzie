@@ -34,7 +34,7 @@ Receipts count real local markers first. Estimates must say `ESTIMATE`.
 ## Intensity
 
 Compression intensity has four levels; default `medium`. Set with
-`/budzie <level>` (persisted via `scripts/intensity.mjs`). Each level targets a
+`/budzie <level>` (persisted via `src/intensity.mjs`). Each level targets a
 measured reduction band, verified by the benchmark harness:
 
 | Level  | Target | How |
@@ -55,7 +55,7 @@ Regardless of level, revert to full prose for: security warnings, destructive or
 irreversible operations (e.g. `DROP TABLE`, `rm -rf`), and conditional multi-step
 sequences where dropping connectives would change the meaning. Resume compression
 once the clear part is done. The trigger is detectable offline via
-`shouldAutoClarify` in `scripts/intensity.mjs`.
+`shouldAutoClarify` in `src/intensity.mjs`.
 
 ## Boundaries
 

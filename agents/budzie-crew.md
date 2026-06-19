@@ -26,7 +26,7 @@ deterministically.
 
 ## Usage
 
-CLI: `node scripts/crew.mjs --spec <file> [--json] [--config <path>]`
+CLI: `node src/crew.mjs --spec <file> [--json] [--config <path>]`
 
 Spec format (JSON):
 ```json

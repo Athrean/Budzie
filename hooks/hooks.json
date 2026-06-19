@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/activate.mjs\"",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/src/hooks/activate.mjs\"",
             "timeout": 5
           }
         ]

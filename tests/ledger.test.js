@@ -22,9 +22,9 @@ import {
   readLedger,
   renderBadge,
   resolveConfigDir,
-} from "../scripts/ledger.mjs";
+} from "../src/ledger.mjs";
 
-const SCRIPT = fileURLToPath(new URL("../scripts/ledger.mjs", import.meta.url));
+const SCRIPT = fileURLToPath(new URL("../src/ledger.mjs", import.meta.url));
 
 /**
  * Run `fn` with an isolated, throwaway config dir; clean up after. The ledger
@@ -102,7 +102,7 @@ test("readLedger degrades a corrupt file to an empty ledger without throwing", (
 test("cumulativeTokens ignores non-numeric or negative token values", () => {
   // Deliberately malformed entries (cast away the type) to prove the reducer
   // coerces junk to 0 rather than producing NaN.
-  const ledger = /** @type {import("../scripts/ledger.mjs").Ledger} */ ({
+  const ledger = /** @type {import("../src/ledger.mjs").Ledger} */ ({
     version: LEDGER_VERSION,
     entries: [
       { timestamp: "", tokensSaved: 100 },

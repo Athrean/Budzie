@@ -17,9 +17,9 @@ only — never code, config, secrets, or binaries.
 ## Scan
 
 ```bash
-node scripts/context-receipts.mjs           # terminal report: files, bytes, ESTIMATE tokens
-node scripts/context-receipts.mjs --json     # raw scan result as JSON
-node scripts/context-receipts.mjs <root>     # scan a specific directory
+node src/context-receipts.mjs           # terminal report: files, bytes, ESTIMATE tokens
+node src/context-receipts.mjs --json     # raw scan result as JSON
+node src/context-receipts.mjs <root>     # scan a specific directory
 ```
 
 The scanner counts only memory/instruction files: `CLAUDE.md`, `AGENTS.md`,
@@ -41,7 +41,7 @@ Rewriting is off by default and must be requested explicitly. It writes a
 whitespace while preserving code blocks, inline code, URLs, paths, and headings.
 
 ```bash
-node scripts/context-receipts.mjs --rewrite CLAUDE.md   # writes CLAUDE.md.original first
+node src/context-receipts.mjs --rewrite CLAUDE.md   # writes CLAUDE.md.original first
 ```
 
 Never rewrite without the user asking. Never rewrite a file the scanner would
