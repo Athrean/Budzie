@@ -10,6 +10,7 @@ import {
   BUDZIE_INVARIANTS,
   checkDrift,
 } from "../scripts/check-drift.mjs";
+import { HOST_MATRIX } from "../scripts/hosts.mjs";
 
 /** Absolute path to the CLI under test. */
 const CLI = fileURLToPath(new URL("../scripts/check-drift.mjs", import.meta.url));
@@ -166,6 +167,46 @@ test("installer matrix drift reports a format source missing from the tree", asy
         d.includes("format rules-file references missing source rules/budzie.mdc")
       ),
       `expected installer-matrix drift, got: ${JSON.stringify(drift)}`
+    );
+  });
+});
+
+test("installer matrix drift reports a detected host missing from the README", async () => {
+  await withTree(async (root) => {
+    // A README that documents every host except Windsurf must be flagged, so
+    // the supported-host docs can't silently drift behind the detection matrix.
+    writeFixtureFile(
+      root,
+      "README.md",
+      HOST_MATRIX.filter((h) => h.id !== "windsurf")
+        .map((h) => `- ${h.label}`)
+        .join("\n") + "\n"
+    );
+
+    const drift = await checkDrift(root);
+
+    assert.ok(
+      drift.some((d) =>
+        d.includes("host windsurf (Windsurf) is not documented in README.md")
+      ),
+      `expected undocumented-host drift, got: ${JSON.stringify(drift)}`
+    );
+  });
+});
+
+test("a README documenting every detected host reports no host-doc drift", async () => {
+  await withTree(async (root) => {
+    writeFixtureFile(
+      root,
+      "README.md",
+      HOST_MATRIX.map((h) => `- ${h.label}`).join("\n") + "\n"
+    );
+
+    const drift = await checkDrift(root);
+
+    assert.ok(
+      !drift.some((d) => d.includes("is not documented in README.md")),
+      `expected no host-doc drift, got: ${JSON.stringify(drift)}`
     );
   });
 });

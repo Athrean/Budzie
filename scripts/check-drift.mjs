@@ -456,6 +456,27 @@ async function checkInstallerMatrix(root, drift) {
       `installer manifest version ${MANIFEST_VERSION} must equal invariant ${BUDZIE_INVARIANTS.manifestVersion}`
     );
   }
+
+  // Every detected host must be named in the README so the supported-host list
+  // can't silently fall behind the matrix (the matrix grew to 17 while the docs
+  // still advertised 5). budzie: a substring presence check, not a table
+  // parser; upgrade to structured table parsing if the README ever needs to
+  // list a host's label without claiming support for it.
+  let readme;
+  try {
+    readme = await readFile(path.join(root, "README.md"), "utf8");
+  } catch {
+    readme = null;
+  }
+  if (readme !== null) {
+    for (const host of HOST_MATRIX) {
+      if (!readme.includes(host.label)) {
+        drift.push(
+          `host ${host.id} (${host.label}) is not documented in README.md`
+        );
+      }
+    }
+  }
 }
 
 /**

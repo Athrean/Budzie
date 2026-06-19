@@ -59,27 +59,50 @@ node benchmarks/multilingual-compression.mjs
 
 ## Supported hosts
 
-Budzie ships one thin adapter manifest per host. Each adapter only points at the
-shared runtime surfaces in this repo; none of them re-implement a command, skill,
-or script. Every adapter is named `budzie` and pins its version to the package
-version, and `scripts/check-drift.mjs` fails if an adapter drifts off that
-version, references a surface that does not exist, or loses its activation
-contract.
+`budzie-install` auto-detects the agent hosts on your machine via a data-driven
+matrix — CLI probes (`command -v`), editor config directories, VS Code extension
+directories, and macOS app bundles — and installs the right format into each one.
+No host re-implements a command, skill, or script; every adapter is named
+`budzie` and pins its version to the package version. `scripts/check-drift.mjs`
+fails if an adapter drifts off that version, references a surface that does not
+exist, loses its activation contract, or detects a host that is not listed here.
 
-| Host | Adapter manifest | Wires up |
+| Host | Detected via | Installs |
 | --- | --- | --- |
-| Codex / plugin host | `.codex-plugin/plugin.json` | `./agents/`, `./skills/`, `./hooks/codex.json` |
-| Claude Code | `.claude-plugin/plugin.json` | `./agents/`, `./commands/`, `./skills/`, `./hooks/hooks.json` |
-| Rules-capable agents plugin host | `.agents-plugin/plugin.json` | `./agents/`, `./commands/`, `./skills/`, `./scripts/`, `./rules/` |
-| OpenCode | `.opencode/plugin.json` | `./agents/`, `./commands/`, `./skills/`, `./scripts/`, `./hooks/hooks.json` |
-| Antigravity / Gemini | `gemini-extension.json` | `./agents/`, `./commands/`, `./skills/`, `./scripts/`, `./hooks/hooks.json` |
+| Claude Code (CLI) | `claude` on `PATH` | full plugin (`.claude-plugin/`) |
+| Codex (CLI) | `codex` on `PATH` | full plugin (`.codex-plugin/`) |
+| Gemini (CLI) | `gemini` on `PATH` | agents plugin (`.agents-plugin/`) |
+| Aider (CLI) | `aider` on `PATH` | rules file (`rules/budzie.mdc`) |
+| Qwen Code (CLI) | `qwen` on `PATH` | agents plugin (`.agents-plugin/`) |
+| OpenCode (CLI) | `opencode` on `PATH` or `~/.config/opencode` | agents plugin (`.agents-plugin/`) |
+| Crush (CLI) | `crush` on `PATH` or `~/.config/crush` | agents plugin (`.agents-plugin/`) |
+| Cursor | `~/.cursor` | rules file (`rules/budzie.mdc`) |
+| Windsurf | `~/.codeium/windsurf` | rules file (`rules/budzie.mdc`) |
+| Continue | `~/.continue` | agents plugin (`.agents-plugin/`) |
+| Cline | `~/.cline` | rules file (`rules/budzie.mdc`) |
+| Zed | Zed config dir or app bundle | skills tree (`skills/`) |
+| VS Code | `~/.vscode/extensions` | skills tree (`skills/`) |
+| VS Code Insiders | `~/.vscode-insiders/extensions` | skills tree (`skills/`) |
+| Cursor (extensions) | `~/.cursor/extensions` | skills tree (`skills/`) |
+| Claude Desktop (macOS) | `/Applications/Claude.app` | skills tree (`skills/`) |
+| ChatGPT Desktop (macOS) | `/Applications/ChatGPT.app` | skills tree (`skills/`) |
 
-Claude Code and Codex activate Budzie through their native `SessionStart`
-plugin hooks. The agents adapter uses the
-[Open Plugin rules component](https://github.com/vercel-labs/open-plugin-spec#d3-rules):
-`rules/budzie.mdc` sets `alwaysApply: true`, so rules-capable hosts inject the
-activation instruction from the first message. This does not claim that every
-skill-only agent host supports `.mdc` rules.
+Each detected host installs one of these formats:
+
+- **Full plugin** — Claude (`.claude-plugin/`), Codex (`.codex-plugin/`), or the
+  generic agents manifest (`.agents-plugin/`), each activating through a native
+  `SessionStart` hook.
+- **Rules file** — a single `rules/budzie.mdc` that sets `alwaysApply: true`, so
+  the activation instruction is injected from the first message.
+- **Skills tree** — the `skills/` tree dropped into the host's config or
+  extension directory.
+
+Full plugins and the agents plugin use the
+[Open Plugin rules component](https://github.com/vercel-labs/open-plugin-spec#d3-rules)
+for activation where hooks are unavailable. The repo also ships native plugin
+manifests (`.claude-plugin/`, `.codex-plugin/`, `.agents-plugin/`, `.opencode/`,
+`gemini-extension.json`) so these hosts can load Budzie directly from a clone or
+marketplace. Listing a host here does not claim it supports `.mdc` rules.
 
 ## Install
 
