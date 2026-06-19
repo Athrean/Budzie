@@ -1,0 +1,24 @@
+src/pack-skill.mjs
+  s_45069443dbe555::t_a09ba3b4574825 1-105
+package.json
+  s_45069443dbe555::t_9ab66503a60e8b 27-28
+tests/pack.test.js
+  s_45069443dbe555::t_5b12d1415419f8 26-29
+  s_45069443dbe555::t_856107d3cf58a5 1-25,30-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "d5e9c64f97df3f678865e31c5b1b08ceaaa67308",
+  "prompts": {},
+  "sessions": {
+    "s_45069443dbe555": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b54a00e1-525b-4047-89c9-e4bf36ceb400",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
