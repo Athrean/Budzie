@@ -1,0 +1,30 @@
+commands/budzie-receipts.toml
+  s_7737eff258f176::t_f84abef012da77 2
+dist/budzie.skill
+  s_7737eff258f176::t_cee6d0dba4704e 362-377
+src/meter.mjs
+  s_7737eff258f176::t_cdd4e04941962f 1-194
+src/hooks/status.mjs
+  s_7737eff258f176::t_321662e0639be9 7,12-14,16,18,21,23-29,31
+  s_7737eff258f176::t_e6f91183f32430 53-76,81,84,88-90,96-97
+tests/meter.test.js
+  s_7737eff258f176::t_8b1ad5bee84b4b 1-115
+skills/budzie-receipts/SKILL.md
+  s_7737eff258f176::t_828499ed9867a6 41-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "fa78252fef3da4195d220d83a2dc3bc1319b7c05",
+  "prompts": {},
+  "sessions": {
+    "s_7737eff258f176": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6944b575-e261-452b-8228-65e2062d7236",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
