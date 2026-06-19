@@ -12,7 +12,11 @@ import {
   dispatchCrew,
   renderCrewReceipt,
   parseSpec,
-} from "../src/crew.mjs";
+  runPipeline,
+  mergePipeline,
+  renderPipelineReceipt,
+  parsePipelineSpec,
+} from "../src/hopper.mjs";
 
 /**
  * A minimal counted/estimate usage object for merge tests.
@@ -35,11 +39,11 @@ function usage(total, label = "estimate") {
  * @param {string} name
  * @param {number | null} total
  * @param {string} [label]
- * @param {import("../src/crew.mjs").BudgetCheck} [budget]
- * @returns {import("../src/crew.mjs").MemberOutcome}
+ * @param {import("../src/hopper.mjs").BudgetCheck} [budget]
+ * @returns {import("../src/hopper.mjs").MemberOutcome}
  */
 function outcome(name, total, label, budget) {
-  return /** @type {import("../src/crew.mjs").MemberOutcome} */ ({
+  return /** @type {import("../src/hopper.mjs").MemberOutcome} */ ({
     member: { agent: name, task: "t" },
     agent: name,
     usage: usage(total, label),
@@ -124,7 +128,7 @@ test("mergeCrew labels aggregate counted only when every member is counted", () 
 test("mergeCrew honours a per-member hard-stop even when the aggregate fits", () => {
   const config = cfg(1000, "stop");
   // Aggregate 150 < 1000 (ok), but member b blew its slice with mode=stop.
-  const stopped = /** @type {import("../src/crew.mjs").BudgetCheck} */ ({ budget: "333 tokens", estimated: "120", status: "stop", reason: "estimate exceeds budget" });
+  const stopped = /** @type {import("../src/hopper.mjs").BudgetCheck} */ ({ budget: "333 tokens", estimated: "120", status: "stop", reason: "estimate exceeds budget" });
   const crew = mergeCrew([outcome("a", 30), outcome("b", 120, "estimate", stopped)], config);
   assert.equal(crew.budget.status, "ok");
   assert.equal(crew.status, "stop");
@@ -194,4 +198,88 @@ test("parseSpec accepts an array or { members } and rejects malformed members", 
   assert.equal(parseSpec('{"members":[{"agent":"a","task":"t"}]}').length, 1);
   assert.throws(() => parseSpec("[]"), /non-empty/);
   assert.throws(() => parseSpec('[{"agent":"a"}]'), /agent.*task/);
+});
+
+test("parsePipelineSpec reads ordered stages and rejects malformed shapes", () => {
+  const stages = parsePipelineSpec(
+    '{"stages":[{"name":"audit","members":[{"agent":"dustin","task":"t"}]}]}'
+  );
+  assert.equal(stages.length, 1);
+  assert.equal(stages[0].name, "audit");
+  assert.equal(stages[0].members[0].agent, "dustin");
+  assert.throws(() => parsePipelineSpec('{"stages":[]}'), /stages/);
+  assert.throws(() => parsePipelineSpec('{"stages":[{"members":[]}]}'), /name/);
+  assert.throws(
+    () => parsePipelineSpec('{"stages":[{"name":"x","members":[]}]}'),
+    /non-empty array of members/
+  );
+});
+
+test("runPipeline runs stages in order and stays ok under the ceiling", async () => {
+  const root = makeRoot(["dustin", "nancy"]);
+  const pipeline = await runPipeline({
+    root,
+    stages: [
+      { name: "audit", members: [{ agent: "dustin", task: "a", estimate: 100 }] },
+      { name: "review", members: [{ agent: "nancy", task: "r", estimate: 100 }] },
+    ],
+    env: { BUDZIE_BUDGET_CEILING: "1000", BUDZIE_BUDGET_UNIT: "tokens", BUDZIE_BUDGET_MODE: "stop" },
+  });
+  assert.deepEqual(pipeline.stages.map((s) => s.name), ["audit", "review"]);
+  assert.deepEqual(pipeline.stages.map((s) => s.state), ["ran", "ran"]);
+  assert.equal(pipeline.totalTokens, 200);
+  assert.equal(pipeline.status, "ok");
+  assert.equal(pipeline.tokensComplete, true);
+});
+
+test("runPipeline halts later stages when a stage hits a stop, marking them skipped", async () => {
+  const root = makeRoot(["dustin", "nancy"]);
+  // 2 stages → per-stage ceiling 50; the audit member's 80 estimate blows it.
+  const pipeline = await runPipeline({
+    root,
+    stages: [
+      { name: "audit", members: [{ agent: "dustin", task: "a", estimate: 80 }] },
+      { name: "review", members: [{ agent: "nancy", task: "r", estimate: 10 }] },
+    ],
+    env: { BUDZIE_BUDGET_CEILING: "100", BUDZIE_BUDGET_UNIT: "tokens", BUDZIE_BUDGET_MODE: "stop" },
+  });
+  assert.equal(pipeline.stages[0].state, "ran");
+  assert.equal(pipeline.stages[1].state, "skipped");
+  assert.equal(pipeline.stages[1].crew, null);
+  assert.equal(pipeline.status, "stop");
+  // A skipped stage means the token total is partial, never silently "complete".
+  assert.equal(pipeline.tokensComplete, false);
+});
+
+test("mergePipeline aggregates ran stages and flags partial when one is skipped", () => {
+  const config = cfg(1000, "warn");
+  const ranCrew = mergeCrew([outcome("a", 100, "counted")], config);
+  const merged = mergePipeline(
+    [
+      { name: "one", state: "ran", crew: ranCrew },
+      { name: "two", state: "skipped", crew: null },
+    ],
+    config
+  );
+  assert.equal(merged.totalTokens, 100);
+  assert.equal(merged.tokensComplete, false);
+});
+
+test("renderPipelineReceipt shows each stage block, skipped notes, and the verdict", () => {
+  const config = cfg(1000, "warn");
+  const ranCrew = mergeCrew([outcome("dustin", 100, "estimate")], config);
+  const text = renderPipelineReceipt(
+    mergePipeline(
+      [
+        { name: "audit", state: "ran", crew: ranCrew },
+        { name: "reap", state: "skipped", crew: null },
+      ],
+      config
+    )
+  );
+  assert.match(text, /stages: 2/);
+  assert.match(text, /\[audit\]/);
+  assert.match(text, /- dustin: 100 estimate/);
+  assert.match(text, /\[reap\] skipped/);
+  assert.match(text, /status: ok/);
 });
