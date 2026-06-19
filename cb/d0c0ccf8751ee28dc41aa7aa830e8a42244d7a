@@ -1,0 +1,21 @@
+.claude-plugin/marketplace.json
+  s_f4f1db020513a8::t_78c5ab767b3fe5 3-6
+tests/metadata.test.js
+  s_f4f1db020513a8::t_7915122ac62f5f 10-12,17-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "cbd0c0ccf8751ee28dc41aa7aa830e8a42244d7a",
+  "prompts": {},
+  "sessions": {
+    "s_f4f1db020513a8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019edf30-97a4-7f23-ab9b-9d1fae23acb8",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
