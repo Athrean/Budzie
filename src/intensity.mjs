@@ -1,9 +1,10 @@
 // @ts-check
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { resolveDataDir } from "./hooks/mode-tracker.mjs";
+import { writeFileAtomic } from "./lib/atomic-write.mjs";
 
 /**
  * Intensity levels, ordered low to high compression. Each maps to a measured
@@ -55,9 +56,7 @@ export function writeLevel(level, env = process.env) {
   if (!isLevel(level)) {
     throw new Error(`invalid intensity level: ${level} (expected ${LEVELS.join(", ")})`);
   }
-  const file = levelPath(env);
-  mkdirSync(path.dirname(file), { recursive: true });
-  writeFileSync(file, JSON.stringify({ level }) + "\n");
+  writeFileAtomic(levelPath(env), JSON.stringify({ level }) + "\n");
 }
 
 /**

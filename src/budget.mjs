@@ -1,8 +1,10 @@
 // @ts-check
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
+
+import { writeFileAtomic } from "./lib/atomic-write.mjs";
 
 import { readSession } from "./session.mjs";
 
@@ -248,9 +250,7 @@ export function readConfig(root, flags = {}, env = process.env) {
  * @param {NodeJS.ProcessEnv} [env]
  */
 export function writeConfig(root, flags, config, env = process.env) {
-  const file = configPath(root, flags, env);
-  mkdirSync(path.dirname(file), { recursive: true });
-  writeFileSync(file, JSON.stringify(config, null, 2) + "\n");
+  writeFileAtomic(configPath(root, flags, env), JSON.stringify(config, null, 2) + "\n");
 }
 
 /**

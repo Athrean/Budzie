@@ -1,12 +1,8 @@
 // @ts-check
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, readFileSync, rmSync } from "node:fs";
 import path from "node:path";
+
+import { writeFileAtomic } from "../lib/atomic-write.mjs";
 
 /**
  * Local-only record of whether Budzie mode is active for this host.
@@ -98,9 +94,7 @@ export function readMode(env = process.env) {
 export function writeMode(active, env = process.env) {
   /** @type {ModeState} */
   const state = { active, updatedAt: new Date().toISOString() };
-  const file = flagPath(env);
-  mkdirSync(path.dirname(file), { recursive: true });
-  writeFileSync(file, JSON.stringify(state, null, 2) + "\n");
+  writeFileAtomic(flagPath(env), JSON.stringify(state, null, 2) + "\n");
   return state;
 }
 
