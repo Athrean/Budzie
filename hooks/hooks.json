@@ -11,6 +11,17 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/src/hooks/tier-terseness.mjs\"",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
