@@ -2,6 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  mkdirSync,
   mkdtempSync,
   readFileSync,
   readdirSync,
@@ -69,6 +70,27 @@ test("a symlinked destination is replaced, not written through", () => {
     // ...and the destination is now a regular file holding the new content.
     assert.equal(lstatSync(link).isSymbolicLink(), false);
     assert.equal(readFileSync(link, "utf8"), "owned");
+  });
+});
+
+test("a destination symlinked to a victim file in another dir is not written through", () => {
+  inTmp((dir) => {
+    // Attacker pre-plants the predictable state path as a symlink pointing at a
+    // victim file in a separate directory tree.
+    const victimDir = path.join(dir, "victim");
+    const stateDir = path.join(dir, "state");
+    mkdirSync(victimDir, { recursive: true });
+    mkdirSync(stateDir, { recursive: true });
+    const victim = path.join(victimDir, "secret.txt");
+    writeFileSync(victim, "VICTIM");
+    const statePath = path.join(stateDir, "mode.json");
+    symlinkSync(victim, statePath);
+
+    writeFileAtomic(statePath, "budzie-state");
+
+    assert.equal(readFileSync(victim, "utf8"), "VICTIM"); // victim untouched
+    assert.equal(lstatSync(statePath).isSymbolicLink(), false); // link replaced
+    assert.equal(readFileSync(statePath, "utf8"), "budzie-state");
   });
 });
 

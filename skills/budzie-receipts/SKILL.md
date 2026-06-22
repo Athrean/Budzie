@@ -38,6 +38,22 @@ node src/receipts.mjs --ledger  # rows: file, line, marker, cut tag, tier, dep f
 
 Real local counts only — no baseline, no estimate.
 
+## Live meter (real session tokens)
+
+To read what the *current* session actually cost — real counted tokens, not an
+estimate — run the meter. It auto-discovers the live Claude Code transcript (or
+pass `--session <path>`):
+
+```bash
+node src/meter.mjs           # counted input/output/total for this session
+node src/meter.mjs --badge   # one-line statusline segment, e.g. "session 3.2k out / 18k in"
+node src/meter.mjs --json    # { transcript, usage }
+```
+
+Counted figures only; if no usage fields are present it says so rather than
+inventing a number. Set `BUDZIE_STATUSLINE_SESSION=1` to also show the live
+session segment in the statusline.
+
 ## Record (lifetime ledger)
 
 After scoring, append this run to the local lifetime ledger so the statusline
