@@ -1,0 +1,22 @@
+benchmarks/rates.mjs
+  s_7737eff258f176::t_5fd2d007717fd4 28
+  s_7737eff258f176::t_314ef4b9a98542 24-27
+  s_7737eff258f176::t_a8bd9169ff004b 29-42
+  s_7737eff258f176::t_b924795d6139a5 16-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "140572e88e2e1d92c8b0f6fe5af0f6c32cb3ab66",
+  "prompts": {},
+  "sessions": {
+    "s_7737eff258f176": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6944b575-e261-452b-8228-65e2062d7236",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
