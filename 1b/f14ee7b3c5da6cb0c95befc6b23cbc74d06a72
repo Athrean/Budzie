@@ -1,0 +1,22 @@
+benchmarks/free-sweep.mjs
+  s_7737eff258f176::t_360c399dc3db56 25-30,33-35
+  s_7737eff258f176::t_2515a885ab0080 298-299
+  s_7737eff258f176::t_c9df0244b9e0ac 1-24,31-32,36-223,225,234-235,240-248,254-255,257-297,300-315
+  s_7737eff258f176::t_1fdc57f1a6cbef 224,226-233,236-239,249-253,256
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "1bf14ee7b3c5da6cb0c95befc6b23cbc74d06a72",
+  "prompts": {},
+  "sessions": {
+    "s_7737eff258f176": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6944b575-e261-452b-8228-65e2062d7236",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Rishit Sharma <rishitsharmar89@gmail.com>"
+    }
+  }
+}
