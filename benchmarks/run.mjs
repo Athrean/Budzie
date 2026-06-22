@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 import { TASKS, gradeTask, taskHash } from "./tasks.mjs";
 import { RATES, costUsd } from "./rates.mjs";
-import { codeLines, primaryCodeBlock } from "./lib/extract.mjs";
+import { codeLines, codeBlocks } from "./lib/extract.mjs";
 import { readConfig, checkBudget } from "../src/budget.mjs";
 
 /** Schema version of the snapshot format. Bump on any shape change. */
@@ -38,7 +38,7 @@ const SKILL_PATH = fileURLToPath(
  * generic brevity instruction; `baseline` is no system prompt at all.
  * @returns {Record<"baseline" | "terse" | "budzie", string | null>}
  */
-function armPrompts() {
+export function armPrompts() {
   return {
     baseline: null,
     terse: "Be concise.",
@@ -120,6 +120,32 @@ export function projectCost(tasks, models, runs) {
 }
 
 /**
+ * Grade a model reply, arm-neutral: a reply passes if ANY fenced code block in
+ * it satisfies the task gate. Verbose arms often emit the implementation plus a
+ * usage/test block; picking a single "primary" block penalised them for the
+ * extra block, not for wrong code. Trying every block grades "is there working
+ * code in the answer?" — the question that is fair across all arms.
+ *
+ * Short-circuits on the first passing block; a `skipped` gate (e.g. python3
+ * absent) returns immediately so the caller can drop it from the counts.
+ *
+ * @param {import("./tasks.mjs").Task} task
+ * @param {string} text - Raw model reply.
+ * @returns {import("./lib/gate.mjs").GateResult}
+ */
+export function gradeReply(task, text) {
+  const blocks = codeBlocks(text);
+  if (blocks.length === 0) return gradeTask(task, "");
+  /** @type {import("./lib/gate.mjs").GateResult} */
+  let last = { pass: false, skipped: false, detail: "no passing block" };
+  for (const block of blocks) {
+    last = gradeTask(task, block);
+    if (last.skipped || last.pass) return last;
+  }
+  return last;
+}
+
+/**
  * Run the full live benchmark and return a snapshot object.
  * @param {object} opts
  * @param {readonly string[]} opts.models
@@ -146,8 +172,7 @@ export async function runLive({ models, runs, liveOnly, endpoint, apiKey }) {
             endpoint,
             apiKey,
           });
-          const code = primaryCodeBlock(out.text);
-          const gate = gradeTask(task, code);
+          const gate = gradeReply(task, out.text);
           rows.push({
             task: task.id,
             arm,
