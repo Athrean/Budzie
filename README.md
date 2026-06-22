@@ -1,126 +1,44 @@
 # Budzie
 
-Code less. Spend less. Watch the meter.
+**Code less. Spend less. Watch the meter.**
 
 ![Budzie demo](https://raw.githubusercontent.com/Athrean/Budzie/main/assets/demo.gif)
 
-*Budzie in action.*
+Budget-first agent plugin. It makes savings measurable on your repo, enforces a
+spend ceiling, and turns safe deletion into verified, recurring savings.
+Local-first, read-only by default, opt-in for any write. No telemetry, no
+backend, no phone-home.
 
-Budzie is a budget-first agent plugin. It makes agent savings measurable on your
-repo, then uses that signal to guard spend and remove existing bloat.
+## What it does
 
-## Powers
+- **Receipts + meter** — real local counts of lines and dependencies avoided,
+  plus the real tokens the current session used, counted from the transcript.
+- **Reaper** — audits bloat, then applies each cut in its own git worktree behind
+  *your* test suite. Green cuts kept, red cuts discarded, your tree untouched
+  until you approve.
+- **Budget guard** — set a ceiling; tasks warn or hard-stop before they blow it.
 
-- **Receipts**: scan `budzie:` markers and local diffs, then report real savings.
-- **Reaper**: audit bloat and summarize safe cuts first; apply approved cuts in
-  isolated worktrees and keep only cuts that pass tests.
-- **Budget guard**: set an allowance and stop tasks that would blow it.
-
-## Commands
-
-| Command | What it does |
-| --- | --- |
-| `/budzie` | Activate Budzie mode. |
-| `/budzie-receipts` | Report local savings and badge text. |
-| `/budzie-reap` | Audit and summarize bloat; apply only after approval. |
-| `/budzie-budget` | Check or set the spend ceiling. |
-| `/budzie-shrink` | Compress MCP tool descriptions through a stdio proxy. |
-| `/budzie-compress` | Compress one agent memory file in the same language with a `.bak` backup. |
-| `/budzie-help` | Show quick reference. |
-
-## MCP middleware
-
-Wrap a local stdio MCP server:
-
-```bash
-budzie-shrink --upstream "node ./path/to/server.mjs"
-```
-
-Budzie forwards MCP traffic and compresses top-level tool descriptions with the
-current intensity setting. Schemas and other protocol fields stay unchanged.
-The first catalog's UTF-8 byte savings are written to stderr; stdout remains
-protocol-only.
-
-For a saved catalog, `node src/tool-reducer.mjs --fields description
-catalog.json` runs the same reducer in read-only inspection mode.
-
-## Language-preserving compression
-
-`/budzie-compress` removes filler and hedging without translating the input or
-adding an English opening. Built-in rules cover Spanish, Portuguese, and French
-across all four intensity levels. Fenced and inline code, CLI commands, URLs,
-paths, identifiers, API names, and exact errors stay byte-for-byte unchanged.
-
-Run the deterministic, zero-network fixtures locally:
-
-```bash
-node benchmarks/multilingual-compression.mjs
-```
-
-## Supported hosts
-
-`budzie-install` auto-detects the agent hosts on your machine via a data-driven
-matrix — CLI probes (`command -v`), editor config directories, VS Code extension
-directories, and macOS app bundles — and installs the right format into each one.
-No host re-implements a command, skill, or script; every adapter is named
-`budzie` and pins its version to the package version. `src/check-drift.mjs`
-fails if an adapter drifts off that version, references a surface that does not
-exist, loses its activation contract, or detects a host that is not listed here.
-
-| Host | Detected via | Installs |
-| --- | --- | --- |
-| Claude Code (CLI) | `claude` on `PATH` | full plugin (`.claude-plugin/`) |
-| Codex (CLI) | `codex` on `PATH` | full plugin (`.codex-plugin/`) |
-| Gemini (CLI) | `gemini` on `PATH` | agents plugin (`.agents-plugin/`) |
-| Aider (CLI) | `aider` on `PATH` | rules file (`rules/budzie.mdc`) |
-| Qwen Code (CLI) | `qwen` on `PATH` | agents plugin (`.agents-plugin/`) |
-| OpenCode (CLI) | `opencode` on `PATH` or `~/.config/opencode` | agents plugin (`.agents-plugin/`) |
-| Crush (CLI) | `crush` on `PATH` or `~/.config/crush` | agents plugin (`.agents-plugin/`) |
-| Cursor | `~/.cursor` | rules file (`rules/budzie.mdc`) |
-| Windsurf | `~/.codeium/windsurf` | rules file (`rules/budzie.mdc`) |
-| Continue | `~/.continue` | agents plugin (`.agents-plugin/`) |
-| Cline | `~/.cline` | rules file (`rules/budzie.mdc`) |
-| Zed | Zed config dir or app bundle | skills tree (`skills/`) |
-| VS Code | `~/.vscode/extensions` | skills tree (`skills/`) |
-| VS Code Insiders | `~/.vscode-insiders/extensions` | skills tree (`skills/`) |
-| Cursor (extensions) | `~/.cursor/extensions` | skills tree (`skills/`) |
-| Claude Desktop (macOS) | `/Applications/Claude.app` | skills tree (`skills/`) |
-| ChatGPT Desktop (macOS) | `/Applications/ChatGPT.app` | skills tree (`skills/`) |
-
-Each detected host installs one of these formats:
-
-- **Full plugin** — Claude (`.claude-plugin/`), Codex (`.codex-plugin/`), or the
-  generic agents manifest (`.agents-plugin/`), each activating through a native
-  `SessionStart` hook.
-- **Rules file** — a single `rules/budzie.mdc` that sets `alwaysApply: true`, so
-  the activation instruction is injected from the first message.
-- **Skills tree** — the `skills/` tree dropped into the host's config or
-  extension directory.
-- **Single-file bundle** — `dist/budzie.skill`, every skill concatenated into
-  one drop-in Markdown file for hosts that take a single instructions file.
-  Regenerate with `npm run pack`; a test keeps it in sync with `skills/`.
-
-Full plugins and the agents plugin use the
-[Open Plugin rules component](https://github.com/vercel-labs/open-plugin-spec#d3-rules)
-for activation where hooks are unavailable. The repo also ships native plugin
-manifests (`.claude-plugin/`, `.codex-plugin/`, `.agents-plugin/`, `.opencode/`,
-`gemini-extension.json`) so these hosts can load Budzie directly from a clone or
-marketplace. Listing a host here does not claim it supports `.mdc` rules.
+Every shortcut Budzie takes is marked in code with a `budzie:` comment naming its
+ceiling and upgrade trigger. Receipts count those markers. Real counts lead;
+estimates are always labelled `ESTIMATE`.
 
 ## Install
 
-### Codex plugin marketplace
+Claude Code:
+
+```
+/plugin marketplace add Athrean/Budzie
+/plugin install budzie@budzie
+```
+
+Codex:
 
 ```sh
 codex plugin marketplace add Athrean/Budzie --ref main
 codex plugin add budzie@budzie
 ```
 
-Restart Codex, open `/plugins` to confirm Budzie is enabled, then start a new
-thread. `$budzie` activates the mode; `$budzie:budzie-reap` audits first and
-asks before changing files.
-
-macOS / Linux:
+Every other host (macOS / Linux):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Athrean/Budzie/main/install.sh | bash
@@ -132,37 +50,134 @@ Windows PowerShell:
 irm https://raw.githubusercontent.com/Athrean/Budzie/main/install.ps1 | iex
 ```
 
-The shell scripts check Node.js, then run the same `budzie-install` CLI used by
-local clones. To inspect a remote install without writing:
+`budzie-install` detects the agent hosts on your machine and installs the right
+format into each. `--dry-run` prints the full plan and writes nothing;
+`--uninstall` removes only Budzie-managed files (tracked per-dir in
+`.budzie-manifest.json`); `--host <id>` targets one. Full host matrix below.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `/budzie [low\|medium\|xhigh\|ultra]` | Activate Budzie mode; set compression intensity. |
+| `/budzie-receipts` | Savings report, live session meter, and README badge. |
+| `/budzie-reap` | Audit bloat; apply approved cuts test-gated, one per worktree. |
+| `/budzie-budget` | Set or check the spend ceiling. |
+| `/budzie-shrink` | Compress MCP tool descriptions through a stdio proxy. |
+| `/budzie-compress` | Shrink one agent memory file in its own language; keeps a `.bak`. |
+| `/budzie-help` | Quick reference. |
+
+`/budzie-context` (read-only context-size receipts for memory files) activates on
+its own when you ask about context size — no slash command needed.
+
+## The crew
+
+Budget-aware subagents. Hopper runs the operation; the rest are specialists it
+dispatches, each handed only its scoped context and metered against its slice of
+the ceiling. In `stop` mode the first stage to hit the ceiling halts the run.
+
+| Agent | Role |
+| --- | --- |
+| `budzie:hopper` | Orchestrator — runs a metered pipeline, slices the budget, merges results. |
+| `budzie:dustin` | Read-only recon — finds bloat, oversized context, budget risk. |
+| `budzie:eleven` | Test-gated deletion — one cut per worktree, keep green, discard red. |
+| `budzie:steve` | Smallest-correct build under a per-task ceiling. |
+| `budzie:nancy` | Budget-aware review — spend, bloat, and receipt risks. |
+
+## Reaper, end to end
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Athrean/Budzie/main/install.sh | bash -s -- --dry-run
+node src/reap.mjs plan \
+  | node src/reap.mjs verify --test "npm test" \
+  | node src/reap.mjs receipt
+# -42 lines, -1 deps, 3 cuts kept, 1 discarded
 ```
 
-`budzie-install` detects the agent hosts on your machine via a data-driven
-matrix (CLI probes, config-directory probes, editor extension dirs, and macOS
-app bundles) and installs the right adapter format into each host's config dir.
+Each cut is applied in an isolated git worktree and verified against your own
+test command. A failing test discards the cut; a passing one keeps it. Your
+working tree is never touched and every worktree is removed. A green test gate is
+necessary but never sufficient: Budzie never cuts a trust boundary, a data-loss
+guard, or an accessibility basic, even when tests still pass.
 
-From a clone:
+## Watch the meter
 
 ```sh
-./install.sh --dry-run     # print the full plan, write nothing
-./install.sh               # install for every detected host
-./install.sh --host cursor # target one host by id
-./install.sh --uninstall   # remove only Budzie-managed files
-./install.sh --force       # overwrite existing managed files
+node src/meter.mjs            # real counted tokens used this session
+node src/meter.mjs --badge    # session 3.2k out / 18k in
 ```
 
-Each install dir gets a `.budzie-manifest.json` recording exactly which files
-Budzie owns. Uninstall reads that manifest and removes only those entries, so
-anything you authored is left untouched. Re-runs are idempotent.
+Auto-discovers the live transcript. Counted figures only — if usage data is
+missing it says so instead of inventing a number. Set
+`BUDZIE_STATUSLINE_SESSION=1` to show the live session in the statusline.
+
+## Compression
+
+`/budzie` compresses prose at four intensity levels; code, identifiers, URLs,
+paths, and quoted errors are never touched, and the dominant language is kept —
+compression never translates the input. `/budzie-compress` does the same for a
+memory file, keeping a `.bak`. Built-in filler rules cover English, plus
+Spanish, Portuguese, and French. Reproduce the deterministic, zero-network
+fixtures:
+
+```sh
+node benchmarks/multilingual-compression.mjs
+```
+
+Wrap a local stdio MCP server to compress its tool descriptions in flight:
+
+```sh
+budzie-shrink --upstream "node ./path/to/server.mjs"
+```
+
+Schemas and other protocol fields stay unchanged; the first catalog's byte
+savings are written to stderr, stdout stays protocol-only.
 
 ## Marker
 
-Use `budzie:` comments for intentional shortcuts:
-
 ```js
-// budzie: native date input, upgrade to date-picker only when range selection ships
+// budzie: native date input; upgrade to a date-picker when range selection ships
 ```
 
-Budzie reads those markers into Receipts. No backend. No telemetry.
+`budzie:` comments mark deliberate shortcuts and name the upgrade trigger.
+Receipts read them straight off the repo.
+
+## Supported hosts
+
+`budzie-install` auto-detects hosts via CLI probes, config directories, editor
+extension dirs, and macOS app bundles, then installs one of: a **full plugin**
+(native `SessionStart` hook), an **agents plugin**, a **rules file**
+(`alwaysApply: true`), or the **skills tree**. `src/check-drift.mjs` fails if any
+adapter drifts off the package version or references a surface that does not
+exist.
+
+<details>
+<summary>Full host matrix (17)</summary>
+
+| Host | Installs |
+| --- | --- |
+| Claude Code (CLI) | full plugin (`.claude-plugin/`) |
+| Codex (CLI) | full plugin (`.codex-plugin/`) |
+| Gemini (CLI) | agents plugin (`.agents-plugin/`) |
+| Aider (CLI) | rules file (`rules/budzie.mdc`) |
+| Qwen Code (CLI) | agents plugin (`.agents-plugin/`) |
+| OpenCode (CLI) | agents plugin (`.agents-plugin/`) |
+| Crush (CLI) | agents plugin (`.agents-plugin/`) |
+| Cursor | rules file (`rules/budzie.mdc`) |
+| Windsurf | rules file (`rules/budzie.mdc`) |
+| Continue | agents plugin (`.agents-plugin/`) |
+| Cline | rules file (`rules/budzie.mdc`) |
+| Zed | skills tree (`skills/`) |
+| VS Code | skills tree (`skills/`) |
+| VS Code Insiders | skills tree (`skills/`) |
+| Cursor (extensions) | skills tree (`skills/`) |
+| Claude Desktop (macOS) | skills tree (`skills/`) |
+| ChatGPT Desktop (macOS) | skills tree (`skills/`) |
+
+A single-file bundle (`dist/budzie.skill`, regenerated with `npm run pack`)
+covers hosts that take one instructions file.
+
+</details>
+
+## License
+
+[MIT](LICENSE).
